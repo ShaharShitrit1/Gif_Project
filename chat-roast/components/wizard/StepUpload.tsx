@@ -232,7 +232,7 @@ export function StepUpload({
                 {dragging ? t("s2_drop_active") : touch ? t("s2_drop_title_touch") : t("s2_drop_title")}
               </span>
               {!dragging && <span className="text-ink-2">{touch ? t("s2_drop_or_touch") : t("s2_drop_or")}</span>}
-              <span className="mt-1 rounded-full border-2 border-line-soft bg-surface-2 px-3 py-1 text-xs font-bold text-ink-2" dir="auto">
+              <span className="mt-1 rounded-full border-2 border-line-soft bg-surface-2 px-3 py-1 text-xs font-bold text-ink-2">
                 {t("s2_drop_hint")}
               </span>
             </>

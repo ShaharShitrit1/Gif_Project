@@ -18,7 +18,7 @@ export function FaqContent() {
     <div className="mx-auto max-w-3xl px-4 pb-20 pt-10 sm:px-6 sm:pt-16">
       <SectionHeading kicker={t("faq_kicker")} title={<span className="sm:text-[3.25rem]">{t("faq_title")}</span>} sub={t("faq_sub")} />
 
-      <nav aria-label={t("faq_toc")} className="mt-8">
+      <nav aria-label={t("faq_toc")} className="mt-8 hidden sm:block">
         <p className="sr-only">{t("faq_toc")}</p>
         <ul className="flex flex-wrap gap-2">
           {items.map((item) => (

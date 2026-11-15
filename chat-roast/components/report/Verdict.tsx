@@ -24,7 +24,7 @@ export function Verdict() {
         <div {...text} className="relative">
           <p
             className={`text-[1.3rem] leading-[1.45] font-bold text-pretty sm:text-2xl ${
-              reportDir === "ltr" ? "first-letter:float-start first-letter:me-2.5 first-letter:mt-1 first-letter:text-[4.2rem] first-letter:leading-[0.82] first-letter:font-black first-letter:text-ember" : ""
+              reportDir === "ltr" && /^\p{L}/u.test(lede) ? "first-letter:float-start first-letter:me-2.5 first-letter:mt-1 first-letter:text-[4.2rem] first-letter:leading-[0.82] first-letter:font-black first-letter:text-ember" : ""
             }`}
           >
             {lede}

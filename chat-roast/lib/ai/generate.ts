@@ -66,6 +66,7 @@ const MESSAGES: Record<ReportCode, string> = {
   too_large: "This chat is too large to analyse in one go.",
   refused: "The AI declined to write about this chat.",
   bad_request: "The request was rejected.",
+  unauthorized: "An access code is required.",
   server_error: "Something went wrong while writing the report.",
 };
 

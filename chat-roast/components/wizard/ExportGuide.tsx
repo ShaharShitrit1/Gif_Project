@@ -141,7 +141,13 @@ export function ExportGuide({
         onMouseLeave={() => setHovering(false)}
       >
         <div className="flex flex-col items-center gap-4">
-          <div className="relative rounded-[2.75rem] bg-chat-bg p-4 sm:p-5">
+          {/* Mobile: the current step, above the phone */}
+          <div className="min-h-[5.5rem] w-full text-center md:hidden" aria-live="polite">
+            <p className="text-xs font-bold text-ink-3">{t("eg_step", { n: idx + 1, total: steps.length })}</p>
+            <p className="mt-1 text-lg font-extrabold leading-snug">{t(step.title)}</p>
+            {step.note && <p className="mt-1 text-sm text-ink-2">{t(step.note)}</p>}
+          </div>
+          <div className="relative rounded-[2.75rem] bg-chat-bg p-3 sm:p-4">
             <PhoneMock platform={platform} kind={kind} screen={step.screen} />
           </div>
 
@@ -172,64 +178,64 @@ export function ExportGuide({
               <IconChevronForward size={18} />
             </button>
           </div>
-
-          {/* Mobile: just the current step under the phone */}
-          <div className="w-full text-center md:hidden" aria-live="polite">
-            <p className="text-xs font-bold text-ink-3">{t("eg_step", { n: idx + 1, total: steps.length })}</p>
-            <p className="mt-1 text-lg font-extrabold leading-snug">{t(step.title)}</p>
-            {step.note && <p className="mt-1 text-sm text-ink-2">{t(step.note)}</p>}
-            <div className="mt-3 flex justify-center gap-1.5">
-              {steps.map((_, i) => (
-                <button
-                  key={i}
-                  type="button"
-                  onClick={() => go(i)}
-                  aria-label={t("eg_goto", { n: i + 1 })}
-                  aria-current={i === idx ? "step" : undefined}
-                  className={`h-2 rounded-full transition-all duration-300 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-ember/40 ${i === idx ? "w-6 bg-ember" : "w-2 bg-line-soft hover:bg-ink-3"}`}
-                />
-              ))}
-            </div>
+          <div className="flex justify-center gap-1.5 md:hidden">
+            {steps.map((_, i) => (
+              <button
+                key={i}
+                type="button"
+                onClick={() => go(i)}
+                aria-label={t("eg_goto", { n: i + 1 })}
+                aria-current={i === idx ? "step" : undefined}
+                className={`h-2 rounded-full transition-all duration-300 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-ember/40 ${i === idx ? "w-6 bg-ember" : "w-2 bg-line-soft hover:bg-ink-3"}`}
+              />
+            ))}
           </div>
         </div>
 
-        {/* Desktop: the whole list, current step highlighted */}
-        <ol className="hidden space-y-1.5 md:block">
-          {steps.map((s, i) => {
-            const active = i === idx;
-            return (
-              <li key={`${platform}-${kind}-${i}`}>
-                <button
-                  type="button"
-                  onClick={() => go(i)}
-                  aria-current={active ? "step" : undefined}
-                  className={`flex w-full items-start gap-3 rounded-2xl border-2 p-3 text-start transition-all duration-200 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-ember/40 ${
-                    active ? "border-line bg-surface shadow-pop-sm rtl:shadow-[-2px_2px_0_0_var(--shadow)]" : "border-transparent hover:bg-surface-2"
-                  }`}
-                >
-                  <span
-                    className={`grid size-7 shrink-0 place-items-center rounded-full border-2 text-sm font-black transition-colors ${
-                      active ? "border-line bg-ember text-ember-ink" : i < idx ? "border-line bg-ink text-paper" : "border-line-soft bg-surface text-ink-2"
+        <div>
+          {/* Desktop: the whole list, current step highlighted */}
+          <ol className="hidden space-y-1.5 md:block">
+            {steps.map((s, i) => {
+              const active = i === idx;
+              return (
+                <li key={`${platform}-${kind}-${i}`}>
+                  <button
+                    type="button"
+                    onClick={() => go(i)}
+                    aria-current={active ? "step" : undefined}
+                    className={`flex w-full items-start gap-3 rounded-2xl border-2 p-3 text-start transition-all duration-200 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-ember/40 ${
+                      active
+                        ? "border-line bg-surface shadow-pop-sm rtl:shadow-[-2px_2px_0_0_var(--shadow)]"
+                        : "border-transparent hover:bg-surface-2"
                     }`}
                   >
-                    {i + 1}
-                  </span>
-                  <span className="min-w-0 pt-0.5">
-                    <span className={`block font-bold leading-snug ${active ? "text-ink" : "text-ink-2"}`}>{t(s.title)}</span>
-                    {s.note && active && <span className="mt-0.5 block text-sm text-ink-2">{t(s.note)}</span>}
-                  </span>
-                </button>
-              </li>
-            );
-          })}
-        </ol>
-      </div>
-
-      <div className="mt-6 flex gap-3 rounded-2xl border-2 border-line-soft bg-surface-2 p-4">
-        <IconInfo size={20} className="mt-0.5 text-sky" />
-        <div>
-          <p className="font-extrabold">{t("eg_desktop_title")}</p>
-          <p className="mt-0.5 text-sm leading-relaxed text-ink-2">{t("eg_desktop_body")}</p>
+                    <span
+                      className={`grid size-7 shrink-0 place-items-center rounded-full border-2 text-sm font-black transition-colors ${
+                        active
+                          ? "border-line bg-ember text-ember-ink"
+                          : i < idx
+                            ? "border-line bg-ink text-paper"
+                            : "border-line-soft bg-surface text-ink-2"
+                      }`}
+                    >
+                      {i + 1}
+                    </span>
+                    <span className="min-w-0 pt-0.5">
+                      <span className={`block font-bold leading-snug ${active ? "text-ink" : "text-ink-2"}`}>{t(s.title)}</span>
+                      {s.note && active && <span className="mt-0.5 block text-sm text-ink-2">{t(s.note)}</span>}
+                    </span>
+                  </button>
+                </li>
+              );
+            })}
+          </ol>
+          <div className="mt-2 flex gap-3 md:mt-6 rounded-2xl border-2 border-line-soft bg-surface-2 p-4">
+            <IconInfo size={20} className="mt-0.5 text-sky" />
+            <div>
+              <p className="font-extrabold">{t("eg_desktop_title")}</p>
+              <p className="mt-0.5 text-sm leading-relaxed text-ink-2">{t("eg_desktop_body")}</p>
+            </div>
+          </div>
         </div>
       </div>
     </Sheet>

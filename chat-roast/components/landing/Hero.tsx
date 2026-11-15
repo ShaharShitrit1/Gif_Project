@@ -79,7 +79,7 @@ export function Hero() {
           </span>
           <span
             aria-hidden
-            className="absolute -end-3 bottom-24 z-10 hidden rotate-[6deg] rounded-xl border-2 border-line bg-sky px-2.5 py-1 text-sm font-black text-[#17120e] shadow-pop-sm sm:-end-12 sm:block"
+            className="absolute -end-3 -bottom-5 z-10 hidden rotate-[6deg] rounded-xl border-2 border-line bg-sky px-2.5 py-1 text-sm font-black text-[#17120e] shadow-pop-sm sm:-end-12 sm:block"
           >
             🌙 {t("hero_sticker_night")}
           </span>

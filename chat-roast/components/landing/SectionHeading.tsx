@@ -31,7 +31,7 @@ export function SectionHeading({
       <h2 id={id} className="text-[2rem] font-black leading-[1.08] tracking-tight text-balance sm:text-5xl">
         {title}
       </h2>
-      {sub && <p className={`mt-4 text-lg text-pretty ${invert ? "text-paper/75" : "text-ink-2"}`}>{sub}</p>}
+      {sub && <p className={`mt-4 text-lg text-pretty ${invert ? "text-[#fff8f0]/75" : "text-ink-2"}`}>{sub}</p>}
     </div>
   );
 }

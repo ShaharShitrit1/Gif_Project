@@ -4,6 +4,7 @@ import { createContext, useContext, useMemo, type ReactNode } from "react";
 import { PERSONAS, REPORT_LANGUAGES, RTL_LANGUAGES } from "@/lib/personas";
 import { intlLocale, useLocale } from "@/lib/i18n";
 import type { Locale, MemberProfile, Participant, PersonStats, PersonaId, SavedReport } from "@/lib/types";
+import { isolateDeep } from "@/lib/bidi";
 
 /**
  * Member identity colors: 8 categorical slots derived from the brand hues, validated with the
@@ -73,8 +74,14 @@ export function reportLangInfo(language: string): { dir: "rtl" | "ltr"; lang: st
   return { dir: rtl ? "rtl" : "ltr", lang: entry?.code };
 }
 
-export function ReportProvider({ saved, children }: { saved: SavedReport; children: ReactNode }) {
+export function ReportProvider({ saved: raw, children }: { saved: SavedReport; children: ReactNode }) {
   const { locale } = useLocale();
+  // Isolate foreign-direction runs in the AI text once, so every section (and the share cards)
+  // renders mixed Hebrew/English correctly. Idempotent, so re-saving this object is safe.
+  const saved = useMemo<SavedReport>(
+    () => ({ ...raw, report: isolateDeep(raw.report, reportLangInfo(raw.language).dir) }),
+    [raw],
+  );
   const value = useMemo<ReportCtx>(() => {
     const statsById = new Map(saved.stats.perPerson.map((p) => [p.id, p]));
     const profileById = new Map(saved.report.members.map((m) => [m.id, m]));

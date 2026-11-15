@@ -24,8 +24,10 @@ function top(list: PersonStats[], pick: (p: PersonStats) => number): PersonStats
 export function buildTeasers(stats: ChatStats, t: T, locale: string): Teaser[] {
   const nf = new Intl.NumberFormat(locale);
   const n = (v: number) => nf.format(v);
-  const nameOf = (id: string) => stats.perPerson.find((p) => p.id === id)?.name ?? "";
-  const people = stats.perPerson;
+  // Names are bidi-isolated so a Hebrew name inside an English sentence (or vice versa) stays put.
+  const iso = (s: string) => `\u2068${s}\u2069`;
+  const nameOf = (id: string) => iso(stats.perPerson.find((p) => p.id === id)?.name ?? "");
+  const people = stats.perPerson.map((p) => ({ ...p, name: iso(p.name) }));
   const out: Teaser[] = [];
   const add = (key: string, emoji: string, text: string) => out.push({ key, emoji, text });
 

@@ -75,7 +75,7 @@ function Toaster() {
       {list.map((item) => (
         <div
           key={item.id}
-          className="cr-pop-in pointer-events-auto flex max-w-[min(28rem,100%)] items-center gap-2.5 rounded-full border-2 border-line bg-ink py-2 ps-3 pe-2 text-sm font-semibold text-paper shadow-pop rtl:shadow-[-4px_4px_0_0_var(--shadow)]"
+          className="cr-pop-in pointer-events-auto flex max-w-[min(28rem,100%)] items-center gap-2.5 rounded-full border-2 border-line bg-[#17120e] py-2 ps-3 pe-2 text-sm font-semibold text-[#fff8f0] shadow-pop rtl:shadow-[-4px_4px_0_0_var(--shadow)]"
         >
           {item.tone === "success" && <IconCheck size={18} className="text-mint" />}
           {item.tone === "error" && <IconAlert size={18} className="text-sun" />}
@@ -87,7 +87,7 @@ function Toaster() {
                 item.action?.onClick();
                 dismissToast(item.id);
               }}
-              className="shrink-0 rounded-full bg-paper/15 px-3 py-1 font-bold text-sun transition-colors hover:bg-paper/25 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sun"
+              className="shrink-0 rounded-full bg-white/15 px-3 py-1 font-bold text-sun transition-colors hover:bg-white/25 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sun"
             >
               {item.action.label}
             </button>

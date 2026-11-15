@@ -18,20 +18,20 @@ export function PrivacyPromise() {
 
   return (
     <section aria-labelledby="privacy-title" className="mx-auto max-w-6xl px-4 py-16 sm:px-6 sm:py-24">
-      <div className="relative overflow-hidden rounded-[2rem] border-2 border-line bg-ink px-5 py-10 text-paper shadow-pop-lg sm:px-10 sm:py-14 rtl:shadow-[-6px_6px_0_0_var(--shadow)]">
+      <div className="relative overflow-hidden rounded-[2rem] border-2 border-line bg-[#17120e] px-5 py-10 text-[#fff8f0] shadow-pop-lg dark:bg-[#211b17] sm:px-10 sm:py-14 rtl:shadow-[-6px_6px_0_0_var(--shadow)]">
         <span aria-hidden className="pointer-events-none absolute -end-10 -top-10 text-[10rem] leading-none opacity-10 select-none">
           🔒
         </span>
         <SectionHeading id="privacy-title" kicker={t("privacy_kicker")} title={t("privacy_title")} sub={t("privacy_sub")} invert />
         <ul className="mt-10 grid gap-4 sm:grid-cols-2">
           {ITEMS.map(({ k, emoji, tone }) => (
-            <li key={k} className="flex gap-4 rounded-3xl border-2 border-paper/15 bg-paper/5 p-5">
-              <span aria-hidden className={`grid size-12 shrink-0 place-items-center rounded-2xl border-2 border-paper/20 text-2xl ${tone}`}>
+            <li key={k} className="flex gap-4 rounded-3xl border-2 border-white/15 bg-white/5 p-5">
+              <span aria-hidden className={`grid size-12 shrink-0 place-items-center rounded-2xl border-2 border-white/25 text-2xl ${tone}`}>
                 {emoji}
               </span>
               <div>
                 <h3 className="text-lg font-extrabold">{t(`privacy_${k}_title`)}</h3>
-                <p className="mt-1 leading-relaxed text-paper/75">{t(`privacy_${k}_body`)}</p>
+                <p className="mt-1 leading-relaxed text-[#fff8f0]/75">{t(`privacy_${k}_body`)}</p>
               </div>
             </li>
           ))}

@@ -201,8 +201,12 @@ export function PhoneMock({ platform, kind, screen }: { platform: GuidePlatform;
       break;
     case "info-bottom":
       body = (
-        <div className="flex flex-1 flex-col justify-end bg-surface-2 pb-6">
+        <div className="flex min-h-0 flex-1 flex-col justify-end overflow-hidden bg-surface-2 pb-6">
+          {infoHeader}
           {infoRowsTop}
+          <div className="mt-2">
+            <InfoRow label={group ? t("m_members") : t("m_contact_info")} />
+          </div>
           {infoRowsBottom(true)}
         </div>
       );
@@ -384,7 +388,7 @@ export function PhoneMock({ platform, kind, screen }: { platform: GuidePlatform;
     <div
       role="img"
       aria-label={t("eg_phone_aria")}
-      className="relative h-[27rem] w-[13.25rem] shrink-0 rounded-[2.4rem] border-[3px] border-line bg-[#17120e] p-[7px] shadow-pop-lg rtl:shadow-[-6px_6px_0_0_var(--shadow)] sm:h-[30rem] sm:w-[14.75rem]"
+      className="relative h-[27rem] w-[13.25rem] shrink-0 rounded-[2.4rem] border-[3px] border-line bg-[#17120e] p-[7px] shadow-pop-lg rtl:shadow-[-6px_6px_0_0_var(--shadow)] sm:h-[28rem] sm:w-[13.75rem]"
     >
       <div className="flex h-full flex-col overflow-hidden rounded-[1.95rem] bg-surface">
         <StatusBar platform={platform} />

@@ -98,7 +98,8 @@ export function StepGenerating({
     return () => window.clearInterval(id);
   }, [gen.status]);
   if (phaseMark.phase !== gen.phase) setPhaseMark({ phase: gen.phase, at: now });
-  const sincePhase = phaseMark.at && now ? now - phaseMark.at : 0;
+  const phaseStart = phaseMark.at || gen.startedAt;
+  const sincePhase = phaseStart && now ? Math.max(0, now - phaseStart) : 0;
   const creep = gen.status === "running" ? 0.05 * (1 - Math.exp(-sincePhase / 25000)) : 0;
   const progress = gen.status === "done" ? 1 : Math.min(0.985, gen.progress + creep);
   const pct = Math.round(progress * 100);
@@ -193,7 +194,7 @@ export function StepGenerating({
                   <span aria-hidden className="grid size-11 shrink-0 place-items-center rounded-2xl border-2 border-line bg-sun text-2xl">
                     {teaser.emoji}
                   </span>
-                  <p className="min-w-0 pt-0.5 font-semibold leading-snug" dir="auto">
+                  <p className="min-w-0 pt-0.5 font-semibold leading-snug">
                     {teaser.text}
                   </p>
                 </div>

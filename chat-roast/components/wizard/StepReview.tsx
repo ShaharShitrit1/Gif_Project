@@ -178,7 +178,6 @@ export function StepReview({
           maxLength={80}
           onChange={(e) => onGroupName(e.target.value)}
           placeholder={t("s3_group_placeholder")}
-          dir="auto"
           className="mt-2 h-13 w-full rounded-2xl border-2 border-line bg-surface px-4 text-lg font-semibold text-ink placeholder:font-normal placeholder:text-ink-3 focus:border-ember focus:outline-none focus-visible:ring-4 focus-visible:ring-ember/30"
           aria-describedby="group-name-hint"
         />
@@ -246,7 +245,7 @@ export function StepReview({
                   </label>
 
                   <div className="min-w-0 flex-1">
-                    <div className="relative">
+                    <div className="relative max-w-[20rem]">
                       <input
                         type="text"
                         value={value}
@@ -257,7 +256,6 @@ export function StepReview({
                           if (e.key === "Enter") (e.target as HTMLInputElement).blur();
                         }}
                         aria-label={t("s3_rename_label", { name: display })}
-                        dir="auto"
                         className={`peer h-10 w-full rounded-xl border-2 bg-transparent pe-8 ps-2 text-base font-bold text-ink transition-colors hover:border-line-soft focus:border-ember focus:bg-surface focus:outline-none ${
                           phone || emoji ? "border-sun bg-sun/10" : "border-transparent"
                         }`}

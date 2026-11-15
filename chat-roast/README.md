@@ -1,36 +1,80 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# ChatRoast 🔥
 
-## Getting Started
+מעלים ייצוא של צ'אט מוואטסאפ ומקבלים **רוסט מצחיק ומבוסס ראיות** על כל הקבוצה, **פרופיל אישי לכל אחד**, פרסים, ודשבורד מספרים מלא.
+כתוב על ידי אחת משלוש דמויות: **מקס** (הרוסטר הרשמי), **סבתא פנינה**, או **ד״ר נועם** (הפסיכולוג של הקבוצה).
 
-First, run the development server:
+> כלי מקורי בז'אנר "AI שקורא לכם את הצ'אט". השם, הדמויות, הטקסטים והעיצוב מקוריים. מחקר על המוצר שעליו מבוסס הרעיון: [`docs/research.md`](docs/research.md).
+
+## מה יש בפנים
+
+- **אשף ב-5 שלבים**: סוג צ'אט ← העלאה (txt/zip, מדריך ייצוא מצויר לאייפון ולאנדרואיד) ← סידור שמות (שינוי כינויים, איחוד כפילויות, "מי מהם אתם?") ← דמות, רמת חריפות ושפת הדוח ← מסך כתיבה עם טיזרים אמיתיים מהנתונים.
+- **הדוח**: כותרת שמתאימה לצילום מסך, פסק דין, 4 ציונים שהמודל ממציא במיוחד לקבוצה, כרטיס לכל משתתף (כינוי, תפקיד בקבוצה, רוסט, כוח-על, דגל אדום, ציטוט אמיתי, עצה), פרסים מה-AI ופרסים סטטיסטיים, הדינמיקה האמיתית, נקודת המפנה, בדיחות פנימיות, ועצה ומשפט סיום.
+- **"המספרים"**: לוח שנה של כל הימים, מי מדבר, מי פותח שיחות ומי משאיר את כולם על "נקרא", לפי שעה ולפי יום, זמן תגובה, רצפים, השתיקה הארוכה, "טביעת הצחוק" (חחחח), בוקר טוב ולילה טוב, שבתות שקטות, מילים, אימוג'ים וביטויים חוזרים.
+- **שיתוף**: כרטיס PNG בגודל 1080×1350 לקבוצה ולכל משתתף, שיתוף ישיר (Web Share) או הורדה, וטקסט מוכן לוואטסאפ.
+- **שאלות המשך** לדמות, כולל "צלילה אישית" על כל משתתף.
+- **עברית ו-RTL קודם כל**, ממשק גם באנגלית, דוחות ב-19 שפות, מצב כהה, מותאם לנייד.
+
+## פרטיות (וזה עדיף על המקור)
+
+- הקובץ **נקרא ומנותח בדפדפן**. הפענוח והסטטיסטיקה לא נוגעים בשרת.
+- ל-AI נשלח רק **תמליל מקוצר שבו מספרי טלפון, אימיילים, קישורים ומספרי כרטיס/ת.ז. מוסתרים**.
+- השרת **לא שומר ולא מתעד** תוכן. הדוחות נשמרים רק בדפדפן של המשתמש (IndexedDB), וב-`/reports` אפשר למחוק אותם.
+- אין הרשמה, אין אימייל ואין תשלום.
+
+## הרצה מקומית
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+cd chat-roast
+npm install
+cp .env.example .env.local      # ושימו מפתח ANTHROPIC_API_KEY
+npm run dev                     # http://localhost:3000
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+בלי מפתח (או עם `MOCK_AI=1`) האפליקציה רצה ב**מצב דמו**: הדוח נבנה מתבנית ומהנתונים האמיתיים של הצ'אט, כדי לפתח את הממשק בלי לשלם.
+דוח לדוגמה מלא (כתוב ביד, על צ'אט לדוגמה): `/report/demo`.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## משתני סביבה
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| משתנה | ברירת מחדל | מה עושה |
+|---|---|---|
+| `ANTHROPIC_API_KEY` | — | מפתח ל-Claude API. בלעדיו האפליקציה רצה במצב דמו |
+| `MOCK_AI` | — | `1` מכריח מצב דמו גם כשיש מפתח |
+| `CHATROAST_MODEL` | `claude-opus-5-5` | המודל שכותב את הדוחות |
+| `CHATROAST_EFFORT` | `high` | רמת המאמץ לדוח (`low`…`max`). אם דוחות ארוכים נתקעים במגבלת 300 השניות, להוריד ל-`medium` |
+| `CHATROAST_ASK_EFFORT` | `medium` | רמת המאמץ לשאלות המשך |
+| `CHATROAST_ACCESS_CODE` | — | אם מוגדר, צריך קוד גישה כדי לייצר דוח (נגד שימוש לא מורשה במפתח) |
+| `CHATROAST_REPORTS_PER_HOUR` | `6` | מגבלת דוחות לכתובת IP בשעה |
+| `CHATROAST_ASKS_PER_HOUR` | `60` | מגבלת שאלות המשך לכתובת IP בשעה |
+| `CHATROAST_MOCK_DELAY_MS` | — | כמה זמן מצב הדמו "חושב" |
 
-## Learn More
+**עלות משוערת** (Opus 5.5, ‏$4 / $20 למיליון טוקנים): דוח טיפוסי עולה כ-$0.70, וצ'אט ענק (תקרה של 150 אלף טוקנים) כ-$1.15. שאלת המשך ראשונה עולה כ-$0.35, והבאות כ-$0.05–0.10 בזכות prompt caching.
+אם המודל מסרב לכתוב, מופעל **refusal fallback** בצד השרת (`fallbacks: "default"`), שמריץ את הבקשה שוב על מודל חלופי שאנתרופיק ממליצה עליו, ומחויב לפי התעריף של אותו מודל.
 
-To learn more about Next.js, take a look at the following resources:
+## פריסה ל-Vercel
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+1. מייבאים את הריפו ב-Vercel ומגדירים **Root Directory = `chat-roast`**.
+2. מוסיפים את `ANTHROPIC_API_KEY`, ומומלץ גם `CHATROAST_ACCESS_CODE` אם האתר ציבורי.
+3. ה-route של הדוח מוגדר עם `maxDuration = 300` (צריך Fluid Compute, ברירת המחדל ב-Vercel).
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## בדיקות
 
-## Deploy on Vercel
+```bash
+npm test            # 208 בדיקות: parser, stats, AI layer, bidi
+npm run typecheck
+npm run lint
+npm run build
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## מבנה
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```
+app/                 עמודים: / (נחיתה), /analyze (אשף), /report/[id], /reports, /faq, /privacy
+app/api/report       SSE: כתיבת הדוח (Claude, structured outputs, streaming)
+app/api/ask          SSE: שאלות המשך (עם prompt caching)
+lib/parser           פענוח ייצוא וואטסאפ (iOS/Android, עברית/אנגלית, zip, כל מקרי הקצה)
+lib/stats            כל הסטטיסטיקה והפרסים הסטטיסטיים
+lib/ai               תמליל + הסתרת מידע, prompts, סכמה, קריאה ל-Claude, מצב דמו, דוח דמו
+lib/storage          שמירת דוחות בדפדפן (IndexedDB)
+components/          landing, wizard, report, stats, share, brand, ui
+SPEC.md              המפרט והחוזים בין המודולים
+```

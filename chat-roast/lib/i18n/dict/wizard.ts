@@ -15,12 +15,12 @@ export const wizardDict = defineDict({
 
     /* Step 2 */
     s2_title: "העלו את הצ'אט",
-    s2_sub: "קובץ ה-‎.txt (או ה-‎.zip) שוואטסאפ יוצרת ב'ייצוא צ'אט'.",
+    s2_sub: "קובץ ה-txt (או ה-zip) שוואטסאפ יוצרת כשבוחרים 'ייצוא צ'אט'.",
     s2_drop_title: "גררו את הקובץ לכאן",
     s2_drop_title_touch: "בחרו את קובץ הצ'אט",
     s2_drop_or: "או לחצו כדי לבחור מהמחשב",
     s2_drop_or_touch: "מהקבצים, מהדרייב או מהמייל",
-    s2_drop_hint: "‎.txt או ‎.zip · עד 200MB",
+    s2_drop_hint: "קובץ txt או zip · עד 200MB",
     s2_drop_active: "שחררו, תפסנו",
     s2_drop_aria: "בחירת קובץ צ'אט להעלאה",
     s2_parsing: (p: { name: string }) => `קוראים את ${p.name}…`,
@@ -44,7 +44,7 @@ export const wizardDict = defineDict({
 
     err_wrong_extension_title: "זה לא קובץ של צ'אט",
     err_wrong_extension_body: (p: { ext?: string }) =>
-      `${p.ext ? `קיבלנו קובץ ‎.${p.ext}` : "קיבלנו קובץ בלי סיומת"}, ואנחנו צריכים את ה-‎.txt או ה-‎.zip שוואטסאפ יוצרת.`,
+      `${p.ext ? `קיבלנו קובץ ${p.ext}` : "קיבלנו קובץ בלי סיומת"}, ואנחנו צריכים את קובץ ה-txt או ה-zip שוואטסאפ יוצרת.`,
     err_wrong_extension_fix: "בוואטסאפ: ייצוא צ'אט ואז 'ללא מדיה'. מעלים את הקובץ שנוצר, כמו שהוא.",
     err_file_too_large_title: "הקובץ ענק",
     err_file_too_large_body: (p: { size: string }) => `הקובץ שוקל ${p.size} והמקסימום הוא 200MB. כנראה שנכנסה לו מדיה.`,
@@ -56,7 +56,7 @@ export const wizardDict = defineDict({
     err_archive_without_transcript_body: "פתחנו את הקובץ ולא מצאנו בו את קובץ הטקסט של השיחה.",
     err_archive_without_transcript_fix: "ייצאו מחדש עם 'ייצוא צ'אט' והעלו את הקובץ שנוצר בלי לשנות אותו.",
     err_encrypted_backup_title: "זה גיבוי מוצפן של וואטסאפ",
-    err_encrypted_backup_body: "קבצי גיבוי (כמו ‎.crypt14) מוצפנים, ורק וואטסאפ יכולה לקרוא אותם.",
+    err_encrypted_backup_body: "קבצי גיבוי (כמו crypt14) מוצפנים, ורק וואטסאפ יכולה לקרוא אותם.",
     err_encrypted_backup_fix: "במקום הגיבוי, פתחו את הצ'אט עצמו ובחרו 'ייצוא צ'אט'.",
     err_not_chat_export_title: "זה לא נראה כמו צ'אט מוואטסאפ",
     err_not_chat_export_body: "לא מצאנו בקובץ הודעות בפורמט של וואטסאפ.",
