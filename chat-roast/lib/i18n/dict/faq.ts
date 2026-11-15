@@ -308,14 +308,14 @@ export const privacyFlow: Record<Locale, PrivacyStep[]> = {
     { icon: "📂", title: "בוחרים קובץ", body: "הקובץ נפתח בדפדפן שלכם, בקוד שרץ אצלכם במכשיר. הקובץ עצמו לא מועלה לשום מקום." },
     { icon: "🧮", title: "הניתוח קורה אצלכם", body: "פענוח ההודעות וכל המספרים (מי כותב, מתי, כמה 'חחח') מחושבים במכשיר שלכם." },
     { icon: "🕶️", title: "הסתרה", body: "לפני שמשהו יוצא מהמכשיר, אנחנו בונים קטע מתומצת מהשיחה ומסתירים בו מספרי טלפון, כתובות מייל, קישורים ומספרים שנראים כמו כרטיסי אשראי. השמות נשארים, אז אם צריך, תשנו אותם בשלב סידור השמות." },
-    { icon: "✍️", title: "ה-AI כותב", body: "הקטע, סיכום המספרים וההגדרות שבחרתם נשלחים לשרת שלנו, שמעביר אותם לספק ה-AI שלנו (Anthropic) כדי לכתוב את הדוח. השרת לא שומר אותם ולא כותב אותם ללוג." },
+    { icon: "✍️", title: "ה-AI כותב", body: "הקטע, סיכום המספרים וההגדרות שבחרתם נשלחים לשרת שלנו, שמעביר אותם לספק ה-AI של האתר (Google Gemini או Anthropic Claude) כדי לכתוב את הדוח. השרת לא שומר אותם ולא כותב אותם ללוג. שימו לב: בשכבה החינמית של Gemini, Google רשאית להשתמש בתוכן שנשלח אליה כדי לשפר את המוצרים שלה, וייתכן שבני אדם יקראו אותו." },
     { icon: "💾", title: "הדוח נשמר אצלכם", body: "הדוח, המספרים והקטע נשמרים באחסון של הדפדפן שלכם (IndexedDB), כדי שתוכלו לחזור לדוח ולשאול שאלות המשך. כל שאלת המשך נשלחת לאותו מסלול בדיוק." },
   ],
   en: [
     { icon: "📂", title: "You pick a file", body: "The file is opened in your browser, by code running on your device. The file itself is never uploaded anywhere." },
     { icon: "🧮", title: "Analysis happens on your device", body: "Parsing the messages and every number (who writes, when, how many 'haha's) is computed on your device." },
     { icon: "🕶️", title: "Redaction", body: "Before anything leaves your device, we build a condensed excerpt of the chat and mask phone numbers, email addresses, links and anything that looks like a card number. Names stay, so rename people in the tidy-up step if you like." },
-    { icon: "✍️", title: "The AI writes", body: "The excerpt, the stats summary and your settings go to our server, which forwards them to our AI provider (Anthropic) to write the report. Our server doesn't store or log them." },
+    { icon: "✍️", title: "The AI writes", body: "The excerpt, the stats summary and your settings go to our server, which forwards them to the site's AI provider (Google Gemini or Anthropic Claude) to write the report. Our server doesn't store or log them. Note: on Gemini's free tier, Google may use what it receives to improve its products, and humans may review it." },
     { icon: "💾", title: "Your report stays with you", body: "The report, the stats and the excerpt are saved in your browser's storage (IndexedDB), so you can come back to it and ask follow-up questions. Each follow-up travels the exact same route." },
   ],
 };

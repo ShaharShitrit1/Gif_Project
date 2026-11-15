@@ -4,6 +4,8 @@
  *
  *   ANTHROPIC_API_KEY             real mode when set (and MOCK_AI is not 1)
  *   MOCK_AI=1                     force mock mode
+ *   AI_PROVIDER                   anthropic | gemini (default: gemini when only GEMINI_API_KEY is set)
+ *   GEMINI_API_KEY / GEMINI_MODEL  Google Gemini (free tier in Google AI Studio); model default gemini-flash-latest
  *   CHATROAST_MODEL               default "claude-opus-5-5"
  *   CHATROAST_EFFORT              report effort: low|medium|high|xhigh|max (default high)
  *   CHATROAST_ASK_EFFORT          ask effort (default medium)
@@ -27,14 +29,23 @@ function intFrom(v: string | undefined, fallback: number): number {
 }
 
 export const DEFAULT_MODEL = "claude-opus-5-5";
+/** Google's alias for the current Flash model (free tier). Override with GEMINI_MODEL. */
+export const DEFAULT_GEMINI_MODEL = "gemini-flash-latest";
 
 export function aiConfig() {
   const env = process.env;
   const mockFlag = (env.MOCK_AI ?? "").trim().toLowerCase();
+  // AI_PROVIDER=gemini|anthropic; unset → Gemini when only GEMINI_API_KEY is configured.
+  const wanted = (env.AI_PROVIDER ?? "").trim().toLowerCase();
+  const provider: "anthropic" | "gemini" =
+    wanted === "gemini" || (wanted !== "anthropic" && !env.ANTHROPIC_API_KEY && !!env.GEMINI_API_KEY) ? "gemini" : "anthropic";
+  const serverKey = provider === "gemini" ? !!env.GEMINI_API_KEY : !!env.ANTHROPIC_API_KEY;
   return {
+    provider,
+    geminiModel: env.GEMINI_MODEL?.trim() || DEFAULT_GEMINI_MODEL,
     forceMock: mockFlag === "1" || mockFlag === "true",
-    hasServerKey: !!env.ANTHROPIC_API_KEY,
-    mock: mockFlag === "1" || mockFlag === "true" || !env.ANTHROPIC_API_KEY,
+    hasServerKey: serverKey,
+    mock: mockFlag === "1" || mockFlag === "true" || !serverKey,
     model: env.CHATROAST_MODEL?.trim() || DEFAULT_MODEL,
     reportEffort: effortFrom(env.CHATROAST_EFFORT, "high"),
     askEffort: effortFrom(env.CHATROAST_ASK_EFFORT, "medium"),

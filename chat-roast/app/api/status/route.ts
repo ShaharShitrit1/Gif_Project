@@ -13,7 +13,7 @@ export const dynamic = "force-dynamic";
 export function GET(): Response {
   const cfg = aiConfig();
   const mode = cfg.forceMock ? "mock" : cfg.hasServerKey ? "server" : "byok";
-  return Response.json({ mode, accessCode: mode === "server" && !!cfg.accessCode }, { headers: { "cache-control": "no-store" } });
+  return Response.json({ mode, provider: cfg.provider, accessCode: mode === "server" && !!cfg.accessCode }, { headers: { "cache-control": "no-store" } });
 }
 
 export async function POST(request: Request): Promise<Response> {

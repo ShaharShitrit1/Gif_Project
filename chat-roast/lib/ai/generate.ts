@@ -64,7 +64,7 @@ export class ReportFailure extends Error {
   }
 }
 
-const MESSAGES: Record<ReportCode, string> = {
+export const MESSAGES: Record<ReportCode, string> = {
   rate_limited: "The AI is getting too many requests right now. Try again in a minute.",
   overloaded: "The AI is overloaded right now. Try again in a minute.",
   too_large: "This chat is too large to analyse in one go.",
@@ -94,7 +94,7 @@ export function mapError(err: unknown): { code: ReportCode; message: string } | 
   return { code, message: MESSAGES[code] };
 }
 
-function logError(where: string, err: unknown) {
+export function logError(where: string, err: unknown) {
   // Class, status and request id only: never the request or response content.
   if (err instanceof Anthropic.APIError) {
     console.error(`[chatroast:${where}] ${err.constructor.name} status=${err.status ?? "-"} type=${err.type ?? "-"} request_id=${err.requestID ?? "-"}`);
@@ -111,7 +111,7 @@ function logError(where: string, err: unknown) {
 
 type Phase = "reading" | "thinking" | "writing" | "polishing";
 
-class Progress {
+export class Progress {
   private phase: Phase = "reading";
   private value = 0;
   private lastSent = 0;
@@ -211,13 +211,13 @@ async function streamAttempt(params: BetaMessageStreamParams, progress: Progress
   };
 }
 
-function expectedOutputChars(req: ReportRequest): number {
+export function expectedOutputChars(req: ReportRequest): number {
   const members = Math.min(15, req.participants.length);
   const scale = /hebrew|arabic|english|spanish|french|portuguese|italian|german|dutch|russian|ukrainian|polish|turkish|indonesian/i.test(req.language) ? 1 : 0.6;
   return Math.round((6000 + 1150 * members) * scale);
 }
 
-function sanitizeRequest(req: ReportRequest): ReportRequest {
+export function sanitizeRequest(req: ReportRequest): ReportRequest {
   // Defence in depth: the browser already redacted, redact again (idempotent).
   return {
     ...req,
@@ -307,7 +307,7 @@ export async function generateReport(rawReq: ReportRequest, send: (e: ReportStre
   }
 }
 
-function evaluate(text: string, req: ReportRequest): ReturnType<typeof checkReport> {
+export function evaluate(text: string, req: ReportRequest): ReturnType<typeof checkReport> {
   let json: unknown;
   try {
     json = JSON.parse(text);
