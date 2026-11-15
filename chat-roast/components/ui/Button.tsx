@@ -1,7 +1,7 @@
 import Link from "next/link";
 import type { ComponentProps, ReactNode } from "react";
 
-type Variant = "primary" | "secondary" | "ghost" | "dark";
+type Variant = "primary" | "secondary" | "ghost" | "dark" | "contrast";
 type Size = "sm" | "md" | "lg";
 
 const base =
@@ -13,6 +13,8 @@ const variants: Record<Variant, string> = {
   secondary: "bg-surface text-ink shadow-pop rtl:shadow-[-4px_4px_0_0_var(--shadow)] hover:-translate-y-0.5",
   dark: "bg-ink text-paper shadow-pop rtl:shadow-[-4px_4px_0_0_var(--shadow)] hover:-translate-y-0.5",
   ghost: "bg-transparent border-transparent text-ink hover:bg-surface-2",
+  /** Always-dark button for use on bright accent backgrounds (same in light and dark mode). */
+  contrast: "bg-[#17120e] text-[#fff8f0] shadow-pop rtl:shadow-[-4px_4px_0_0_var(--shadow)] hover:-translate-y-0.5",
 };
 
 const sizes: Record<Size, string> = {
