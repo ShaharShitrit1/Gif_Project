@@ -1,0 +1,16 @@
+ticker,scenario,eps_cagr_5y,exit_pe
+ISRG,bear,0.09,25
+ISRG,base,0.14,30
+ISRG,bull,0.17,35
+ASML,bear,0.02,18
+ASML,base,0.10,25
+ASML,bull,0.16,30
+FTNT,bear,0.05,18
+FTNT,base,0.11,25
+FTNT,bull,0.15,32
+MA,bear,0.07,22
+MA,base,0.12,27
+MA,bull,0.15,32
+MELI,bear,0.10,22
+MELI,base,0.20,28
+MELI,bull,0.27,35

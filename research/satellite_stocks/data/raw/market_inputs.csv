@@ -1,0 +1,7 @@
+ticker,price_usd,price_date,price_source,fwd_eps_usd,fwd_eps_basis,fwd_eps_confidence
+ISRG,439.89,2026-11-12,Yahoo Finance history / ISRG IR price lookup,12.1,"derived: $432.01 / 35.6x fwd P/E (Debelegger 2026-10-30); Zacks 33x and GuruFocus 34x are consistent",medium
+ASML,1495.16,2026-11-13,StockAnalysis / Yahoo Finance history (Nasdaq NY-registry shares),65.3,"derived: $1651 / 25.3x fwd P/E (TIKR 2026-10-21)",medium
+FTNT,122.47,2026-11-09,close reported in news coverage (Nov 9 2026),3.9,"assumption: interpolated between analyst normalized EPS $3.56 (2026) and $4.42 (2028) cited by TIKR",low-medium
+MA,652.70,2026-11-06,Value Research (P/E 34.3 TTM),21.7,"assumption: TTM EPS ~$19.0 (652.7/34.3) grown 14% (low-teens revenue + buybacks; Q3 EPS +21%)",medium
+MELI,1530.28,2026-11-05,Trefis (lowest close in 52w),52.0,"assumption: Zacks next-FY consensus $56.05 (Aug 2026) haircut ~7% after Q3 EPS miss",low
+CHKP,150.94,2026-11-05,equibles snapshot,10.31,"company FY2026 non-GAAP EPS guidance midpoint ($10.25-10.37), reported 2026-11-02",high
