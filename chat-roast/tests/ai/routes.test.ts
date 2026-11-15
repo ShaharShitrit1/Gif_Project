@@ -79,13 +79,24 @@ describe("POST /api/report (mock mode)", () => {
     expect(await res.json()).toMatchObject({ code: "too_large" });
   });
 
-  it("requires x-access-code when CHATROAST_ACCESS_CODE is set", async () => {
+  it("does not require the access code when the site has no key of its own (demo / bring-your-own-key)", async () => {
     process.env.CHATROAST_ACCESS_CODE = "sesame";
-    expect((await reportPOST(post(reportReq))).status).toBe(401);
-    expect((await reportPOST(post(reportReq, { "x-access-code": "wrong" }))).status).toBe(401);
-    const ok = await reportPOST(post(reportReq, { "x-access-code": "sesame" }));
-    expect(ok.status).toBe(200);
-    await ok.text();
+    const res = await reportPOST(post(reportReq));
+    expect(res.status).toBe(200);
+    await res.text();
+  });
+
+  it("requires x-access-code to protect the site's own key", async () => {
+    process.env.CHATROAST_ACCESS_CODE = "sesame";
+    process.env.ANTHROPIC_API_KEY = "sk-ant-test-not-used";
+    delete process.env.MOCK_AI; // a real key in real mode is what the code protects (rejected before any API call)
+    try {
+      expect((await reportPOST(post(reportReq))).status).toBe(401);
+      expect((await reportPOST(post(reportReq, { "x-access-code": "wrong" }))).status).toBe(401);
+    } finally {
+      delete process.env.ANTHROPIC_API_KEY;
+      process.env.MOCK_AI = "1";
+    }
   });
 });
 

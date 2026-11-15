@@ -3,6 +3,7 @@ import { aiConfig } from "../../../lib/ai/config";
 import { generateAnswer } from "../../../lib/ai/generate";
 import { sseResponse } from "../../../lib/ai/http";
 import { runMockAsk } from "../../../lib/ai/mock";
+import { withUserKey } from "../../../lib/ai/user-key";
 import { guardRequest } from "../../../lib/ai/route-helpers";
 import { parseAskRequest } from "../../../lib/ai/validate";
 
@@ -15,7 +16,7 @@ export async function POST(request: Request): Promise<Response> {
   if (!guard.ok) return guard.response;
   const req = guard.value;
   return sseResponse<AskStreamEvent>(
-    (send, signal) => (guard.mock ? runMockAsk(req, send, signal, aiConfig().mockDelayMs) : generateAnswer(req, send, signal)),
+    (send, signal) => (guard.mock ? runMockAsk(req, send, signal, aiConfig().mockDelayMs) : withUserKey(guard.userKey, () => generateAnswer(req, send, signal))),
     request.signal,
     () => ({ type: "error", code: "server_error", message: "Something went wrong while answering." }),
   );

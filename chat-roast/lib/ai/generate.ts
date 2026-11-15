@@ -11,6 +11,7 @@
  * - Never logs chat content; only error classes / status codes.
  */
 
+import { currentUserKey } from "./user-key";
 import Anthropic from "@anthropic-ai/sdk";
 import type {
   BetaMessage,
@@ -41,7 +42,10 @@ type ReportCode = Extract<ReportStreamEvent, { type: "error" }>["code"];
 
 let cachedClient: Anthropic | null = null;
 function client(): Anthropic {
-  // Reads ANTHROPIC_API_KEY from the environment.
+  // A visitor's own key (bring-your-own-key mode) is used for this request only, never cached.
+  const userKey = currentUserKey();
+  if (userKey) return new Anthropic({ apiKey: userKey, maxRetries: 2, timeout: 10 * 60 * 1000 });
+  // Otherwise reads ANTHROPIC_API_KEY from the environment.
   cachedClient ??= new Anthropic({ maxRetries: 2, timeout: 10 * 60 * 1000 });
   return cachedClient;
 }
@@ -79,7 +83,7 @@ export function mapError(err: unknown): { code: ReportCode; message: string } | 
   else if (err instanceof Anthropic.OverloadedError || err instanceof Anthropic.ServiceUnavailableError) code = "overloaded";
   else if (err instanceof Anthropic.ContentTooLargeError) code = "too_large";
   else if (err instanceof Anthropic.BadRequestError || err instanceof Anthropic.UnprocessableEntityError) code = "bad_request";
-  else if (err instanceof Anthropic.AuthenticationError || err instanceof Anthropic.PermissionDeniedError) code = "server_error";
+  else if (err instanceof Anthropic.AuthenticationError || err instanceof Anthropic.PermissionDeniedError) code = currentUserKey() ? "unauthorized" : "server_error";
   else if (err instanceof Anthropic.APIConnectionError) code = "overloaded";
   else if (err instanceof Anthropic.APIError) {
     // Errors delivered inside the SSE stream carry no status, only `type`.

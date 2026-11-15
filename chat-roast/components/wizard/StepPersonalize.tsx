@@ -9,6 +9,7 @@ import { intensityExamples, wizardDict } from "@/lib/i18n/dict/wizard";
 import { PERSONA_IDS, PERSONAS, REPORT_LANGUAGES } from "@/lib/personas";
 import type { Intensity, PersonaId } from "@/lib/types";
 import { WizardFrame } from "./WizardFrame";
+import { ApiKeyBox } from "./ApiKeyBox";
 
 export const MAX_CONTEXT = 500;
 const HEAT_EMOJI: Record<Intensity, string> = { 1: "😇", 2: "🔥", 3: "💀" };
@@ -195,6 +196,7 @@ export function StepPersonalize({
           {t("s4_context_count", { n: extraContext.length, max: MAX_CONTEXT })}
         </p>
       </section>
+      <ApiKeyBox />
     </WizardFrame>
   );
 }

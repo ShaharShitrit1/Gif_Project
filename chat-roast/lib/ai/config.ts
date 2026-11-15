@@ -32,6 +32,8 @@ export function aiConfig() {
   const env = process.env;
   const mockFlag = (env.MOCK_AI ?? "").trim().toLowerCase();
   return {
+    forceMock: mockFlag === "1" || mockFlag === "true",
+    hasServerKey: !!env.ANTHROPIC_API_KEY,
     mock: mockFlag === "1" || mockFlag === "true" || !env.ANTHROPIC_API_KEY,
     model: env.CHATROAST_MODEL?.trim() || DEFAULT_MODEL,
     reportEffort: effortFrom(env.CHATROAST_EFFORT, "high"),

@@ -108,7 +108,8 @@ export function createSSEParser(onMessage: (msg: SSEMessage) => void) {
 function accessCodeHeader(): Record<string, string> {
   try {
     const code = typeof localStorage !== "undefined" ? localStorage.getItem("cr_access_code") : null;
-    return code ? { "x-access-code": code } : {};
+    const userKey = typeof localStorage !== "undefined" ? localStorage.getItem("cr_user_api_key") : null;
+    return { ...(code ? { "x-access-code": code } : {}), ...(userKey ? { "x-user-api-key": userKey } : {}) };
   } catch {
     return {};
   }

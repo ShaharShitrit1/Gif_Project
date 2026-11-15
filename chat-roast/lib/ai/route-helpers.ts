@@ -4,6 +4,7 @@
  * costs nothing). Returns the parsed body or a ready error Response.
  */
 
+import { readUserKey } from "./user-key";
 import { aiConfig } from "./config";
 import { BodyTooLargeError, checkAccessCode, clientIp, jsonError, rateLimit, readBodyText } from "./http";
 import type { ParseResult } from "./validate";
@@ -12,9 +13,12 @@ export async function guardRequest<T>(
   request: Request,
   kind: "report" | "ask",
   parse: (json: unknown) => ParseResult<T>,
-): Promise<{ ok: true; value: T; mock: boolean } | { ok: false; response: Response }> {
+): Promise<{ ok: true; value: T; mock: boolean; userKey: string | null } | { ok: false; response: Response }> {
   const cfg = aiConfig();
-  if (!checkAccessCode(request, cfg.accessCode)) {
+  // Server key wins; otherwise a visitor's own key; otherwise mock mode.
+  const userKey = !cfg.forceMock && !cfg.hasServerKey ? readUserKey(request) : null;
+  const mock = cfg.forceMock || (!cfg.hasServerKey && !userKey);
+  if (cfg.hasServerKey && !cfg.forceMock && !checkAccessCode(request, cfg.accessCode)) {
     return { ok: false, response: jsonError(401, "unauthorized", "An access code is required.") };
   }
   let text: string;
@@ -33,7 +37,7 @@ export async function guardRequest<T>(
   const parsed = parse(json);
   if (!parsed.ok) return { ok: false, response: jsonError(400, "bad_request", `Invalid request: ${parsed.message}`) };
 
-  if (!cfg.mock) {
+  if (!mock && !userKey) {
     const limit = kind === "report" ? cfg.reportsPerHour : cfg.asksPerHour;
     const wait = rateLimit(`${kind}:${clientIp(request)}`, limit);
     if (wait > 0) {
@@ -43,5 +47,5 @@ export async function guardRequest<T>(
       };
     }
   }
-  return { ok: true, value: parsed.value, mock: cfg.mock };
+  return { ok: true, value: parsed.value, mock, userKey };
 }
