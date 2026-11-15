@@ -46,15 +46,23 @@ npm run dev                     # http://localhost:3000
 | `CHATROAST_REPORTS_PER_HOUR` | `6` | מגבלת דוחות לכתובת IP בשעה |
 | `CHATROAST_ASKS_PER_HOUR` | `60` | מגבלת שאלות המשך לכתובת IP בשעה |
 | `CHATROAST_MOCK_DELAY_MS` | — | כמה זמן מצב הדמו "חושב" |
+| `NEXT_PUBLIC_SITE_URL` | הדומיין של Vercel | כתובת האתר לקישורי שיתוף ול-sitemap |
+| `NEXT_PUBLIC_CONTACT_EMAIL` | — | כתובת ליצירת קשר בתנאי השימוש |
 
 **עלות משוערת** (Opus 5.5, ‏$4 / $20 למיליון טוקנים): דוח טיפוסי עולה כ-$0.70, וצ'אט ענק (תקרה של 150 אלף טוקנים) כ-$1.15. שאלת המשך ראשונה עולה כ-$0.35, והבאות כ-$0.05–0.10 בזכות prompt caching.
 אם המודל מסרב לכתוב, מופעל **refusal fallback** בצד השרת (`fallbacks: "default"`), שמריץ את הבקשה שוב על מודל חלופי שאנתרופיק ממליצה עליו, ומחויב לפי התעריף של אותו מודל.
 
-## פריסה ל-Vercel
+## העלאה לאוויר (Vercel, פעם אחת, כ-3 דקות)
 
-1. מייבאים את הריפו ב-Vercel ומגדירים **Root Directory = `chat-roast`**.
-2. מוסיפים את `ANTHROPIC_API_KEY`, ומומלץ גם `CHATROAST_ACCESS_CODE` אם האתר ציבורי.
-3. ה-route של הדוח מוגדר עם `maxDuration = 300` (צריך Fluid Compute, ברירת המחדל ב-Vercel).
+1. נכנסים ל-https://vercel.com/new, מתחברים עם GitHub ובוחרים **Import** לריפו `Gif_Project`.
+2. ב-**Root Directory** בוחרים `chat-roast` (המסגרת, Next.js, מזוהה אוטומטית).
+3. ב-**Environment Variables** מוסיפים:
+   - `ANTHROPIC_API_KEY`: המפתח מ-https://console.anthropic.com (בלעדיו האתר רץ במצב דמו, עם פס צהוב שמסמן את זה).
+   - `CHATROAST_ACCESS_CODE`: מומלץ מאוד באתר ציבורי, כדי שזרים לא ישרפו לכם את המפתח. את הקוד נותנים לחברים, והאתר מבקש אותו בפעם הראשונה.
+   - (רשות) `NEXT_PUBLIC_SITE_URL` אם מחברים דומיין משלכם, ו-`NEXT_PUBLIC_CONTACT_EMAIL` כדי להציג כתובת ליצירת קשר בתנאי השימוש.
+4. **Deploy**. מכאן כל push לענף הראשי מעלה גרסה חדשה אוטומטית.
+
+מה כבר מוכן לאתר ציבורי: תגיות SEO ו-Open Graph עם תמונת שיתוף (`public/og.png`), אייקונים ו-manifest (אפשר להתקין כאפליקציה), `robots.txt` ו-`sitemap.xml` (דוחות פרטיים חסומים לסריקה), דפי 404 ושגיאה, פרטיות ותנאי שימוש, כותרות אבטחה (CSP, HSTS, חסימת iframe), הגבלת קצב לכל IP, קוד גישה אופציונלי, ופס אזהרה בדוח שנכתב במצב דמו. ה-route של הדוח מוגדר עם `maxDuration = 300` (צריך Fluid Compute, ברירת המחדל ב-Vercel).
 
 ## בדיקות
 

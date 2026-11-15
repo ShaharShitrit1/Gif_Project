@@ -8,7 +8,7 @@ import { LOCALE_COOKIE } from "@/lib/i18n/config";
 export async function generateMetadata(): Promise<Metadata> {
   const locale = (await cookies()).get(LOCALE_COOKIE)?.value === "en" ? "en" : "he";
   return {
-    title: locale === "en" ? "New roast · ChatRoast" : "רוסט חדש · ChatRoast",
+    title: locale === "en" ? "New roast" : "רוסט חדש",
     robots: { index: false },
   };
 }

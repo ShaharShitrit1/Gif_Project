@@ -29,6 +29,7 @@ export function ReportView({ saved }: { saved: SavedReport }) {
         <PaletteStyle />
         <div className="cr-pal flex flex-1 flex-col">
           {saved.demo && <DemoRibbon />}
+          {saved.mock && !saved.demo && <MockBanner />}
           <Hero />
           <div className="mx-auto w-full max-w-5xl space-y-16 px-4 py-12 sm:space-y-20 sm:px-6 sm:py-16">
             <Verdict />
@@ -97,5 +98,14 @@ function ReportActions({ saved }: { saved: SavedReport }) {
         busy={busy}
       />
     </footer>
+  );
+}
+
+function MockBanner() {
+  const t = useT(reportDict);
+  return (
+    <div role="note" className="border-b-2 border-line bg-sun px-4 py-2.5 text-center text-sm font-bold text-[#17120e]">
+      ⚠️ {t("mockNote")}
+    </div>
   );
 }

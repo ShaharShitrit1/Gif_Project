@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { ReportsList } from "@/components/report/ReportsList";
 
 export const metadata: Metadata = {
-  title: "ChatRoast · הדו״חות שלי",
+  title: "הדו״חות שלי",
   robots: { index: false, follow: false },
 };
 

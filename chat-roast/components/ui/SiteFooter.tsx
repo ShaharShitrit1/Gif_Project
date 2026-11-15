@@ -51,7 +51,12 @@ export function SiteFooter({ className = "" }: { className?: string }) {
                 {t("footer_privacy")}
               </Link>
             </li>
-            <li className="col-span-2">
+            <li>
+              <Link href="/terms" className={linkClass}>
+                {t("footer_terms")}
+              </Link>
+            </li>
+            <li>
               <LocaleSwitch variant="link" className="text-ink-2 hover:text-ink" />
             </li>
           </ul>

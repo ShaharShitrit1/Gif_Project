@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { ReportScreen } from "@/components/report/ReportScreen";
 
 export const metadata: Metadata = {
-  title: "ChatRoast · הדו״ח",
+  title: "הדו״ח",
   robots: { index: false, follow: false },
 };
 
