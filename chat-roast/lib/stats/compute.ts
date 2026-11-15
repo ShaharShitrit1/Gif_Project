@@ -279,13 +279,17 @@ export function computeStats(chat: ParsedChat): ChatStats {
   };
 
   // First-name tokens → people (for mentions).
+  // Names that are also common words ("איתי" = "with me", "גל" = "wave") go to a separate map
+  // and only count when used as an address: "@איתי", or "איתי, …" / "איתי?" opening a message.
   const nameMap = new Map<string, number[]>();
+  const ambiguousNameMap = new Map<string, number[]>();
   for (let i = 0; i < people.length; i++) {
     const t = firstNameToken(people[i].name);
-    if (!t || STOP_WORDS.has(t)) continue;
-    const list = nameMap.get(t);
+    if (!t) continue;
+    const target = STOP_WORDS.has(t) ? ambiguousNameMap : nameMap;
+    const list = target.get(t);
     if (list) list.push(i);
-    else nameMap.set(t, [i]);
+    else target.set(t, [i]);
   }
 
   /* ---------- span ---------- */
@@ -525,6 +529,15 @@ export function computeStats(chat: ParsedChat): ChatStats {
         }
         if (hit && !(prevToken === "בוקר" && tok === "אור")) {
           for (const pi of hit) if (pi !== ai) mentionHits.add(pi);
+        }
+      }
+      if (ambiguousNameMap.size > 0) {
+        const amb = ambiguousNameMap.get(tok);
+        if (amb) {
+          const before = start > 0 ? lower[start - 1] : "";
+          const after = lower.slice(prevEnd).trimStart().charAt(0);
+          const vocative = before === "@" || (words === 1 && (after === "" || /[,!?:.]/.test(after)));
+          if (vocative) for (const pi of amb) if (pi !== ai) mentionHits.add(pi);
         }
       }
       prevToken = tok;

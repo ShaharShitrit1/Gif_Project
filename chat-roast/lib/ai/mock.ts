@@ -573,7 +573,7 @@ export function buildMockReport(req: ReportRequest): AIReport {
       : `Who writes first? ${opener.name}. Who pretends not to care? ${quiet.name}, with just ${quiet.messages} messages, and still reads everything. Who holds it together? ${top.name}, because without that ${pctTxt(top.share)} there'd be nothing here.`;
   const followUps =
     lang === "he"
-      ? ["מי באמת מחזיק את הקבוצה?", "מה קרה ביום הכי עמוס?", `תעשה לי פרופיל עומק על ${quiet.name}`, "מי הכי מתאים לארגן את המפגש הבא?"]
+      ? ["מי באמת מחזיק את הקבוצה?", "מה קרה ביום הכי עמוס?", `פרופיל עומק על ${quiet.name}`, "מי הכי מתאים לארגן את המפגש הבא?"]
       : ["Who really holds this group together?", "What happened on the busiest day?", `Give me a deep dive on ${quiet.name}`, "Who should organise the next meetup?"];
 
   return {

@@ -367,7 +367,7 @@ export interface TranscriptMeta {
 export type ReportStreamEvent =
   | { type: "status"; phase: "reading" | "thinking" | "writing" | "polishing"; progress?: number }
   | { type: "done"; report: AIReport; usage?: { inputTokens: number; outputTokens: number }; mock?: boolean }
-  | { type: "error"; code: "rate_limited" | "overloaded" | "too_large" | "refused" | "bad_request" | "server_error"; message: string };
+  | { type: "error"; code: "rate_limited" | "overloaded" | "too_large" | "refused" | "bad_request" | "unauthorized" | "server_error"; message: string };
 
 /** Request body for /api/ask (follow-up questions about the chat). */
 export interface AskRequest {
