@@ -132,3 +132,9 @@ export const GENERIC_PHRASES: readonly string[] = [
   "good morning", "good night", "happy birthday", "thank you", "thanks a lot", "happy new", "new year",
   "merry christmas", "good luck", "see you", "buenos días", "buenas noches", "bom dia", "boa noite",
 ];
+
+/** Pure interjections trimmed from the edges of a catchphrase ("טוב יאללה תביאו…" → "יאללה תביאו…"). */
+export const EDGE_FILLERS: ReadonlySet<string> = new Set([
+  "טוב", "אוקיי", "אוקי", "אוק", "נו", "וואלה", "סבבה", "אז", "אה", "אהה", "אממ", "אמ", "הממ", "כאילו", "בקיצור",
+  "ok", "okay", "so", "well", "oh", "ah", "um", "umm", "hmm", "like", "and", "but", "anyway",
+]);

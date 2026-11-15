@@ -82,8 +82,14 @@ export function TurningPoint() {
   );
 }
 
+/** Direction of a raw chat string (its first strong character decides, like dir="auto"). */
+export function textDir(s: string): "rtl" | "ltr" {
+  const m = s.match(/[\p{L}]/u);
+  return m && /[\u0590-\u08FF\uFB1D-\uFDFF\uFE70-\uFEFF]/.test(m[0]) ? "rtl" : "ltr";
+}
+
 /** Curly quotes read wrong when mirrored; RTL text gets neutral ones. */
-export function quoted(s: string, dir: "rtl" | "ltr"): string {
+export function quoted(s: string, dir: "rtl" | "ltr" = textDir(s)): string {
   return dir === "rtl" ? `"${s}"` : `“${s}”`;
 }
 
@@ -105,11 +111,11 @@ export function InsideJokes() {
           return (
             <li key={i} className="flex flex-col items-start">
               <span
-                {...text}
+                dir={textDir(j.phrase)}
                 className={`relative z-10 inline-block max-w-full ${tilt} rounded-2xl border-2 border-line px-4 py-2 text-lg font-black leading-tight text-[#17120e] shadow-pop rtl:shadow-[-4px_4px_0_0_var(--shadow)] break-words`}
                 style={{ background: `color-mix(in oklab, ${tint} 70%, white)` }}
               >
-                {quoted(j.phrase, text.dir)}
+                {quoted(j.phrase)}
               </span>
               {j.explanation && (
                 <p {...text} className="-mt-2 w-full rounded-2xl border-2 border-line-soft bg-surface px-4 pt-5 pb-3 text-[0.98rem] leading-snug text-ink-2 text-pretty">

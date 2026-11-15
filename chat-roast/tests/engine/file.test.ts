@@ -17,7 +17,7 @@ async function catchErr(p: Promise<unknown>): Promise<ChatParseError> {
 async function zipFile(name: string, entries: Record<string, string | Uint8Array>): Promise<File> {
   const zip = new JSZip();
   for (const [path, data] of Object.entries(entries)) zip.file(path, data);
-  const bytes = await zip.generateAsync({ type: "uint8array" });
+  const bytes = await zip.generateAsync({ type: "arraybuffer" });
   return new File([bytes], name, { type: "application/zip" });
 }
 

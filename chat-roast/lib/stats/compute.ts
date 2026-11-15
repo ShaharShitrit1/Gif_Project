@@ -60,6 +60,15 @@ function mediaKeyOf(kind: MessageKind): MediaKey | null {
   }
 }
 
+/**
+ * Laugh "style" used for `favorite`: short laughs keep their exact form ("חחח" ≠ "חחחח"),
+ * long ones share a bucket ("חחחחחח…") so a habitual long-laugher's style still wins.
+ */
+const LAUGH_FORM_MAX = 6;
+function laughForm(token: string): string {
+  return token.length > LAUGH_FORM_MAX ? token.slice(0, LAUGH_FORM_MAX) + "…" : token;
+}
+
 function emptyMedia(): PersonStats["media"] {
   return { image: 0, video: 0, audio: 0, sticker: 0, gif: 0, document: 0, other: 0 };
 }
@@ -380,8 +389,7 @@ export function computeStats(chat: ParsedChat): ChatStats {
     p.laughCount++;
     p.laughLenSum += length;
     if (length > p.laughMax) p.laughMax = length;
-    const f = form.length > 16 ? form.slice(0, 16) : form;
-    p.laughForms.set(f, (p.laughForms.get(f) ?? 0) + 1);
+    p.laughForms.set(form, (p.laughForms.get(form) ?? 0) + 1);
     laughTotal++;
     laughLenSum += length;
     if (!laughRecord || length > laughRecord.length) {
@@ -502,7 +510,7 @@ export function computeStats(chat: ParsedChat): ChatStats {
       prevEnd = start + tok.length;
 
       if (isLaughToken(tok)) {
-        recordLaugh(p, ts, tok, tok.length, tok);
+        recordLaugh(p, ts, laughForm(tok), tok.length, tok);
         closeSeg();
         prevToken = tok;
         continue;
@@ -528,7 +536,8 @@ export function computeStats(chat: ParsedChat): ChatStats {
       const id = tokenId(tok);
       if (segOpen === -1) segOpen = segTokens.length;
       segTokens.push(id);
-      if (tok.length < 2 || STOP_WORDS.has(tok) || NOISE_WORDS.has(tok)) continue;
+      // Member first names are tracked as mentions, not vocabulary.
+      if (tok.length < 2 || STOP_WORDS.has(tok) || NOISE_WORDS.has(tok) || nameMap.has(tok)) continue;
       wordTotals[id]++;
       p.wordCounts.set(id, (p.wordCounts.get(id) ?? 0) + 1);
     }

@@ -117,7 +117,7 @@ export function ExportGuide({
             setIdx(0);
           }}
           options={[
-            { value: "ios", label: <> {t("eg_iphone")}</> },
+            { value: "ios", label: <>📱 {t("eg_iphone")}</> },
             { value: "android", label: <>🤖 {t("eg_android")}</> },
           ]}
         />

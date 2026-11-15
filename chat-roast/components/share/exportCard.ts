@@ -25,9 +25,20 @@ async function imagesReady(node: HTMLElement) {
  * Rubik's @font-face rules (from the page's stylesheets) are inlined as data URLs so the
  * Hebrew glyphs render inside the SVG foreignObject exactly like on the page.
  */
+/** Hides optional blocks (in DOM order) until the card's content column stops overflowing. */
+function fitCard(node: HTMLElement) {
+  const col = node.querySelector<HTMLElement>("[data-card-col]");
+  if (!col) return;
+  for (const opt of Array.from(col.querySelectorAll<HTMLElement>("[data-optional]"))) {
+    if (col.scrollHeight <= col.clientHeight + 1) break;
+    opt.style.display = "none";
+  }
+}
+
 export async function renderCardPng(node: HTMLElement): Promise<Blob> {
   await fontsReady();
   await imagesReady(node);
+  fitCard(node);
   const { domToBlob } = await import("modern-screenshot");
   const blob = await domToBlob(node, {
     width: CARD_W,

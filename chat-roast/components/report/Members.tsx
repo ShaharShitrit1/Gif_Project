@@ -216,7 +216,6 @@ export function MemberCard({ entry, expandedByDefault = false, flat = false }: {
 }
 
 export function QuoteBubble({ quote, name, color }: { quote: string; name: string; color: string }) {
-  const text = useReportText();
   const t = useT(reportDict);
   return (
     <figure className="rounded-2xl bg-chat-bg p-3" aria-label={t("quoteLabel")}>
@@ -227,7 +226,8 @@ export function QuoteBubble({ quote, name, color }: { quote: string; name: strin
             <bdi>{name}</bdi>
           </figcaption>
         )}
-        <blockquote {...text} className="mt-0.5 text-[1.02rem] font-semibold leading-snug">
+        {/* verbatim chat text: its own direction, whatever the report language */}
+        <blockquote dir="auto" className="mt-0.5 text-[1.02rem] font-semibold leading-snug">
           {quote}
         </blockquote>
       </div>

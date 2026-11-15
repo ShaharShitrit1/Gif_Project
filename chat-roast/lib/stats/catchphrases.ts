@@ -3,7 +3,7 @@
  * Apriori-style: trigrams are only built from frequent bigrams, 4-grams from frequent
  * trigrams, so 100k messages stay well inside the time budget.
  */
-import { GENERIC_PHRASES, NOISE_WORDS, STOP_WORDS } from "./stopwords";
+import { EDGE_FILLERS, GENERIC_PHRASES, NOISE_WORDS, STOP_WORDS } from "./stopwords";
 
 export interface TokenSegments {
   /** Token ids of all phrase runs, back to back. */
@@ -121,7 +121,7 @@ export function findCatchphrases(seg: TokenSegments, words: string[], authorId: 
     (c) => !kept.some((k) => k.ids.length < c.ids.length && k.count >= 2.5 * c.count && ` ${c.phrase} `.includes(` ${k.phrase} `)),
   );
 
-  const merged = mergeOverlaps(final, words);
+  const merged = trimFillers(mergeOverlaps(final, words), words);
   const rank = <T extends Cand>(list: T[]) =>
     list.sort(
       (x, y) =>
@@ -183,9 +183,30 @@ export function findCatchphrases(seg: TokenSegments, words: string[], authorId: 
     }
     return { ...c, count: exact, topAuthor: best };
   });
+  // Chosen by score (longer phrases get a lift), shown by count so "×4" never sits under "×3".
   return rank(results.filter((c) => c.count >= MIN_COUNT))
     .slice(0, MAX_RESULTS)
+    .sort((x, y) => y.count - x.count || y.ids.length - x.ids.length)
     .map((c) => ({ phrase: c.phrase, count: c.count, topAuthorId: c.topAuthor >= 0 ? authorId(c.topAuthor) : "" }));
+}
+
+/** Drop interjections at either edge; phrases that shrink below two words (or repeat) go away. */
+function trimFillers<C extends { ids: number[]; words: string[]; phrase: string; count: number }>(list: C[], words: string[]): C[] {
+  const byPhrase = new Map<string, C>();
+  for (const c of list) {
+    let a = 0;
+    let b = c.ids.length;
+    while (a < b && EDGE_FILLERS.has(words[c.ids[a]])) a++;
+    while (b > a && EDGE_FILLERS.has(words[c.ids[b - 1]])) b--;
+    const ids = a === 0 && b === c.ids.length ? c.ids : c.ids.slice(a, b);
+    if (ids.length < 2) continue;
+    const ws = ids.map((id) => words[id]);
+    if (ids !== c.ids && !acceptable(ws)) continue;
+    const next = ids === c.ids ? c : { ...c, ids, words: ws, phrase: ws.join(" ") };
+    const prev = byPhrase.get(next.phrase);
+    if (!prev || next.count > prev.count) byPhrase.set(next.phrase, next);
+  }
+  return [...byPhrase.values()];
 }
 
 const MAX_MERGED_WORDS = 7;
@@ -225,6 +246,11 @@ function score(c: { ids: number[]; count: number }): number {
   return c.count * (1 + 0.25 * (c.ids.length - 2));
 }
 
+const GLUE: ReadonlySet<string> = new Set([
+  "את", "של", "על", "עם", "אל", "עד", "או", "גם", "כי", "אם", "בין", "לפי",
+  "the", "a", "an", "of", "to", "in", "on", "at", "for", "with", "and", "or", "from", "by", "is", "are",
+]);
+
 function acceptable(ws: string[]): boolean {
   let content = 0;
   for (const w of ws) {
@@ -232,8 +258,9 @@ function acceptable(ws: string[]): boolean {
     if (!STOP_WORDS.has(w)) content++;
   }
   if (content === 0) return false;
-  // "בא לי", "see you" — a two-word phrase ending in a function word is filler.
-  if (ws.length === 2 && STOP_WORDS.has(ws[1])) return false;
+  // "בא לי", "see you" — a two-word phrase ending in a function word is filler;
+  // "את הקבוצה", "of the" — one starting with grammatical glue is not a phrase either.
+  if (ws.length === 2 && (STOP_WORDS.has(ws[1]) || GLUE.has(ws[0]))) return false;
   // "יאללה יאללה", "no no no" — repetition, not a phrase.
   if (ws.every((w) => w === ws[0])) return false;
   const joined = ` ${ws.join(" ")} `;

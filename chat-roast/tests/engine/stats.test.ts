@@ -63,7 +63,7 @@ describe("computeStats — hand-computed chat", () => {
     expect(s.daysSpan).toBe(13);
     expect(s.activeDays).toBe(6);
     expect(s.avgMessagesPerActiveDay).toBeCloseTo(19 / 6, 10);
-    expect(s.totalWords).toBe(39);
+    expect(s.totalWords).toBe(37);
     expect([dana.words, yoav.words, maya.words]).toEqual([19, 13, 5]);
     expect(dana.avgWordsPerMessage).toBeCloseTo(19 / 7, 10);
     expect(maya.avgWordsPerMessage).toBeCloseTo(5 / 3, 10); // media-only messages don't dilute the average
@@ -91,6 +91,13 @@ describe("computeStats — hand-computed chat", () => {
     expect(s.laugh.record).toEqual({ length: 10, authorId: "p1", ts: utc(2026, 6, 3, 8, 16), text: "חחחחחחחחחח" });
     expect(yoav.laugh).toEqual({ count: 3, avgLength: 5, maxLength: 10, favorite: "חחחח" });
     expect(maya.laugh).toEqual({ count: 2, avgLength: 2.5, maxLength: 3, favorite: "😂" });
+    // long laughs share one style bucket for `favorite`
+    const long = computeStats(
+      parseChatText(["חחחחחחחחח", "חחחחחחחחחחחחח", "חחח", "חחחחחחחחחחח"].map((t, i) => `01/01/2026, 10:0${i} - ${i % 2 ? "B" : "A"}: ${t}`).join("\n"), {
+        validate: false,
+      }),
+    );
+    expect(long.perPerson.find((p) => p.name === "B")?.laugh.favorite).toBe("חחחחחח…");
     expect(dana.laugh).toEqual({ count: 0, avgLength: 0, maxLength: 0, favorite: null });
   });
 
@@ -147,8 +154,7 @@ describe("computeStats — hand-computed chat", () => {
   });
 
   it("words and emojis", () => {
-    expect(s.topWords.slice(0, 6)).toEqual([
-      ["יואב", 4],
+    expect(s.topWords.slice(0, 5)).toEqual([
       ["בוקר", 3],
       ["לילה", 2],
       ["שבת", 2],
@@ -156,7 +162,8 @@ describe("computeStats — hand-computed chat", () => {
       ["שבוע", 2],
     ]);
     const all = s.topWords.map(([w]) => w);
-    for (const stop of ["טוב", "אני", "מה", "את", "לא", "למה", "lol", "חחחח", "https", "example"]) expect(all).not.toContain(stop);
+    // stop-words, laughs, URL parts and member names (tracked as mentions) never show up
+    for (const bad of ["טוב", "אני", "מה", "את", "לא", "למה", "lol", "חחחח", "https", "example", "יואב", "מאיה"]) expect(all).not.toContain(bad);
     expect(s.topEmojis).toEqual([
       ["😂", 3],
       ["☀️", 1],
@@ -236,7 +243,9 @@ describe("catchphrases", () => {
     const s = computeStats(parseChatText(lines.join("\n"), { validate: false }));
     const phrases = s.catchphrases.map((c) => c.phrase);
     expect(phrases).toContain("אין מצב שזה קורה באמת");
-    expect(phrases).toContain("תביאו את הבירות מהמקרר");
+    // The whole repeated line is rebuilt from overlapping 4-grams; the leading filler "טוב" is trimmed.
+    expect(phrases).toContain("יאללה תביאו את הבירות מהמקרר");
+    expect(phrases.some((p) => p.startsWith("טוב "))).toBe(false);
     expect(s.catchphrases.find((c) => c.phrase === "אין מצב שזה קורה באמת")).toEqual({ phrase: "אין מצב שזה קורה באמת", count: 5, topAuthorId: "p0" });
     for (const bad of ["בוקר טוב", "יאללה יאללה", "אני לא", "בא לי", "פעמיים זה לא מספיק", "מצב שזה קורה"]) expect(phrases).not.toContain(bad);
     // no phrase is a fragment of another one with the same count

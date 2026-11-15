@@ -243,7 +243,7 @@ export interface ChatStats {
   quickReplyRate: number;
   topWords: Counted[];
   topEmojis: Counted[];
-  /** Repeated 2–4 word phrases, likely inside jokes / catchphrases. */
+  /** Repeated multi-word phrases (2–4-word n-grams, overlapping fragments re-joined, so up to ~7 words) — likely inside jokes / catchphrases. */
   catchphrases: { phrase: string; count: number; topAuthorId: string }[];
   laugh: { total: number; avgLength: number; record: { length: number; authorId: string; ts: number; text: string } | null };
   goodMorning: { days: number; firstSayers: Counted[] };

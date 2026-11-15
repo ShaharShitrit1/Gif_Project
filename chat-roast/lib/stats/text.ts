@@ -38,7 +38,7 @@ export function isLaughToken(t: string): boolean {
     for (let i = 0; i < t.length; i++) if (t.charCodeAt(i) === 0x5d7) het++;
     return het >= 2 || (het === 0 && t.length >= 3);
   }
-  if (t.length < 3) return false;
+  if (t.length < 3) return t === "xd";
   return LATIN_LAUGH_RE.test(t);
 }
 
