@@ -1,0 +1,6 @@
+schema_version: "1.1"
+name: offline-screen-top10
+expected_outcome: |
+  Runs the pipeline in offline mode (no network fetches), then lists the first 10 rows of output/screen_now.csv
+  (with the Nov 2026 data these start MAPS, SFDL, RSRV, ENBP, NLCP), states the data date, and frames the list as a
+  starting point for research rather than a buy list.

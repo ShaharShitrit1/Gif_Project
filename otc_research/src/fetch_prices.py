@@ -29,9 +29,12 @@ def sess():
     return s
 
 
+MAX_AGE_DAYS = float(os.environ.get("MAX_AGE_DAYS", "inf"))  # re-download files older than this
+
+
 def fetch(ticker):
     path = os.path.join(PRICES, f"{ticker}.parquet")
-    if os.path.exists(path):
+    if os.path.exists(path) and (time.time() - os.path.getmtime(path)) / 86400 < MAX_AGE_DAYS:
         return None
     url = (f"https://query1.finance.yahoo.com/v8/finance/chart/{ticker}"
            f"?period1={P1}&period2={P2}&interval=1d&events=div%7Csplit")

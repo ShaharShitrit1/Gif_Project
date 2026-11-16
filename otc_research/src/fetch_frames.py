@@ -10,12 +10,13 @@ import pandas as pd
 from concurrent.futures import ThreadPoolExecutor
 from common import sec_get, RAW
 
-YEARS = range(2009, 2026)
+YEARS = range(2009, pd.Timestamp.now().year)  # through last calendar year
 
 DURATION = {
     "us-gaap": {
         "USD": ["NetIncomeLoss", "Revenues", "RevenueFromContractWithCustomerExcludingAssessedTax",
-                 "SalesRevenueNet", "OperatingIncomeLoss", "GrossProfit",
+                 "SalesRevenueNet", "RevenueFromContractWithCustomerIncludingAssessedTax",
+                 "SalesRevenueGoodsNet", "RevenuesNetOfInterestExpense", "OperatingIncomeLoss", "GrossProfit",
                  "NetCashProvidedByUsedInOperatingActivities",
                  "PaymentsForRepurchaseOfCommonStock", "ProceedsFromIssuanceOfCommonStock",
                  "PaymentsOfDividends", "PaymentsOfDividendsCommonStock",

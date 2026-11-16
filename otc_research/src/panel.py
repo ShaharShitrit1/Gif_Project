@@ -16,7 +16,8 @@ import numpy as np
 import pandas as pd
 from common import RAW, PRICES
 
-REV_TAGS = ["Revenues", "RevenueFromContractWithCustomerExcludingAssessedTax", "SalesRevenueNet"]
+REV_TAGS = ["Revenues", "RevenueFromContractWithCustomerExcludingAssessedTax", "SalesRevenueNet",
+            "RevenueFromContractWithCustomerIncludingAssessedTax", "SalesRevenueGoodsNet", "RevenuesNetOfInterestExpense"]
 
 
 # ----------------------------------------------------------------------------- fundamentals

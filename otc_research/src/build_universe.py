@@ -9,11 +9,27 @@ import pandas as pd
 from panel import (load_fundamentals, load_filings, venue_events, venue_at, load_price, load_meta)
 from common import RAW, OUT
 
-YEARS = range(2012, 2026)  # formation each July 1
-LIVE_DATE = pd.Timestamp("2026-11-13")  # last full trading day before this research run
+_today = pd.Timestamp.now()
+_last = _today.year - 1 if _today >= pd.Timestamp(f"{_today.year}-07-01") else _today.year - 2
+YEARS = range(2012, _last + 1)  # formation each July 1, only years whose 12-month result is complete
+def live_date():
+    """Last trading day in the benchmark price file (override with env OTC_LIVE_DATE=YYYY-MM-DD)."""
+    if os.environ.get("OTC_LIVE_DATE"):
+        return pd.Timestamp(os.environ["OTC_LIVE_DATE"])
+    from common import PRICES
+    d = pd.read_parquet(os.path.join(PRICES, "SPY.parquet"))
+    days = sorted(pd.to_datetime(d["date"]).dt.normalize().unique())
+    today = pd.Timestamp.utcnow().tz_localize(None).normalize()
+    # a bar dated today may be an unfinished trading session: use the last completed day
+    return pd.Timestamp(days[-2] if days[-1] >= today else days[-1])
 
 
 def main(live=False):
+    global LIVE_DATE
+    if live:
+        LIVE_DATE = live_date()
+        json.dump({"live_date": str(LIVE_DATE.date())}, open(os.path.join(OUT, "live_meta.json"), "w"))
+        print("live date", LIVE_DATE.date(), flush=True)
     fund = load_fundamentals()
     fil = load_filings()
     meta = load_meta()

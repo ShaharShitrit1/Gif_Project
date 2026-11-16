@@ -6,7 +6,9 @@ so 8-A12B (exchange listing) / 25-NSE (delisting) history is complete.
 Output: data/raw/filings.parquet and data/raw/companies.parquet
 """
 import os
+import sys
 import json
+import time
 import pandas as pd
 from concurrent.futures import ThreadPoolExecutor
 from common import sec_get, RAW, SUBS
@@ -14,9 +16,12 @@ from common import sec_get, RAW, SUBS
 KEEP_FORMS = None  # keep all; compact anyway
 
 
+MAX_AGE_DAYS = float(os.environ.get("MAX_AGE_DAYS", "inf"))  # re-download cached JSON older than this
+
+
 def get_company(cik):
     path = os.path.join(SUBS, f"{cik}.json")
-    if os.path.exists(path):
+    if os.path.exists(path) and (time.time() - os.path.getmtime(path)) / 86400 < MAX_AGE_DAYS:
         return json.load(open(path))
     r = sec_get(f"https://data.sec.gov/submissions/CIK{cik:010d}.json")
     if r is None:
@@ -51,10 +56,19 @@ def get_company(cik):
 def main():
     tk = json.load(open(os.path.join(RAW, "company_tickers_exchange.json")))
     ciks = sorted({r[0] for r in tk["data"]})
-    print("ciks:", len(ciks), flush=True)
+    otc_only = "otc" in sys.argv[1:]  # refresh only companies that trade OTC today (enough for the live screen)
+    otc = {r[0] for r in tk["data"] if r[3] == "OTC"}
+
+    def load(cik):
+        if otc_only and cik not in otc:
+            path = os.path.join(SUBS, f"{cik}.json")
+            return json.load(open(path)) if os.path.exists(path) else None
+        return get_company(cik)
+
+    print("ciks:", len(ciks), "refreshing:", len(otc) if otc_only else len(ciks), flush=True)
     comps, fil = [], []
     with ThreadPoolExecutor(8) as ex:
-        for i, d in enumerate(ex.map(get_company, ciks)):
+        for i, d in enumerate(ex.map(load, ciks)):
             if i % 500 == 0:
                 print(i, flush=True)
             if not d:

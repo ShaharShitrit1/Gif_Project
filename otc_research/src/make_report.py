@@ -15,6 +15,7 @@ ML = json.load(open(os.path.join(OUT, "ml.json")))
 DEAD = json.load(open(os.path.join(OUT, "dead_reasons.json")))
 SURV = pd.read_csv(os.path.join(OUT, "survival.csv"), index_col=0)
 LIVE = pd.read_csv(os.path.join(OUT, "screen_now.csv"))
+LIVE_DATE = json.load(open(os.path.join(OUT, "live_meta.json")))["live_date"] if os.path.exists(os.path.join(OUT, "live_meta.json")) else "2026-11-13"
 S = R["strategies"]
 F = {k: pd.DataFrame(v) for k, v in R["factors"].items()}
 SENS = R["method_sensitivity"]
@@ -282,9 +283,9 @@ live_rows = [[str(i + 1), f'<span class="mono">{r.ticker}</span>', r["name"].tit
              for i, r in LIVE.reset_index(drop=True).iterrows()]
 live = f"""
 <section id="live">
-  <div class="eyebrow">Screen · data as of 13 Nov 2026</div>
+  <div class="eyebrow">Screen · data as of {LIVE_DATE}</div>
   <h2>מי עובר את הסינון היום</h2>
-  <p class="prose">אותם כללים בדיוק, על המחירים מ-13 בנובמבר 2026 ועל הדוח השנתי האחרון שהוגש (לרוב 2025). {len(LIVE)} חברות עוברות, מדורגות לפי שילוב E/P ו-P/B. זו <b>רשימת התחלה למחקר, לא רשימת קנייה</b>: לכל שם צריך לקרוא דוח, לבדוק בעלי עניין ולבדוק את המרווח בפועל.</p>
+  <p class="prose">אותם כללים בדיוק, על המחירים מ-<span class="num">{LIVE_DATE}</span> ועל הדוח השנתי האחרון שהוגש (לרוב 2025). {len(LIVE)} חברות עוברות, מדורגות לפי שילוב E/P ו-P/B. זו <b>רשימת התחלה למחקר, לא רשימת קנייה</b>: לכל שם צריך לקרוא דוח, לבדוק בעלי עניין ולבדוק את המרווח בפועל.</p>
   {table(["#", "סימול", "חברה", "שכבה", "מחיר", "שווי", "מחזור יומי", "מרווח מוערך", "מכפיל רווח", "מכפיל הון", "דגלים", ""], live_rows, num_cols=[0, 4, 5, 6, 7, 8, 9, 10])}
   <p class="cap foot">השכבה (QX/QB/ID/PK) נכונה להיום. בבקטסט לא השתמשתי בה, כי שכבה של היום מושפעת מהעתיד. שימו לב לשמות במחיר מתחת ל-$1 ולחברות קנאביס (GTBIF), שנסחרות ב-OTC מסיבות רגולטוריות. ה"מרווח המוערך" הוא אומדן Abdi-Ranaldo מנתוני מסחר יומיים, לא ציטוט חי.</p>
 </section>

@@ -1,0 +1,7 @@
+schema_version: "1.1"
+name: check-pump-ticker-hebrew
+expected_outcome: |
+  Runs the ticker check on SDST with the cached data, reports its red-flag score (13 with the Nov 2026 data)
+  and that it fails the method, names the flags that fired (dilution, convertible notes, reverse split,
+  name change, negative equity), cites historical base rates, answers in Hebrew and does not recommend buying.
+  Needs otc_research/output/live.parquet (created by pipeline.sh offline or live).
