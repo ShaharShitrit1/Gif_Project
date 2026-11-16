@@ -1,0 +1,17 @@
+ticker,name,country,how_it_helps_people,mechanism,latest_growth,valuation_note,chart_nov2026,key_risk,decision
+IBKR,Interactive Brokers,US,Earn more,Cheapest access to global investing + interest on idle cash,"Accounts +35%; rev +15%",~24.5x fwd,-17% from high,Rates; key-man,Shortlist (wins 2 tracks)
+SHOP,Shopify,Canada,Earn more,Lets anyone open an online business; payments; AI-referred orders 3.3x,"Rev +32%; GMV +29%; FCF margin 22%",~55x 2027 EPS,-15% gap down after Q3; ~-30% YTD,AI agentic commerce; valuation,Shortlist
+UBER,Uber,US,Earn more + save,Flexible income for drivers/couriers; cheaper than owning a car,"Bookings +20%; non-GAAP EPS +35%; TTM FCF $10.4B",~18x fwd,Near 52w low ($64-95),Robotaxi disintermediation (Waymo own service 2028),Shortlist
+ABNB,Airbnb,US,Earn more + save,Hosts monetize homes; travelers pay less than hotels,"Rev +19%; nights +16%; FCF TTM $4.9B",~33x fwd,+11% post-Q3,City regulation; AI travel agents,Shortlist
+COST,Costco,US,Save,Bulk low-margin retail; membership model,"Comps +6.7%; renewal 89.8%",~50x fwd,-16% from high,Valuation only,Shortlist
+ROST,Ross Stores,US,Save,Off-price apparel/home,"Q2 comps +10%",~25x fwd,n/v,Valuation; tariff normalization,Universe (Q3 report 19.11)
+TJX,TJX,US,Save,Off-price apparel/home,"Q2 comps +4%",~31-33x fwd,ATH earlier in 2026,Valuation,Universe
+WMT,Walmart,US,Save,Everyday low price,n/v (FY27 Q3 pending),~39x (2025),n/v,Overlap + valuation,Excluded (overlap)
+AMZN,Amazon,US,Save,Low prices + Prime,AWS +28%,n/v,n/v,Overlap,Excluded (overlap)
+NU,Nu Holdings,Cayman/Brazil,Save,Fee-free banking,"Rev +37%; ROE 32%",~11x fwd,Near 52w low,Brazil credit,Watch (see financials track)
+MELI,MercadoLibre,US/LatAm,Earn more + save,Marketplace for sellers + fintech,"Rev +45%; margin down",~29x,52w low,Margins; credit,Watch (core track)
+PLNT,Planet Fitness,US,Save,$15 gym,"Rev +9%; SSS +1.5%",n/v,n/v,Low growth,Rejected (growth)
+RYAAY,Ryanair,Ireland (ADR),Save,Cheapest airline in Europe,"H1 PAT -15%; fares -4%",n/v,n/v,Fuel cost +EUR2B FY28,Rejected (fuel/cyclicality)
+FVRR,Fiverr,Israel,Earn more,Freelance marketplace,"Rev -15.8%; buyers -22-26%",n/v,-41% YTD (Aug),AI replacing low-skill gigs,Rejected (shrinking)
+UPWK,Upwork,US,Earn more,Freelance marketplace,"Rev -8%; GSV -10%",n/v,n/v,AI replacing gigs,Rejected (shrinking)
+PDD,PDD/Temu,China (Cayman ADR),Save,Ultra-cheap goods,Q3-26 n/v,n/v,n/v,China VIE/geopolitics/tariffs,Rejected (structure risk)
