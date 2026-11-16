@@ -52,3 +52,14 @@
 
 ## נתונים מהזיכרון (לא אומתו בסשן)
 היסטוריית הכנסות של 10 שנים לכל חברה, שמות מנכ"לים (Rosa, ‏Fouquet, ‏Miebach, ומנכ"ל MELI החדש), גודל הבסיס המותקן של ISRG, השקעת ASML ב-Mistral. כולם מסומנים "לא אומת" בדוחות. לאמת מול 10-K, ‏20-F ו-DEF 14A.
+
+## תוספות בסקירה 2 (16.11.2026)
+- [P] ISRG תוצאות 2025 (הכנסות $10.06B, בסיס מותקן, המנכ"ל Dave Rosa) – https://investor.intuitivesurgical.com/news-releases/news-release-details/intuitive-announces-preliminary-fourth-quarter-and-full-year-5
+- [P] ISRG ‏10-Q (תזרים מפעילות 9M $3,197M) – https://www.sec.gov/Archives/edgar/data/0001035267/000103526726000071/isrg-20260930.htm ; [S] FCF 2025 – https://stockanalysis.com/stocks/isrg/financials/cash-flow-statement/
+- [S] ISRG ממוצעים נעים (9.11.2026) – https://swingtradebot.com/equities/ISRG ; מוסדיים Q2-26 – https://app.sentisense.ai/stocks/ISRG/holders
+- [P] ASML תוצאות 2025 – https://www.asml.com/en/news/press-releases/2026/q4-2025-financial-results
+- [S] ASML ‏Mistral €1.3B / 11% – https://bits-chips.com/article/asml-places-e1-3b-ai-bet-on-mistral/ ; ממוצעים נעים – https://blockchain.news/stocks/asml (איכות בינונית)
+- [S] MATCH Act (44–0 בוועדה) – https://techwireasia.com/2026/04/match-act-semiconductor-export-controls-congress-advances/ ; https://bits-chips.com/article/us-bill-targets-asmls-immersion-business-in-china-with-expanded-export-curbs/
+- [S] MA שיא $672.68 (5.11.2026) – https://www.tikr.com/blog/mastercard-soars-10-in-a-week-to-a-record-its-cfos-warning-a-similar-offset-in-q4
+- [W] Blink: כ-10,000 מניות ו-ETF אמריקאיים, בלי OTC – https://financa.co.il/בלינק-ביקורת/ ; https://tradingil.co.il/%D7%91%D7%9C%D7%99%D7%A0%D7%A7
+- [S] אמנת ארה"ב–ישראל: ניכוי 25% על דיבידנד ליחידים – https://www.taxesforexpats.com/country-guides/israel/us-israel-tax-treaty.html
