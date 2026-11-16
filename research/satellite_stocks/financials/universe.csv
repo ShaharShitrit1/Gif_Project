@@ -1,0 +1,18 @@
+ticker,name,country,sub_industry,latest_growth,profitability_quality,valuation_note,chart_nov2026,key_risk,overlap_vuaa,blink,decision,reason
+IBKR,Interactive Brokers,US (Delaware),Online broker,"Q3-26 net rev +15%; accounts +35% (5.58M); margin loans +31%",Pretax margin 78%,~24.5x fwd,-17% from Jul high (~$93.5); +9% rebound,Rate cuts (NII); trading slowdown; key-man,Low,likely (Nasdaq; not verified),Shortlist,Automated low-cost moat; fastest organic account growth among large brokers
+AXP,American Express,US (New York),Premium cards (closed loop),"Q3-26 rev +9% (decelerating 11->9%); adj EPS +13%",Write-off rate 1.8%,~16.7x fwd,-14% from 52w high $387.49,Credit cycle; premium-card competition,Low-Med,likely (NYSE),Shortlist,Affluent customer base + spend+lend model at reasonable multiple
+CME,CME Group,US (Delaware),Derivatives exchange/clearing,"Q3-26 rev +13%; record ADV 29.4M",~60%+ margins (n/v),~24.6x fwd,96% of 52w range (near high),Volume normalization; prediction markets/crypto competition,Low,likely (Nasdaq),Shortlist,Near-monopoly in US rates futures; strongest chart in track
+NU,Nu Holdings,Cayman Islands; ops Brazil/Mexico/Colombia,Digital bank,"Q3-26 rev +37%; NI $1.09B (+31% FXN); 143M customers",ROE 32%; efficiency 19.3%,~10.9x fwd (assumed EPS),Near 52w low ($11.20-18.98),Brazil credit (NPL 90+ 6.9% in Q2); FX; Mexico losses,None,likely (NYSE),Shortlist,Highest growth+ROE at low multiple; EM risk
+PGR,Progressive,US (Ohio),Auto/property insurer,"Q3-26 NPW +4% (Sep +2%); PIF +6%",CR 88.7,~13.5x fwd,n/v,Soft auto pricing cycle; tariffs on parts; cat losses,Low-Med,likely (NYSE),Shortlist,Best-in-class underwriter; cycle turning
+JPM,JPMorgan Chase,US,Universal bank,"Q3-26 NII +13%",ROTCE 21%,n/v,n/v,Credit cycle; regulation,High (top-15 S&P weight),likely,Excluded (overlap),Excellent but already a large VUAA weight
+HOOD,Robinhood,US,Retail broker/crypto,"Q3-26 rev +12%; GAAP EPS -16%",Volatile,n/v,-6% post-earnings,Crypto dependence; regulation,Low,likely,Watch,Growth slowed sharply; quality below IBKR
+KKR,KKR,US,Alternative asset manager,n/v,n/v,n/v,-25%+ YTD (Mar),Private-credit stress; flagship fund downgraded to junk by Moody's,Low,likely,Rejected (watch),Private-credit cycle unresolved
+APO,Apollo,US,Alternative asset manager/insurance,n/v,n/v,n/v,Down from $143 to $121 (Sep),Private credit redemptions (14.7% requests),Low,likely,Rejected (watch),Same
+BX,Blackstone,US,Alternative asset manager,"Q2-26 rev $5.04B (+36%)",n/v,n/v,Down from $150 to $118 (Sep),Redemptions; real estate,Low-Med,likely,Watch,Quality high but sector stress
+HDB,HDFC Bank,India (ADR),Bank,"Q2 FY27 loans +16.3%; profit +4.7%",GNPA 1.11%,n/v,n/v,Merger digestion; NIM; ADR premium,None (in IXUS),likely (NYSE ADR),Watch,Profit growth weak post-merger
+SCHW,Charles Schwab,US,Broker/bank,n/v,n/v,n/v,n/v,Rate sensitivity,Low-Med,likely,Not researched,Covered by IBKR as better-growth broker
+COF,Capital One,US,Card lender,n/v,n/v,n/v,n/v,Credit; Discover integration,Low,likely,Not researched,Subprime-heavier than AXP
+V,Visa,US,Payments network,"FQ3-26 rev +14%",Very high,n/v,n/v,Regulation,Med-High,likely,Core track,Covered in core track with MA
+MA,Mastercard,US,Payments network,"Q3-26 rev +14%",Very high,~30x fwd,Record high,Regulation,Medium,likely,Core track reserve,See core track
+ADYEN,Adyen,Netherlands,Payments processor,n/v,n/v,n/v,n/v,Competition,None,unlikely (OTC in US),Excluded (access),Blink does not offer OTC
+LSEG,London Stock Exchange Group,UK,Exchange/data,n/v,n/v,n/v,n/v,AI data disruption,None,unlikely (OTC in US),Excluded (access),Blink does not offer OTC

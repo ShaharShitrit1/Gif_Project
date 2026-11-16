@@ -1,0 +1,11 @@
+ticker,track,price_usd,price_date,fwd_eps_usd,eps_basis,payout,discount_rate,bear_g,bear_pe,base_g,base_pe,bull_g,bull_pe
+ISRG,core,439.89,2026-11-12,12.1,derived from fwd P/E (see market_inputs.csv),0.00,0.10,0.09,25,0.14,30,0.17,35
+ASML,core,1495.16,2026-11-13,65.3,derived from fwd P/E,0.30,0.10,0.02,18,0.10,25,0.16,30
+MA,core,652.70,2026-11-06,21.7,assumption,0.18,0.10,0.07,22,0.12,27,0.15,32
+FTNT,core,122.47,2026-11-09,3.9,assumption,0.00,0.10,0.05,18,0.11,25,0.15,32
+MELI,core,1530.28,2026-11-05,52.0,assumption (low confidence),0.00,0.13,0.10,22,0.20,28,0.27,35
+IBKR,fin,77.57,2026-11-09,3.16,"derived: $74.83 / 23.7x fwd P/E (dividend.watch 2026-11-03)",0.20,0.10,0.05,18,0.13,24,0.18,28
+NU,fin,11.94,2026-11-05,1.10,"assumption: Q3-26 NI $1.09B ~ $0.225/sh annualized $0.90, +22% growth",0.00,0.13,0.05,8,0.18,13,0.25,16
+AXP,fin,332.60,2026-11-05,19.9,"assumption: FY26 adj EPS guide midpoint $17.75 x 1.12",0.18,0.10,0.05,14,0.10,18,0.13,21
+PGR,fin,227.52,2026-11-09,16.8,"derived: price / 13.5x (mid of 12.7-14.1x fwd P/E sources)",0.25,0.10,-0.02,12,0.06,15,0.10,18
+CME,fin,315.50,2026-11-13,12.8,"assumption: Q3-26 adj EPS $3.02 x4 + growth",0.90,0.10,0.04,18,0.08,22,0.11,26
