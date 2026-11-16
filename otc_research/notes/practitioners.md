@@ -1,0 +1,15 @@
+# Practitioner research group: key findings (secondary sources; verify before relying)
+- Eraker & Ready (JFE 2015), OTCBB/Pink 2000-2008: value-weighted buy & hold ~ -42%; 83% of stocks negative; 52% lost >95%; lowest price worst; formerly-listed far better than native OTC.
+- White (SEC staff 2016): retail OTC returns severely negative, worse in lighter-disclosure tiers.
+- Ang, Shtauber & Tetlock (RFS 2013): illiquidity premium several times larger in OTC; value premium similar; momentum ~3x weaker; premiums biggest where institutional ownership ~0.
+- Bruggemann, Kaul, Leuz & Werner (RFS 2018): stricter regimes/tiers -> more liquidity, lower crash risk.
+- Alluvial Fund (Dave Waters), net: 2017 +29.6, 2018 -9.0, 2019 +18.4, 2020 +28.4, 2021 +31.0, 2022 -14.9, 2025 +41.2; inception->Nov 2025 +264.9% vs R2000 +107.3%.
+- Schloss 15.7%/yr vs S&P 11.2% (45 yrs). Pabrai 1999-2007 29.4% net then -47% in 21 months. Greenblatt ~30%+ net 1985-94.
+- Examples: Crawford United (CRAWA, OTC Pink, ~11-13x PE) acquired by SPX ~$83.86/sh cash (closed Feb 2026). Monarch Cement went dark 2014 ($30 cash-out), ~$260 in 2026 (OTCQX). P10 OTC Pink -> NYSE IPO at $12 (Oct 2021). Hertz HTZZ traded OTC post-bankruptcy 2021, relisted Nasdaq.
+- Nasdaq Capital Market initial listing: $4 bid (or $3/$2 alternatives), $5M equity (equity standard), 300 round-lot holders, 1M unrestricted public shares, 3 market makers.
+- Uplisting study (Financial Review 2021, secondary): dollar volume +80%, spreads -143bp after uplisting.
+- Post-bankruptcy equities: Eberhart, Altman & Aggarwal (JF 1999) +22.8-29.6% excess in first 200 days.
+- Net-nets: Oppenheimer 1970-83 28.2% geometric; Montier excess +18% US.
+- Community banks micro ~20% avg discount to TBV (Bernstein 2024).
+- Mechanics: 15c2-11 amendment effective Sep 28 2021 pushed >2,000 issuers to Expert Market; OTCID replaced Pink Current Jul 1 2025. IBKR: OTC permissions "US (Penny Stocks)", no opening Caveat Emptor/Grey. Spreads ~10% typical in 2000-08 penny universe.
+- Screens to test: EV/EBIT<=6 + 3y profits; net-nets MC<=0.67 NCAV; fallen angels (delisted to OTC, P/B<0.7, OCF>0); cheap banks P/TBV<=0.8 ROA>=0.7%; uplisting precursor; insider clusters; post-emergence.

@@ -1,0 +1,23 @@
+{
+ "quality micro (profitable, RE>0)": {
+  "n_dead": 58,
+  "sampled": 58,
+  "shares": {
+   "went dark": 0.379,
+   "acquired": 0.259,
+   "abandoned": 0.19,
+   "revoked": 0.172
+  }
+ },
+ "junk (shell or neg-equity diluter)": {
+  "n_dead": 1569,
+  "sampled": 250,
+  "shares": {
+   "revoked": 0.432,
+   "went dark": 0.264,
+   "abandoned": 0.256,
+   "acquired": 0.028,
+   "bankrupt": 0.02
+  }
+ }
+}

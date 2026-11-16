@@ -1,0 +1,4 @@
+# raw downloads are large and re-creatable with src/fetch_*.py
+data/
+output/*.parquet
+__pycache__/

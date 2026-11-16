@@ -1,0 +1,13 @@
+# Fraud/signals research group: key findings ([V]=primary source read, [A]=abstract/summary, [O]=opinion)
+- Bruggemann et al: >10,000 OTC stocks 2001-2010 avg annual return -27%, median -37% [V via SEC White 2016]. Eraker-Ready: 25% of OTC stocks lost 99% [V].
+- White 2016 [V]: median HPR -13.4%, 67.1% of investors lost money; 45% of OTC investors traded during a promotion. Tier medians: OTCQX +2.9, OTCQB -10.9, Pink Current -11.8, Pink Limited -20.0, Grey -60.9.
+- Frieder-Zittrain: buy on heavy-touting day, sell 2 days after -> -5.5%; spammer buying day before -> +4.29% [A].
+- Leuz et al: 421 schemes, avg -28%..-30%, 36% of participants repeat [A].
+- SEC Operation Shell-Expel 2014: 255 dormant shells suspended; >800 suspensions since 2012 (~8% of OTC market) [V]. Suspension list counts: 2019 81, 2020 113, 2021 102, 2022 2, 2023 4, 2024 2, 2025 12, 2026 4 [V].
+- Death-spiral: Hillion-Vermaelen 85% negative 1y. SEC cases: Keener/JMJ >100 issuers, >17.5B shares sold, $21.5M profit; Almagarby 39 issuers 7.4B shares [V].
+- XBRL tags exist: DerivativeLiabilities*, ConvertibleNotesPayable*, AmortizationOfDebtDiscountPremium, SubstantialDoubtAboutGoingConcernWithinOneYear (boolean, not in frames), dei:EntityShellCompany, AuditorFirmId.
+- BF Borgers barred May 2024: >1,500 filings, 369 clients [V].
+- Uplisting rare: 63/83/60 OTC->exchange moves 2013/14/15; <9% of OTC firms moved up 2001-10 [V/A].
+- Insider purchases informative in small firms (Lakonishok-Lee); opportunistic insiders 82bp/mo (Cohen-Malloy-Pomorski) [A]. Activist 13D ~7-8% [-20,+20], no reversal (Brav et al) [A]. Small-cap targets ~35% premium, acquired ~4.5%/yr [A].
+- Red Flag Score (proposal): R1 suspension(4), R2 pump signature(3), R3 dilution>=100%(3)/>=50%(2), R4 toxic converts(3), R5 distress: neg equity & rev<1M(2), R6 shell(2), R7 name change 24m(+1 hot-sector)(2), R8 reverse split w/o uplisting(2), R9 opacity: NT 10-K / no periodic 15m(2), R10 authorized doubles(1), R11 auditor change(1), R12 constant issuance S-1/424B3(1). >=6 avoid, 3-5 caution.
+- Catalyst Score (only if red<=2): uplisting(3), insider cluster buys(3), revenue inflection >=50% & rev>=5M & GP>0(2), OCF turns positive(2), clean capital(2), 13D(2), capital return(2), takeover(2), spin-off(1), disclosure upgrade(1).
