@@ -43,6 +43,7 @@ case "$MODE" in
     step "historical panel"; python3 build_universe.py >> "$LOG" 2>&1
     step "backtests"; python3 run_all.py >> "$LOG" 2>&1
     step "walk-forward ML"; python3 ml.py >> "$LOG" 2>&1
+    step "trend / stop-loss trading simulation"; python3 trend.py >> "$LOG" 2>&1; python3 trend_portfolio.py >> "$LOG" 2>&1
     ;;
   *) echo "usage: $0 offline|live|full"; exit 2 ;;
 esac

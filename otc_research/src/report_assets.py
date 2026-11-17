@@ -34,6 +34,7 @@ header.hero{display:flex;flex-direction:column;gap:18px;padding-block:48px 36px}
 .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}
 .kpi{background:var(--surface);border:1px solid var(--rule);border-radius:10px;padding:14px 16px;display:flex;flex-direction:column;gap:4px;min-width:0}
 .kpi .v{font-family:var(--f-display);font-size:30px;font-weight:700;direction:ltr;text-align:right}
+.kpi .v.sm{font-size:24px;white-space:nowrap}
 .kpi .l{font-size:14px;color:var(--ink-2);line-height:1.45}
 .kpi.neg .v{color:var(--bad)} .kpi.pos .v{color:var(--good)}
 .num,.mono{font-family:var(--f-mono);font-variant-numeric:tabular-nums;direction:ltr;unicode-bidi:isolate}
@@ -127,9 +128,9 @@ function lines(el){
   const ly = v => Math.log(v);
   const X = i => m.l + (W-m.l-m.r)*i/(dates.length-1);
   const Y = v => m.t + (H-m.t-m.b)*(1-(ly(v)-ly(ymin))/(ly(ymax)-ly(ymin)));
-  const ticks = [0.25,0.5,1,2,4,8,16].filter(t=>t>=ymin&&t<=ymax);
+  const ticks = [0.0625,0.125,0.25,0.5,1,2,4,8,16].filter(t=>t>=ymin&&t<=ymax);
   let svg = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${spec.aria}">`;
-  ticks.forEach(t=>{ svg += `<line class="grid" x1="${m.l}" x2="${W-m.r}" y1="${Y(t)}" y2="${Y(t)}"/><text x="${m.l-6}" y="${Y(t)+4}" text-anchor="end">${t}x</text>`;});
+  ticks.forEach(t=>{ svg += `<line class="grid" x1="${m.l}" x2="${W-m.r}" y1="${Y(t)}" y2="${Y(t)}"/><text x="${m.l-6}" y="${Y(t)+4}" text-anchor="end">${t<1?(+t.toFixed(3)):t}x</text>`;});
   const years = [...new Set(dates.map(d=>d.slice(0,4)))];
   years.forEach(y=>{ const i = dates.findIndex(d=>d.startsWith(y)); if(i>=0 && (+y)%2===0) svg += `<text x="${X(i)}" y="${H-8}" text-anchor="middle">${y}</text>`;});
   const ends = [];

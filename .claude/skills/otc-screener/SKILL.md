@@ -73,6 +73,9 @@ Keep these points in front, because they are what the data actually supports:
   value is avoiding the -4% to -6%/yr junk and the -57% post-"rocket" collapses.
 - When a stock just "rocketed", say plainly what happened next historically (median -57% in a year).
 - Uplisting is a reason to consider selling, not buying (median -23% in the year after listing).
+- If the user wants to trade OTC with tight stops and "let winners run", answer from
+  `references/method.md` section 9: the profile is real (27% winners, +44% vs -18%) but costs and gaps
+  turn it into -12%/yr as a portfolio, and even with zero costs it didn't beat IWM.
 - Reply in the user's language (the user writes Hebrew). Keep tickers and numbers left-to-right.
 - This is research, not personal investment advice. Say so once, briefly. Don't lecture.
 

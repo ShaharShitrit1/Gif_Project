@@ -1,7 +1,7 @@
 # The OTC method: rules, evidence and how to read the numbers
 
 Contents: 1. Method rules · 2. Red-Flag Score · 3. Catalysts · 4. Backtest results · 5. Event studies ·
-6. What does NOT work · 7. Limitations · 8. Literature
+6. What does NOT work · 7. Limitations · 8. Literature · 9. Trading with stops ("small losses, big winners")
 
 All numbers come from the November 2026 research run (July 2012 to June 2026, 4,997 OTC company-years,
 721 SEC-reporting companies). After a `pipeline.sh full` run, prefer the fresh numbers in
@@ -114,3 +114,25 @@ Desai & Jain (1997): reverse splits -33.9% over 3 years. Hillion & Vermaelen (20
 death-spiral convertible issuers negative in the following year. Leuz et al. (Mgmt Sci 2025): pump
 participants lose about 30% on average. Practitioners: Alluvial Fund (Dave Waters) roughly 12-16%/yr
 long-run, with -9% to -15% years; Walter Schloss 15.7%/yr over 45 years.
+
+## 9. Trading with stops: "many small losses, a few huge winners"
+
+Tested in `src/trend.py` + `src/trend_portfolio.py` (results in `output/trend_results.json`): 108,541
+simulated trades on OTC stocks 2010-2026. Entry at next day's open; stops checked against the daily
+low, with gap fills at the open; half-spread + 0.5% per side, +1% on stop exits; random-entry control.
+
+Per trade (52-week-high breakout on 3x volume, -15% stop, 25% trailing): 27% winners, avg win +44%,
+avg loss -18% (17% of exits gapped through the stop), payoff 2.5, top 5% of trades = 65% of gains,
+only 2% of trades doubled. Before costs +4.3% per trade, after costs -1.1% (not different from zero, p=0.51).
+Beats random entries by about 5 points per trade (t=3.0, 16 of 18 years), so the signal is real but weak.
+
+As a 20-slot portfolio: -11.8%/yr net (+6.9% with zero costs), max drawdown -89%, 64 trades/yr.
+Wide stops -8.6% (+9.4% gross). No stop, 60-day exit -10.7%. Breakout + quality (red <= 2, profitable):
+-1.4%/yr, drawdown -43%. Buying "rockets" (+30% day on 5x volume): -10.4% per trade, -45%/yr (ruin).
+Random entries -19%/yr. IWM over the same window +10.5%/yr.
+
+Why it fails on OTC: round-trip costs (~4-5%) versus a +4% gross edge; gaps make "small" losses
+large; real big winners are rare; momentum is weak in OTC; stops get whipsawed (no-stop exits did
+slightly better); trading halts and revocations are missing from the data and would make it worse
+(1-2% of trades halted at -90% -> -2% to -3% per trade). The asymmetric-payoff idea needs low costs
+and persistent trends (diversified futures, liquid large caps), the opposite of OTC.

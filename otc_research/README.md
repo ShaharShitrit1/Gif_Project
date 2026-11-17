@@ -16,6 +16,7 @@ public data: SEC EDGAR (financial statements, filing histories) and Yahoo Financ
 | 7 | `src/run_all.py` | Factor tests, Red-Flag/Catalyst scores, strategy backtests, sensitivity, "rockets" |
 | 8 | `src/events.py` | Event studies: uplisting, delisting to OTC, pump-like spikes |
 | 9 | `src/ml.py` | Walk-forward gradient-boosting ranker (out-of-sample only) |
+| 9b | `src/trend.py`, `src/trend_portfolio.py` | Breakout trading with stop-loss / trailing exits vs random entries; portfolio simulation |
 | 10 | `src/build_universe.py --live` + `src/screen_now.py` | Applies the method to today's data |
 
 ## Point-in-time rules

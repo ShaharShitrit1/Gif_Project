@@ -7,6 +7,7 @@ from common import OUT
 from report_assets import CSS, JS
 from report_static import LIT, PRACTICE
 from report_helpers import pct, money, bars_div, table, align, fix_bidi
+import report_trend
 
 R = json.load(open(os.path.join(OUT, "results.json")))
 EV = json.load(open(os.path.join(OUT, "events_summary.json")))
@@ -318,7 +319,9 @@ head = f"""<title>מדריך שטח ל-OTC</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;700&family=Rubik:wght@500;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <style>{CSS}</style>
 """
-body = fix_bidi(f'<div class="wrap" dir="rtl" lang="he">{hero}{bottom}{market}{rockets}{factors}{method}{events}{live}{PRACTICE}{LIT}{limits}{foot}</div>')
+asym, trend_chart = report_trend.build()
+CHARTS.update(trend_chart)
+body = fix_bidi(f'<div class="wrap" dir="rtl" lang="he">{hero}{bottom}{market}{rockets}{factors}{method}{asym}{events}{live}{PRACTICE}{LIT}{limits}{foot}</div>')
 data = json.dumps({"charts": CHARTS}, ensure_ascii=False)
 page = head + body + f"<script>window.__DATA__ = {data};</script><script>{JS}</script>"
 out = os.path.join(OUT, "report.html")
