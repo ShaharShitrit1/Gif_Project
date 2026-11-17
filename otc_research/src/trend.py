@@ -20,12 +20,15 @@ from common import RAW, OUT, PRICES
 
 rng = np.random.default_rng(7)
 
-SIGNALS = ("breakout52", "donchian50", "spike", "random")
+SIGNALS = ("breakout52", "donchian50", "spike", "ath", "random")
 EXITS = {  # name: (initial stop, trailing stop from peak close, max holding days)
     "base": (0.15, 0.25, 250),
     "tight": (0.10, 0.20, 250),
     "wide": (0.25, 0.35, 250),
     "no_stop_60d": (None, None, 60),
+    # Wilcox & Crittenden style: wide volatility trailing stop (k x ATR42 below the highest close, never lowered), long holds
+    "atr5": ("atr", 5, 2500),
+    "atr10": ("atr", 10, 2500),
 }
 
 
@@ -61,11 +64,15 @@ def signals_for(o, h, lo, c, v, eligible):
         out["breakout52"] = eligible & (c > hi250) & (v >= 3 * v50)
         out["donchian50"] = eligible & (c > hi50)
         out["spike"] = eligible & (r1 >= 0.30) & (v >= 5 * v50)
+        # all-time high within the available history (data start 2009), at least 1 year of history
+        ath = cs.shift(1).expanding(min_periods=250).max().values
+        out["ath"] = eligible & (c > ath)
     return out
 
 
-def simulate(o, h, lo, c, sig_idx, init_stop, trail, max_days, cost_in, cost_out):
-    """Non-overlapping trades from a sorted array of signal indices."""
+def simulate(o, h, lo, c, sig_idx, init_stop, trail, max_days, cost_in, cost_out, atr=None):
+    """Non-overlapping trades from a sorted array of signal indices.
+    init_stop == "atr": trailing stop at highest close - trail x ATR42, never lowered."""
     trades = []
     n = len(c)
     free_from = 0
@@ -74,13 +81,19 @@ def simulate(o, h, lo, c, sig_idx, init_stop, trail, max_days, cost_in, cost_out
             continue
         e = t + 1
         entry = o[e]
-        stop = entry * (1 - init_stop) if init_stop else -np.inf
+        atr_mode = init_stop == "atr"
+        stop = -np.inf if (atr_mode or not init_stop) else entry * (1 - init_stop)
         peak = entry
+        atr_stop = -np.inf
         exit_i, exit_px, how = None, None, None
         for d in range(e, min(n, e + max_days)):
             if d > e or True:
                 level = stop
-                if trail:
+                if atr_mode:
+                    if np.isfinite(atr[d - 1]):
+                        atr_stop = max(atr_stop, peak - trail * atr[d - 1])
+                    level = atr_stop
+                elif trail:
                     level = max(level, peak * (1 - trail))
                 if lo[d] <= level:
                     gap = o[d] < level and d > e
@@ -145,12 +158,17 @@ def main():
             pick = rng.choice(el_idx, size=min(k * 3, len(el_idx)), replace=False)
             sig["random"][pick] = True
         cost = half_spread(np.nan_to_num(dv20)) + 0.005
+        prev_c = np.concatenate([[c[0]], c[:-1]])
+        tr_range = np.maximum(h, prev_c) - np.minimum(lo, prev_c)
+        atr42 = pd.Series(tr_range).rolling(42, min_periods=42).mean().values
         for sname, mask in sig.items():
             sidx = np.where(mask)[0]
             if not len(sidx):
                 continue
             for ename, (ist, tr, md) in EXITS.items():
-                for tr_ in simulate(o, h, lo, c, sidx, ist, tr, md, cost, cost):
+                if sname in ("spike", "donchian50") and ename.startswith("atr"):
+                    continue
+                for tr_ in simulate(o, h, lo, c, sidx, ist, tr, md, cost, cost, atr42):
                     ti, e, x, ep, xp, ret, gross, how, mfe = tr_
                     rows.append((cik, t, sname, ename, idx[ti], idx[e], idx[x], x - e + 1, ep, xp, ret, gross, how, mfe,
                                  float(dv20[ti]), float(raw[ti]), float(cost[ti])))

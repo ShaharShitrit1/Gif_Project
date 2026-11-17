@@ -136,3 +136,9 @@ large; real big winners are rare; momentum is weak in OTC; stops get whipsawed (
 slightly better); trading halts and revocations are missing from the data and would make it worse
 (1-2% of trades halted at -90% -> -2% to -3% per trade). The asymmetric-payoff idea needs low costs
 and persistent trends (diversified futures, liquid large caps), the opposite of OTC.
+
+The literature version also fails on OTC. Wilcox & Crittenden / Zarattini et al. (all-time-high entry,
+10xATR trailing stop, ~10-month holds, liquid listed stocks): +15% per trade, ~15%/yr gross 1991-2024.
+On OTC: per trade -0.3% gross, -5.6% net; portfolio -11.6%/yr (-1.8% with zero costs), drawdown -92%.
+Best of 52 variants tested (all-time high + quality + wide % stops): +1.2%/yr, drawdown -47%, mean trade
+not different from zero (p=0.38) — expected by chance after 52 tries. Literature notes: notes/trend_literature.md.

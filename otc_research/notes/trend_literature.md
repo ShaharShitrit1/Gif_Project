@@ -1,0 +1,16 @@
+# Trend-following / stop-loss literature group (Nov 2026) — [A]=abstract/primary, [S]=secondary, [U]=unverified
+- Wilcox & Crittenden (2005) "Does Trend Following Work on Stocks?": all-time-high weekly close entry, 10xATR trailing stop, next-open fills, 0.5% round turn; ~24,000 US stocks incl. delisted, ~22 yrs, 18,000+ trades. Win 49.3%, avg win +51.2% (~441d), avg loss -20.0% (~175d), payoff 2.56, avg trade +15.2% (~305d) [S]. Wide stops, long holds, liquid stocks.
+- Zarattini, Pagani & Wilcox (2025) SSRN 5084316: 1950-2024, 66,000+ trades, ATR(42) trailing stop never lowered. Win 43.9%; <7% of trades generate cumulative profit; 15.19% CAGR, 6.18% alpha 1991-2024 gross; max DD ~31.75% [S].
+- Bessembinder (2018, JFE): top 4% of firms explain all net wealth creation since 1926 [A]. Blackstar "Capitalism Distribution": 39% of R3000 stocks negative lifetime, 18.5% lost >=75% [S].
+- Kaminski & Lo (2014, JFM): stops lower expected return under random walk; add value only with momentum/regime switching [A].
+- Han, Zhou & Zhu (2016): 10% stop on momentum cuts worst month -49.79% -> -11.36% (EW) [A]; average-return gain small per Alpha Architect (1.27% vs 1.24%/mo) [S]; gross of costs.
+- Lo & Remorov (2017, JFM): tight stops underperform buy-and-hold due to trading costs; help only with high serial correlation [A].
+- Lei & Li (2009): stops don't change return level vs buy-and-hold on random entries; trailing stops reduce std [S/A].
+- Bali, Cakici & Whitelaw (2011, JFE) MAX: lowest-MAX decile beats highest by >1%/month [A]. Barberis & Huang (2008); Boyer, Mitton & Vorkink (2010): skewness overpriced [A]. Kumar (2009) lottery-stock investors underperform [A].
+- George & Hwang (2004): 52-week-high momentum ~0.45%/mo, concentrated in small stocks, often not significant after costs [A/S].
+- Ang, Shtauber & Tetlock (2013): OTC momentum premium ~3x smaller [A]. Hou, Xue & Zhang (2020): 65% of 452 anomalies fail t>1.96 with NYSE breakpoints/VW [A].
+- Lesmond, Schill & Zhou (2004, JFE): momentum profits illusory in high-cost stocks; mean round-trip cost ~3.0%; profitable only if costs < ~1.5% [A/S]. Korajczyk & Sadka (2004): momentum zero at ~1.77% round trip [S].
+- Avramov, Chordia & Goyal (2006): largest reversals in illiquid stocks, profits < costs [A].
+- OTC execution: SEC suspensions up to 10 days, OTC quoting needs Form 211 to resume [A]; 15c2-11 (Sep 2021) moved 2,247 securities to Expert Market [S].
+- Retail traders: Barber, Lee, Liu & Odean (2014): <1% of Taiwan day traders predictably profitable [A]; Chague, De-Losso & Giovannetti: 97% of Brazilian day traders persisting 300+ days lost money [A].
+- CAN SLIM AAII screen 19.2%/yr 1998-2023 hypothetical, no costs [S]; Minervini contest wins self-reported/press-release, not audited [S].

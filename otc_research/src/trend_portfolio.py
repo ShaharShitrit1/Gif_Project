@@ -82,6 +82,7 @@ def main():
                     median=float(r.median()), profit_factor=float(w.sum() / -l.sum()), p_double=float((r > 1).mean()),
                     p_5x=float((r > 4).mean()), top5_share=float(srt[:top].sum() / w.sum()),
                     gap_exits=float((g.how == "gap").mean()), median_days=float(g.days.median()),
+                    mean_ex_top1=float(np.sort(r.values)[: max(1, len(r) - max(1, len(r) // 100))].mean()),
                     cost_side=float(g.cost_side.mean()))
 
     for (s, e), g in d.groupby(["signal", "exit"]):
@@ -91,8 +92,8 @@ def main():
         res["trade_stats"][f"{s}+quality|{e}"] = tstats(g)
 
     # significance: breakout vs random (same exits), trade-level Welch t and year-clustered bootstrap
-    for e in ("base", "no_stop_60d", "wide"):
-        a = d[(d.signal == "breakout52") & (d.exit == e)]
+    for e, sig in (("base", "breakout52"), ("no_stop_60d", "breakout52"), ("wide", "breakout52"), ("atr5", "ath"), ("atr10", "ath")):
+        a = d[(d.signal == sig) & (d.exit == e)]
         b = d[(d.signal == "random") & (d.exit == e)]
         t = stats.ttest_ind(a.ret, b.ret, equal_var=False)
         t0 = stats.ttest_1samp(a.ret, 0)
@@ -112,6 +113,10 @@ def main():
         "breakout52 | wide stops | 20 slots": (d.signal == "breakout52") & (d.exit == "wide"),
         "breakout52 | no stop, 60d | 20 slots": (d.signal == "breakout52") & (d.exit == "no_stop_60d"),
         "breakout52 + quality | base | 10 slots": (d.signal == "breakout52") & (d.exit == "base") & (d.red <= 2) & (d.quality == True),
+        "all-time high | 10xATR trail | 20 slots": (d.signal == "ath") & (d.exit == "atr10"),
+        "all-time high | 5xATR trail | 20 slots": (d.signal == "ath") & (d.exit == "atr5"),
+        "all-time high + quality | 5xATR | 10 slots": (d.signal == "ath") & (d.exit == "atr5") & (d.red <= 2) & (d.quality == True),
+        "random | 5xATR trail | 20 slots": (d.signal == "random") & (d.exit == "atr5"),
         "donchian50 | base | 20 slots": (d.signal == "donchian50") & (d.exit == "base"),
         "spike (rocket) | base | 20 slots": (d.signal == "spike") & (d.exit == "base"),
         "random entries | base | 20 slots": (d.signal == "random") & (d.exit == "base"),

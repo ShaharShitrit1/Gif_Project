@@ -12,6 +12,32 @@ def N(v, d=1, sign=True):
     return f'<span class="num">{pct(v, d, sign)}</span>'
 
 
+def lit_block(T):
+    ts, P, X = T["trade_stats"], T["portfolios"], T.get("extra_portfolios", {})
+    a = ts.get("ath|atr10")
+    pa = P.get("all-time high | 10xATR trail | 20 slots")
+    best = X.get("all-time high + quality | wide % stops | 10 slots")
+    if not (a and pa and best):
+        return ""
+    return f"""
+  <div class="grid2">
+    <div class="fig"><h3>מה הספרות אומרת</h3>
+      <ul class="plain">
+        <li><b>הגרסה שעובדת:</b> Wilcox &amp; Crittenden (2005) ו-Zarattini, Pagani &amp; Wilcox (2025) נכנסים בשיא כל הזמנים, עם סטופ נגרר <b>רחב מאוד</b> (פי 10 מהתנודה היומית) והחזקה של כ-10 חודשים, על מניות נזילות בבורסה, כולל מניות שמתו. 44%–49% מהעסקאות מרוויחות, רווח ממוצע של 51%+ מול הפסד ממוצע של 20%-, ופחות מ-7% מהעסקאות מייצרות את כל הרווח. כ-15% בשנה ברוטו (1991–2024).</li>
+        <li><b>סטופים צמודים:</b> מפסידים לקנה-והחזק בגלל עלויות, ומוסיפים ערך רק כשיש מומנטום אמיתי (Lo &amp; Remorov 2017; Kaminski &amp; Lo 2014).</li>
+        <li><b>עלויות:</b> רווחי מומנטום הם "אשליה" במניות שעולה ביוקר לסחור בהן. הם נעלמים כבר בעלות של כ-1.5% לסבב (Lesmond, Schill &amp; Zhou 2004). ב-OTC הסבב עולה בערך פי 3.</li>
+        <li><b>הצד של הלוטו:</b> מניות עם הקפיצה היומית הגדולה ביותר מפסידות למניות השקטות ביותר ביותר מ-1% בחודש (Bali, Cakici &amp; Whitelaw 2011).</li>
+        <li><b>סוחרים פרטיים:</b> פחות מ-1% מהסוחרים היומיים בטייוואן מרוויחים באופן עקבי (Barber et al. 2014). בברזיל, 97% מאלה שהתמידו מעל 300 ימים הפסידו (Chague et al.).</li>
+      </ul></div>
+    <div class="fig"><h3>ניסינו גם את גרסת הספרות על OTC</h3>
+      <ul class="plain">
+        <li>שיא כל הזמנים עם סטופ נגרר 10×ATR, בדיוק כמו במחקר: עסקה ממוצעת של {N(a['gross_mean'])} לפני עלויות ו-{N(a['mean'])} אחריהן, לעומת 15%+ במניות נזילות. ב-OTC המגמה פשוט לא נמשכת.</li>
+        <li>כתיק: {N(pa['CAGR'])} בשנה, וגם בלי עלויות בכלל {N(pa['CAGR_no_costs'])}. נפילה מקסימלית של {N(pa['maxDD'], 0)}.</li>
+        <li>הגרסה הטובה ביותר מתוך 52 שבדקתי (שיא כל הזמנים בחברה איכותית, סטופים רחבים): {N(best['CAGR'])} בשנה, נפילה מקסימלית של {N(best['maxDD'], 0)}, והעסקה הממוצעת לא שונה מאפס (p={best['p']:.2f}). אחרי 52 ניסיונות זו התוצאה שמצפים לקבל במקרה.</li>
+      </ul></div>
+  </div>"""
+
+
 def build():
     path = os.path.join(OUT, "trend_results.json")
     if not os.path.exists(path):
@@ -34,9 +60,16 @@ def build():
            "breakout52 + quality | base | 10 slots": "פריצה + סינון איכות ודגלים (10 פוזיציות)",
            "donchian50 | base | 20 slots": "פריצה לשיא של 50 יום",
            "spike (rocket) | base | 20 slots": "קניית \"רקטה\": +30% ביום על נפח פי 5",
-           "random entries | base | 20 slots": "ביקורת: כניסות אקראיות, אותם סטופים"}
+           "random entries | base | 20 slots": "ביקורת: כניסות אקראיות, אותם סטופים",
+           "all-time high | 10xATR trail | 20 slots": "גרסת הספרות: שיא כל הזמנים, סטופ נגרר 10×ATR",
+           "all-time high + quality | 5xATR | 10 slots": "שיא כל הזמנים + איכות, סטופ 5×ATR"}
     prow = [[l, pct(P[k]["CAGR"], 1), pct(P[k]["CAGR_no_costs"], 1), pct(P[k]["maxDD"], 0),
              pct(P[k]["worst_year"], 0), f"{P[k]['trades_per_year']:.0f}"] for k, l in lab.items()]
+    X = T.get("extra_portfolios", {})
+    xk = "all-time high + quality | wide % stops | 10 slots"
+    if xk in X:
+        prow.append(["הטובה מתוך 52 גרסאות: שיא כל הזמנים + איכות, סטופים רחבים", pct(X[xk]["CAGR"], 1), pct(X[xk]["CAGR_no_costs"], 1),
+                     pct(X[xk]["maxDD"], 0), "–", f"{X[xk]['trades_per_year']:.0f}"])
     prow.append(["Russell 2000 (IWM), קנה והחזק", pct(iwm["CAGR"], 1), pct(iwm["CAGR"], 1), pct(iwm["maxDD"], 0), "–", "–"])
 
     slab = {"breakout52|base": "פריצה לשיא שנתי על נפח פי 3", "donchian50|base": "פריצה לשיא של 50 יום",
@@ -66,7 +99,7 @@ def build():
     <div class="kpi neg"><div class="v sm">{pct(b['gross_mean'], 1)} → {pct(b['mean'], 1)}</div><div class="l">עסקה ממוצעת לפני עלויות ואחריהן. העלויות מוחקות את כל היתרון.</div></div>
     <div class="kpi neg"><div class="v">{pct(pb['CAGR'], 1)}</div><div class="l">תשואה שנתית של תיק שעובד כך (20 פוזיציות). Russell 2000 באותה תקופה: {pct(iwm['CAGR'], 1)}.</div></div>
   </div>
-  {table(["אסטרטגיה", "שנתי נטו", "שנתי בלי עלויות", "נפילה מקס׳", "שנה גרועה", "עסקאות בשנה"], prow, hl=[3], num_cols=[1, 2, 3, 4, 5])}
+  {table(["אסטרטגיה", "שנתי נטו", "שנתי בלי עלויות", "נפילה מקס׳", "שנה גרועה", "עסקאות בשנה"], prow, hl=[len(prow) - 1], num_cols=[1, 2, 3, 4, 5])}
   <div class="fig">
     <h3>צמיחת 1 דולר, 2010–2026, אחרי עלויות</h3>
     <div class="legend">{''.join(f'<span><i style="background:var({s["c"]})"></i>{s["name"]}</span>' for s in ser)}</div>
@@ -86,7 +119,7 @@ def build():
     <li><b>וזה עדיין אופטימי.</b> מניות שהושעו או בוטלו חסרות בנתונים, ובהשעיה אי אפשר לצאת בכלל. אם רק 1%–2% מהעסקאות נתקעות בהשעיה (90%-), העסקה הממוצעת יורדת ל-{N(halt['1%_of_trades_halted'])} עד {N(halt['2%_of_trades_halted'])}.</li>
   </ol>
   <p class="callout prose"><b>מה כן אפשר לקחת מזה:</b> הסינון שוב עושה את רוב העבודה. פריצה בחברה רווחית ונקייה ניצחה ב-{pct(q['win'], 0, False)} מהמקרים, עם חציון של {N(q['median'], 0)}, לעומת {N(ts['breakout52|base']['median'], 0)} בכל הפריצות. תיק כזה הפסיד רק {N(pq['CAGR'])} בשנה ובנפילה מקסימלית של {N(pq['maxDD'], 0)}. אבל זה עדיין רחוק מקרן מדד. הגישה של "הפסדים קטנים, מנצחות גדולות" מתאימה לשווקים עם עלויות נמוכות ומגמות אמיתיות, ו-OTC הוא כמעט ההפך: מרווחים רחבים, פערי פתיחה, השעיות ומומנטום חלש.</p>
-  {TREND_LIT}
+  {lit_block(T)}
 </section>
 """
     return html, chart
