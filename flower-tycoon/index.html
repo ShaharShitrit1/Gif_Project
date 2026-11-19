@@ -1,0 +1,1415 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>פריחה בע״מ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700;800&family=Fredoka:wght@500;600;700&display=swap">
+<style>
+/* Layout: one portrait column. A sunny street with the flower shop on top, terraced garden beds below,
+   and a rope-and-pulley cart shaft running down the right edge that links every bed to the shop. */
+:root{
+  --sky-1:#79c6ec; --sky-2:#dff3fb;
+  --grass:#74c24f; --grass-2:#4e9a35;
+  --wood:#8d5b35; --wood-2:#5f3b1f; --wood-3:#b07a4a;
+  --petal:#e5487f; --petal-2:#b42f60;
+  --sun:#ffc83d; --sun-2:#d4930c;
+  --leaf:#2f8a4e; --leaf-2:#1e6236;
+  --dew:#2a9bd8; --dew-2:#1b6f9e;
+  --ink:#1c2a21; --ink-soft:#506256;
+  --panel:#fbfdf7; --panel-2:#eef5e7; --line:#d2e2c9;
+  --muted:#c9bfae; --muted-2:#a49883;
+  --danger:#cf3d35;
+  --page:#20361f; --soil-deep:#3a2416;
+  --focus:#1b6f9e;
+  --font-display:"Fredoka","Varela Round","Arial Rounded MT Bold",system-ui,sans-serif;
+  --font-body:"Assistant","Heebo","Segoe UI",system-ui,sans-serif;
+  color-scheme: light;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;background:var(--page);color:var(--ink);font-family:var(--font-body);font-size:15px;
+  -webkit-tap-highlight-color:transparent;touch-action:manipulation;overscroll-behavior-y:none;
+  background-image:radial-gradient(circle at 20% 10%, rgba(116,194,79,.18), transparent 40%),radial-gradient(circle at 85% 70%, rgba(229,72,127,.12), transparent 45%);}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:60;background:var(--panel)}
+button{font:inherit;color:inherit;cursor:pointer;border:0;background:none;padding:0;-webkit-user-select:none;user-select:none}
+button:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+.num{direction:ltr;unicode-bidi:isolate;font-variant-numeric:tabular-nums;white-space:nowrap}
+#app{max-width:560px;margin:0 auto;min-height:100%;position:relative;background:var(--soil-deep);
+  box-shadow:0 0 0 1px rgba(0,0,0,.25),0 30px 80px rgba(0,0,0,.4);padding-bottom:calc(86px + env(safe-area-inset-bottom,0px));overflow-x:clip}
+
+/* ---------- HUD ---------- */
+#hud{position:sticky;top:env(safe-area-inset-top,0px);z-index:50;background:var(--panel);border-bottom:2px solid var(--line);
+  padding-block:10px 8px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.hud-row{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.cash-block{display:flex;align-items:center;gap:10px;min-width:0}
+.coin{flex:none}
+.cash{font-family:var(--font-display);font-weight:700;font-size:28px;line-height:1.05;letter-spacing:.2px}
+.rate{font-size:13px;color:var(--ink-soft);font-weight:700}
+.hud-side{display:flex;align-items:center;gap:8px;flex:none}
+.dew-chip{display:flex;align-items:center;gap:5px;background:#e3f3fb;border:2px solid #b9e0f3;color:var(--dew-2);
+  font-family:var(--font-display);font-weight:600;font-size:16px;border-radius:999px;padding:4px 10px 4px 12px}
+.icon-btn{width:38px;height:38px;border-radius:12px;background:var(--panel-2);border:2px solid var(--line);display:grid;place-items:center}
+.boosts{display:flex;gap:6px;flex-wrap:wrap;margin-top:7px}
+.boosts:empty{display:none}
+.boost{display:inline-flex;align-items:center;gap:5px;font-size:12.5px;font-weight:800;border-radius:999px;padding:3px 10px;background:#fff1c9;color:#7a5200;border:1.5px solid #f3d27a}
+.boost.frenzy{background:#ffe0ec;color:#8f1d4a;border-color:#f6a8c5}
+
+/* ---------- world ---------- */
+#world{position:relative}
+#street{position:relative;height:290px;overflow:hidden;background:linear-gradient(180deg,var(--sky-1),var(--sky-2) 75%);cursor:pointer}
+.sun{position:absolute;left:44%;top:134px;width:40px;height:40px;border-radius:50%;background:radial-gradient(circle,#fff6c4 0 35%,var(--sun) 36% 100%);
+  box-shadow:0 0 0 8px rgba(255,214,90,.25),0 0 0 18px rgba(255,214,90,.12)}
+.cloud{position:absolute;height:22px;border-radius:20px;background:#fff;opacity:.9;filter:drop-shadow(0 2px 0 rgba(120,170,200,.25))}
+.cloud::before,.cloud::after{content:"";position:absolute;background:#fff;border-radius:50%}
+.cloud::before{width:30px;height:30px;top:-14px;right:14px}
+.cloud::after{width:22px;height:22px;top:-9px;left:12px}
+.cloud.c1{width:74px;top:140px;animation:drift 70s linear infinite}
+.cloud.c2{width:58px;top:176px;animation:drift 95s linear infinite;animation-delay:-40s;opacity:.75}
+@keyframes drift{from{transform:translateX(620px)}to{transform:translateX(-140px)}}
+.hills{position:absolute;left:0;right:0;bottom:36px;height:70px;background:
+  radial-gradient(ellipse 140px 60px at 15% 100%,#8fd06a 98%,transparent 100%),
+  radial-gradient(ellipse 180px 70px at 60% 100%,#7cc65a 98%,transparent 100%),
+  radial-gradient(ellipse 160px 55px at 100% 100%,#8fd06a 98%,transparent 100%)}
+.sidewalk{position:absolute;left:0;right:0;bottom:0;height:42px;background:
+  repeating-linear-gradient(90deg,transparent 0 46px,rgba(0,0,0,.08) 46px 48px),linear-gradient(180deg,#d9cdb8 0 6px,#cbbda4 6px);background-color:#cfc2aa;border-top:3px solid #b7a88d}
+.shop-bld{position:absolute;left:8px;bottom:36px;width:152px;height:128px;pointer-events:none}
+.depot-bld{position:absolute;bottom:36px;width:100px;height:92px;pointer-events:none}
+.headframe{position:absolute;right:0;bottom:0;width:76px;height:88px;pointer-events:none}
+.depot-stock{position:absolute;bottom:132px;font-family:var(--font-display);font-weight:600;font-size:13px;background:rgba(255,255,255,.92);border-radius:999px;padding:2px 8px;border:1.5px solid #e2d6bf;pointer-events:none;transform:translateX(-50%)}
+.signs{position:absolute;top:10px;left:max(12px,env(safe-area-inset-left,0px));right:max(12px,env(safe-area-inset-right,0px));display:flex;justify-content:space-between;gap:10px;pointer-events:none}
+.sign{pointer-events:auto;background:rgba(251,253,247,.94);border:2px solid #fff;border-radius:16px;padding:7px;box-shadow:0 3px 0 rgba(40,80,60,.18);width:min(186px,48%);display:flex;flex-direction:column;gap:6px;cursor:default}
+.sign-top{display:flex;align-items:center;gap:8px;min-width:0}
+.sign-txt{min-width:0}
+.sign-name{font-family:var(--font-display);font-weight:600;font-size:15px;line-height:1.1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.u-rate{font-size:12.5px;font-weight:800;color:var(--leaf-2)}
+.u-rate.slow{color:var(--danger)}
+.u-rate .tag{display:inline-block;background:var(--danger);color:#fff;border-radius:6px;padding:0 5px;margin-inline-start:4px;font-size:10.5px}
+
+/* garden */
+#garden{position:relative}
+#track{position:absolute;right:0;top:0;bottom:0;width:76px;z-index:6;cursor:pointer;
+  background:linear-gradient(90deg,#4a2c17 0 10px,#6b4325 10px 13px,#3b2213 13px 63px,#6b4325 63px 66px,#4a2c17 66px);}
+#track::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(180deg,transparent 0 30px,rgba(0,0,0,.22) 30px 34px);pointer-events:none}
+.rope{position:absolute;right:37px;top:0;width:2px;background:#d8c49a;box-shadow:1px 0 0 rgba(0,0,0,.3)}
+.cart{position:absolute;right:8px;top:0;width:60px;height:50px;will-change:transform;pointer-events:none}
+.cart .load{opacity:0;transition:opacity .2s}
+.cart.full .load{opacity:1}
+.cart-label{position:absolute;right:6px;top:0;font-family:var(--font-display);font-size:11.5px;font-weight:600;background:rgba(255,255,255,.92);border-radius:999px;padding:1px 6px;will-change:transform;pointer-events:none;white-space:nowrap}
+.bed{position:relative;height:128px;cursor:pointer;overflow:hidden;isolation:isolate}
+.bed::before{content:"";position:absolute;left:0;right:0;top:0;height:12px;z-index:1;background:
+  radial-gradient(circle at 7px 2px,var(--grass) 6.5px,transparent 7px) 0 0/14px 12px repeat-x,
+  linear-gradient(var(--grass-2),var(--grass-2)) 0 0/100% 4px no-repeat}
+.bed-wall{position:absolute;left:0;right:0;top:0;height:54px}
+.bed-wall::after{content:"";position:absolute;inset:0;background:radial-gradient(circle at 20% 60%,rgba(0,0,0,.12) 2px,transparent 3px) 0 0/38px 26px,radial-gradient(circle at 70% 30%,rgba(255,255,255,.08) 2px,transparent 3px) 0 0/52px 30px}
+.bed-path{position:absolute;left:0;right:0;bottom:0;height:74px;border-top:3px solid rgba(0,0,0,.18)}
+.bed-path::after{content:"";position:absolute;inset:0;background:repeating-linear-gradient(90deg,transparent 0 22px,rgba(0,0,0,.05) 22px 24px)}
+.bed-top{position:absolute;top:13px;right:86px;left:max(12px,env(safe-area-inset-left,0px));display:flex;align-items:center;justify-content:space-between;gap:8px;z-index:3}
+.bed-label{display:flex;align-items:center;gap:7px;background:rgba(251,253,247,.94);border-radius:12px;padding:4px 9px 4px 7px;min-width:0;box-shadow:0 2px 0 rgba(0,0,0,.18)}
+.bed-ico{flex:none;width:30px;height:30px;border-radius:50%;background:#fff;display:grid;place-items:center;box-shadow:inset 0 0 0 2px var(--line)}
+.bed-name{font-family:var(--font-display);font-weight:600;font-size:14.5px;line-height:1.1;white-space:nowrap}
+.bed-no{font-size:11px;color:var(--ink-soft);font-weight:700}
+.ctrls{display:flex;align-items:center;gap:7px;flex:none}
+.patch{position:absolute;left:6px;bottom:2px;width:92px;height:72px;z-index:2;pointer-events:none;transform-origin:50% 100%}
+.patch.shake{animation:shake .32s ease-in-out}
+@keyframes shake{25%{transform:rotate(-2deg)}75%{transform:rotate(2deg)}}
+.patch .hd{transform-box:fill-box;transform-origin:center;animation:sway 3.2s ease-in-out infinite alternate}
+.patch .hd:nth-of-type(2n){animation-duration:2.6s;animation-delay:-1s}
+@keyframes sway{from{transform:rotate(-7deg)}to{transform:rotate(7deg)}}
+.basket{position:absolute;right:84px;bottom:6px;width:46px;height:42px;z-index:4;pointer-events:none}
+.basket .fl{opacity:0;transition:opacity .2s}
+.basket.has .fl{opacity:1}
+.stock{position:absolute;right:80px;bottom:50px;z-index:5;font-family:var(--font-display);font-weight:600;font-size:12.5px;background:rgba(255,255,255,.94);border-radius:999px;padding:1px 8px;border:1.5px solid rgba(0,0,0,.08);pointer-events:none}
+.sprite{position:absolute;left:0;top:0;will-change:transform;pointer-events:none;z-index:4}
+.sprite svg{display:block}
+.sprite .cr{opacity:0}
+.sprite.carrying .cr{opacity:1}
+.sprite .lg{transform-box:fill-box;transform-origin:50% 0}
+.sprite.walking .l1{animation:legA .34s ease-in-out infinite alternate}
+.sprite.walking .l2{animation:legA .34s ease-in-out infinite alternate-reverse}
+.sprite.walking .bd{animation:bob .17s ease-in-out infinite alternate}
+.sprite .arm{transform-box:fill-box;transform-origin:50% 10%}
+.sprite.working .arm{animation:snip .2s ease-in-out infinite alternate}
+.sprite.working .bd{animation:bob .2s ease-in-out infinite alternate}
+@keyframes legA{from{transform:rotate(-20deg)}to{transform:rotate(20deg)}}
+@keyframes bob{from{transform:translateY(0)}to{transform:translateY(-1.5px)}}
+@keyframes snip{from{transform:rotate(-40deg)}to{transform:rotate(-95deg)}}
+.tap-hint{position:absolute;z-index:6;pointer-events:none;background:var(--sun);color:#4a3200;font-weight:800;font-size:12.5px;border-radius:999px;padding:3px 10px;box-shadow:0 3px 0 var(--sun-2);animation:hop .7s ease-in-out infinite alternate;white-space:nowrap}
+.tap-hint[hidden]{display:none!important}
+@keyframes hop{from{transform:translateY(0)}to{transform:translateY(-5px)}}
+
+/* controls */
+.lvl{display:flex;flex-direction:column;align-items:center;justify-content:center;min-width:86px;height:44px;padding:0 10px;border-radius:13px;
+  background:linear-gradient(180deg,#e9e2d4,#d8cfbd);color:#6d6352;box-shadow:0 4px 0 var(--muted-2);transition:transform .05s}
+.lvl .l1x{font-size:11.5px;font-weight:800;line-height:1.1;display:flex;align-items:center;gap:3px}
+.lvl .l2x{font-family:var(--font-display);font-weight:600;font-size:14.5px;line-height:1.15}
+.lvl.ok{background:linear-gradient(180deg,#7fd65a,#4fae34);color:#fff;box-shadow:0 4px 0 #2f7a1f;text-shadow:0 1px 0 rgba(0,0,0,.2)}
+.lvl:active{transform:translateY(3px);box-shadow:0 1px 0 var(--muted-2)}
+.lvl.ok:active{box-shadow:0 1px 0 #2f7a1f}
+.sign .lvl{width:100%;height:40px;flex-direction:row;gap:8px}
+.mgr-wrap{position:relative;flex:none}
+.mgr{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;background:#fff;box-shadow:0 3px 0 rgba(0,0,0,.25)}
+.mgr.empty{background:#fff8e2;border:2px dashed #d9a92c;color:#9a6a00;font-weight:800;font-size:10.5px;line-height:1;flex-direction:column;gap:1px}
+.mgr.empty.ok{background:var(--sun);border:2px solid #fff;color:#4a3200;animation:pulse 1.2s ease-in-out infinite}
+@keyframes pulse{50%{box-shadow:0 0 0 6px rgba(255,200,61,.35),0 3px 0 rgba(0,0,0,.25)}}
+.abil{position:absolute;bottom:-6px;left:-6px;width:24px;height:24px;border-radius:50%;display:grid;place-items:center;
+  background:conic-gradient(#9aa39c var(--pct,0%),#cfd6d0 0);box-shadow:0 2px 0 rgba(0,0,0,.25);border:2px solid #fff}
+.abil.ready{background:var(--sun);animation:pulse 1s ease-in-out infinite}
+.abil.active{background:conic-gradient(#3fb24f var(--pct,0%),#bfe8c5 0)}
+.abil[hidden]{display:none}
+
+/* unlock row */
+.unlock{position:relative;height:150px;display:grid;place-items:center;padding:14px max(16px,env(safe-area-inset-left,0px));padding-right:92px;
+  background:repeating-linear-gradient(135deg,#5b3a24 0 14px,#553620 14px 28px)}
+.unlock-card{background:rgba(251,253,247,.96);border-radius:18px;padding:12px 14px;display:flex;align-items:center;gap:12px;box-shadow:0 4px 0 rgba(0,0,0,.25);max-width:100%}
+.unlock-card .ico{flex:none;width:52px;height:52px;border-radius:50%;background:#fff;display:grid;place-items:center;box-shadow:inset 0 0 0 3px var(--line)}
+.unlock-title{font-family:var(--font-display);font-weight:600;font-size:17px;line-height:1.15}
+.unlock-sub{font-size:12.5px;color:var(--ink-soft);font-weight:600;margin-bottom:6px}
+.bedrock{height:90px;background:linear-gradient(180deg,#3a2416,#24150c);position:relative}
+.bedrock::after{content:"";position:absolute;inset:0;background:radial-gradient(ellipse 14px 8px at 30% 40%,#4d3322 98%,transparent) 0 0/90px 46px,radial-gradient(ellipse 10px 6px at 70% 70%,#4d3322 98%,transparent) 0 0/70px 40px}
+
+/* buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border-radius:14px;padding:10px 16px;font-weight:800;font-size:15px;
+  background:linear-gradient(180deg,#7fd65a,#4fae34);color:#fff;box-shadow:0 4px 0 #2f7a1f;text-shadow:0 1px 0 rgba(0,0,0,.2);transition:transform .05s}
+.btn:active{transform:translateY(3px);box-shadow:0 1px 0 #2f7a1f}
+.btn.pink{background:linear-gradient(180deg,#f36b9b,var(--petal));box-shadow:0 4px 0 var(--petal-2)}
+.btn.blue{background:linear-gradient(180deg,#4db6ea,var(--dew));box-shadow:0 4px 0 var(--dew-2)}
+.btn.gold{background:linear-gradient(180deg,#ffd768,var(--sun));color:#4a3200;text-shadow:none;box-shadow:0 4px 0 var(--sun-2)}
+.btn.ghost{background:var(--panel-2);color:var(--ink);text-shadow:none;box-shadow:0 3px 0 var(--line)}
+.btn.red{background:linear-gradient(180deg,#e9625a,var(--danger));box-shadow:0 4px 0 #8f241e}
+.btn:disabled,.btn.off{background:linear-gradient(180deg,#e9e2d4,#d8cfbd);color:#8a806f;text-shadow:none;box-shadow:0 4px 0 var(--muted-2);cursor:not-allowed}
+.btn.wide{width:100%}
+.btn.big{padding:14px 18px;font-size:17px}
+
+/* nav */
+#nav{position:fixed;bottom:0;left:0;right:0;z-index:55;pointer-events:none}
+.nav-in{pointer-events:auto;max-width:560px;margin:0 auto;background:var(--panel);border-top:2px solid var(--line);display:grid;grid-template-columns:repeat(4,1fr);
+  padding-block:6px calc(6px + env(safe-area-inset-bottom,0px));padding-left:max(8px,env(safe-area-inset-left,0px));padding-right:max(8px,env(safe-area-inset-right,0px))}
+.nav-b{position:relative;display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 2px;border-radius:12px;font-weight:800;font-size:12.5px;color:var(--ink-soft)}
+.nav-b:hover{background:var(--panel-2)}
+.nav-b svg{width:26px;height:26px}
+.badge{position:absolute;top:2px;left:calc(50% - 22px);min-width:19px;height:19px;border-radius:999px;background:var(--danger);color:#fff;font-size:11px;font-weight:800;display:grid;place-items:center;padding:0 5px;border:2px solid var(--panel)}
+.badge[hidden]{display:none}
+.badge.dot{background:var(--sun);color:#4a3200}
+
+/* sheet */
+#sheetWrap{position:fixed;inset:0;z-index:70;display:flex;align-items:flex-end;justify-content:center}
+#sheetWrap[hidden]{display:none!important}
+.backdrop{position:absolute;inset:0;background:rgba(20,30,22,.5);animation:fade .2s}
+@keyframes fade{from{opacity:0}}
+.sheet{position:relative;width:100%;max-width:560px;max-height:min(84vh,760px);overflow:auto;background:var(--panel);border-radius:22px 22px 0 0;
+  padding-block:0 calc(18px + env(safe-area-inset-bottom,0px));padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
+  animation:up .22s cubic-bezier(.2,.9,.3,1.1);box-shadow:0 -10px 40px rgba(0,0,0,.25)}
+@keyframes up{from{transform:translateY(40%);opacity:.4}}
+.sheet-head{position:sticky;top:0;background:var(--panel);display:flex;align-items:center;justify-content:space-between;gap:10px;padding:14px 0 10px;z-index:2;border-bottom:2px solid var(--panel-2);margin-bottom:12px}
+.sheet-head h2{margin:0;font-family:var(--font-display);font-weight:600;font-size:21px;text-wrap:balance}
+.x-btn{width:36px;height:36px;border-radius:50%;background:var(--panel-2);font-size:22px;line-height:1;display:grid;place-items:center;flex:none}
+.stack{display:flex;flex-direction:column;gap:12px}
+.lead{margin:0;color:var(--ink-soft);font-size:15px;line-height:1.5;max-width:62ch}
+.up-head{display:flex;align-items:center;gap:12px}
+.up-ico{width:58px;height:58px;border-radius:50%;background:#fff;display:grid;place-items:center;box-shadow:inset 0 0 0 3px var(--line);flex:none}
+.up-title{font-family:var(--font-display);font-weight:600;font-size:19px}
+.up-sub{font-size:14px;color:var(--ink-soft);font-weight:700}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.stat{background:#fff;border:2px solid var(--panel-2);border-radius:14px;padding:8px 10px;min-width:0}
+.stat>span{display:block;font-size:12px;color:var(--ink-soft);font-weight:700}
+.stat b{display:block;font-family:var(--font-display);font-weight:600;font-size:16px;margin-top:2px}
+.stat i{display:block;font-style:normal;font-size:13px;font-weight:800;color:var(--leaf)}
+.stat i.same{color:var(--muted-2)}
+.ms{background:#fff7dc;border:2px solid #f6e2a6;border-radius:14px;padding:10px 12px;font-size:13.5px;font-weight:700;color:#6b4d00}
+.bar{height:8px;border-radius:99px;background:rgba(0,0,0,.08);overflow:hidden;margin-top:6px}
+.bar>div{height:100%;background:linear-gradient(90deg,#ffcf4d,#f0a91c);border-radius:99px}
+.bar.green>div{background:linear-gradient(90deg,#7fd65a,#4fae34)}
+.seg{display:grid;grid-template-columns:repeat(4,1fr);background:var(--panel-2);border-radius:12px;padding:4px;gap:4px}
+.seg button{padding:8px 0;border-radius:9px;font-weight:800;font-size:14px;color:var(--ink-soft)}
+.seg button.on{background:#fff;color:var(--ink);box-shadow:0 2px 0 var(--line)}
+.card{background:#fff;border:2px solid var(--panel-2);border-radius:16px;padding:12px;display:flex;align-items:center;gap:12px}
+.card .grow{flex:1;min-width:0}
+.card h3{margin:0;font-size:15.5px;font-weight:800;line-height:1.25}
+.card p{margin:2px 0 0;font-size:13px;color:var(--ink-soft);line-height:1.4}
+.card.done{border-color:#bfe6ad;background:#f4fbef}
+.reward{display:inline-flex;align-items:center;gap:4px;font-weight:800;color:var(--dew-2);font-size:13px}
+.rar{display:inline-block;border-radius:999px;padding:1px 9px;font-size:12px;font-weight:800;color:#fff}
+.mgr-hero{display:flex;align-items:center;gap:14px}
+.big-num{font-family:var(--font-display);font-weight:700;font-size:30px}
+.kv{display:grid;grid-template-columns:1fr auto;gap:6px 12px;font-size:14px}
+.kv dt{color:var(--ink-soft);font-weight:600}
+.kv dd{margin:0;font-weight:800;text-align:left}
+.toggle{display:flex;align-items:center;justify-content:space-between;gap:12px;background:#fff;border:2px solid var(--panel-2);border-radius:14px;padding:10px 12px;font-weight:700;width:100%}
+.sw{width:46px;height:28px;border-radius:99px;background:#d6d0c4;position:relative;flex:none;transition:background .15s}
+.sw::after{content:"";position:absolute;top:3px;right:3px;width:22px;height:22px;border-radius:50%;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.3);transition:right .15s}
+.sw.on{background:#4fae34}
+.sw.on::after{right:21px}
+.chain{display:flex;align-items:center;justify-content:space-between;gap:6px;background:var(--panel-2);border-radius:14px;padding:10px}
+.chain div{text-align:center;flex:1;font-size:12.5px;font-weight:700;color:var(--ink-soft)}
+.chain svg{display:block;margin:0 auto 4px}
+.chain .arr{flex:none;color:var(--muted-2);font-size:18px}
+
+/* toasts, hint, floaters */
+#toasts{position:fixed;top:calc(env(safe-area-inset-top,0px) + 92px);left:0;right:0;z-index:80;display:flex;flex-direction:column;align-items:center;gap:6px;pointer-events:none;padding:0 16px}
+.toast{background:#22322a;color:#fff;font-weight:700;font-size:14px;border-radius:14px;padding:9px 14px;box-shadow:0 6px 20px rgba(0,0,0,.25);animation:toastIn .25s ease-out;max-width:420px;text-align:center}
+.toast.gold{background:#fff3c9;color:#5c4100;border:2px solid #f2cf63}
+.toast.blue{background:#e1f3fc;color:#14577d;border:2px solid #a9daf2}
+@keyframes toastIn{from{transform:translateY(-10px);opacity:0}}
+#hint{position:fixed;left:0;right:0;bottom:calc(76px + env(safe-area-inset-bottom,0px));z-index:56;display:flex;justify-content:center;padding:0 16px;pointer-events:none}
+#hint[hidden]{display:none!important}
+.hint-in{pointer-events:auto;max-width:520px;width:100%;background:#22322a;color:#fff;border-radius:16px;padding:10px 12px 10px 14px;display:flex;align-items:center;gap:10px;box-shadow:0 8px 24px rgba(0,0,0,.3);animation:toastIn .25s}
+.hint-in p{margin:0;flex:1;font-weight:700;font-size:14.5px;line-height:1.35}
+.hint-in button{font-size:12px;font-weight:800;color:#b9d6c3;flex:none}
+.focus-ring{animation:ring 1.1s ease-in-out infinite!important;z-index:9}
+@keyframes ring{0%,100%{box-shadow:0 0 0 0 rgba(255,200,61,.9),0 4px 0 rgba(0,0,0,.2)}50%{box-shadow:0 0 0 9px rgba(255,200,61,0),0 4px 0 rgba(0,0,0,.2)}}
+.float{position:absolute;z-index:30;pointer-events:none;font-family:var(--font-display);font-weight:700;font-size:17px;color:#fff;
+  text-shadow:0 2px 0 #2f7a1f,0 0 6px rgba(0,0,0,.25);animation:floatUp 1.1s ease-out forwards;white-space:nowrap}
+@keyframes floatUp{from{transform:translate(-50%,0);opacity:1}to{transform:translate(-50%,-46px);opacity:0}}
+.ripple{position:absolute;z-index:20;width:40px;height:40px;margin:-20px 0 0 -20px;border-radius:50%;border:3px solid rgba(255,255,255,.9);pointer-events:none;animation:rip .45s ease-out forwards}
+@keyframes rip{from{transform:scale(.3);opacity:1}to{transform:scale(1.6);opacity:0}}
+#butterfly{position:fixed;left:0;top:0;z-index:58;width:54px;height:54px;display:grid;place-items:center;will-change:transform;filter:drop-shadow(0 0 8px rgba(255,210,70,.9))}
+#butterfly[hidden]{display:none!important}
+#butterfly .wl,#butterfly .wr{transform-box:fill-box;animation:flap .22s ease-in-out infinite alternate}
+#butterfly .wl{transform-origin:100% 50%}
+#butterfly .wr{transform-origin:0% 50%}
+@keyframes flap{to{transform:scaleX(.35)}}
+.petal-fx{position:fixed;top:-20px;z-index:90;pointer-events:none;width:12px;height:16px;border-radius:60% 0 60% 0;animation:fall linear forwards}
+@keyframes fall{to{transform:translate(var(--dx),110vh) rotate(var(--rot))}}
+.chain-mini{display:flex;gap:6px;flex-wrap:wrap}
+@media (prefers-reduced-motion: reduce){
+  .cloud,.patch .hd,.tap-hint,.sprite.walking .bd,.sprite.working .bd{animation:none!important}
+  .petal-fx{display:none}
+}
+</style>
+</head>
+<body>
+<div id="app">
+  <header id="hud">
+    <div class="hud-row">
+      <div class="cash-block">
+        <svg class="coin" width="36" height="36" viewBox="0 0 36 36" aria-hidden="true"><circle cx="18" cy="18" r="16" fill="#f0a91c"/><circle cx="18" cy="18" r="13" fill="#ffd25a"/><path d="M18 9c-2.6 3-6 4.2-6 8.4A6 6 0 0 0 18 23.5a6 6 0 0 0 6-6.1C24 13.2 20.6 12 18 9z" fill="#e5487f"/><path d="M18 23.5V28" stroke="#2f8a4e" stroke-width="2" stroke-linecap="round"/></svg>
+        <div style="min-width:0">
+          <div id="cash" class="cash num">₪0</div>
+          <div class="rate"><span id="rate" class="num">₪0</span> לשנייה</div>
+        </div>
+      </div>
+      <div class="hud-side">
+        <button class="dew-chip" data-act="open:dew" aria-label="טיפות טל">
+          <svg width="16" height="18" viewBox="0 0 16 18" aria-hidden="true"><path d="M8 1C5 6 2 8.6 2 12a6 6 0 0 0 12 0c0-3.4-3-6-6-11z" fill="#2a9bd8"/><path d="M5.2 12.2a2.8 2.8 0 0 0 2.6 2.8" stroke="#fff" stroke-width="1.6" fill="none" stroke-linecap="round"/></svg>
+          <span id="dew" class="num">0</span>
+        </button>
+        <button class="icon-btn" data-act="mute" id="muteBtn" aria-label="צלילים"></button>
+      </div>
+    </div>
+    <div id="boosts" class="boosts"></div>
+  </header>
+
+  <main id="world">
+    <section id="street" aria-label="הרחוב והחנות">
+      <div class="sun"></div>
+      <div class="cloud c1"></div><div class="cloud c2"></div>
+      <div class="hills"></div>
+      <div class="sidewalk"></div>
+      <svg class="shop-bld" id="shopBld" viewBox="0 0 152 128" aria-hidden="true"></svg>
+      <svg class="depot-bld" id="depotBld" viewBox="0 0 100 92" aria-hidden="true"></svg>
+      <svg class="headframe" id="headframe" viewBox="0 0 76 88" aria-hidden="true"></svg>
+      <div class="depot-stock num" id="depotStock">₪0</div>
+      <div id="sellers"></div>
+      <div class="tap-hint" id="shopTap" hidden>הקישו כדי למכור</div>
+      <div class="signs">
+        <div class="sign" id="shopSign">
+          <div class="sign-top">
+            <div class="mgr-wrap"><button class="mgr" data-act="mgr:shop" data-k="mgr"></button><button class="abil" data-act="abil:shop" data-k="abil" hidden aria-label="יכולת מנהל"></button></div>
+            <div class="sign-txt"><div class="sign-name">חנות הפרחים</div><div class="u-rate" data-k="rate"></div></div>
+          </div>
+          <button class="lvl" data-act="upg:shop" data-k="lvl"></button>
+        </div>
+        <div class="sign" id="cartSign">
+          <div class="sign-top">
+            <div class="mgr-wrap"><button class="mgr" data-act="mgr:cart" data-k="mgr"></button><button class="abil" data-act="abil:cart" data-k="abil" hidden aria-label="יכולת מנהל"></button></div>
+            <div class="sign-txt"><div class="sign-name">עגלת האיסוף</div><div class="u-rate" data-k="rate"></div></div>
+          </div>
+          <button class="lvl" data-act="upg:cart" data-k="lvl"></button>
+        </div>
+      </div>
+    </section>
+
+    <section id="garden" aria-label="הגן">
+      <div id="track"><div class="rope" id="rope"></div><svg class="cart" id="cart" viewBox="0 0 60 50" aria-hidden="true"></svg><div class="cart-label num" id="cartLabel" hidden></div><div class="tap-hint" id="cartTap" hidden style="right:2px">הקישו</div></div>
+      <div id="beds"></div>
+      <div id="unlock" class="unlock"></div>
+      <div class="bedrock"></div>
+    </section>
+  </main>
+
+  <nav id="nav"><div class="nav-in">
+    <button class="nav-b" data-act="open:missions"><svg viewBox="0 0 26 26" aria-hidden="true"><rect x="5" y="4" width="16" height="19" rx="3" fill="#fff" stroke="#506256" stroke-width="2"/><rect x="9" y="2" width="8" height="5" rx="2" fill="#e5487f"/><path d="M9 12l2 2 4-4M9 18h8" stroke="#2f8a4e" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>משימות<span class="badge" id="bMissions" hidden></span></button>
+    <button class="nav-b" data-act="open:dew"><svg viewBox="0 0 26 26" aria-hidden="true"><path d="M13 3C9 9 6 12 6 16a7 7 0 0 0 14 0c0-4-3-7-7-13z" fill="#2a9bd8"/><path d="M9.5 16.5a3.4 3.4 0 0 0 3.2 3.4" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round"/></svg>חנות טל</button>
+    <button class="nav-b" data-act="open:festival"><svg viewBox="0 0 26 26" aria-hidden="true"><g fill="#f0a91c"><circle cx="13" cy="6.5" r="4"/><circle cx="19.2" cy="11" r="4"/><circle cx="16.8" cy="18.3" r="4"/><circle cx="9.2" cy="18.3" r="4"/><circle cx="6.8" cy="11" r="4"/></g><circle cx="13" cy="13" r="3.6" fill="#7a4a12"/></svg>פסטיבל<span class="badge dot" id="bFest" hidden>!</span></button>
+    <button class="nav-b" data-act="open:settings"><svg viewBox="0 0 26 26" aria-hidden="true"><path d="M13 8.5a4.5 4.5 0 1 0 0 9 4.5 4.5 0 0 0 0-9zm9 6.2v-3.4l-2.6-.6a7 7 0 0 0-.8-1.8l1.4-2.3-2.4-2.4-2.3 1.4a7 7 0 0 0-1.8-.8L12.9 2h-3.4l-.6 2.6a7 7 0 0 0-1.8.8L4.8 4 2.4 6.4l1.4 2.3a7 7 0 0 0-.8 1.8L.4 11.1v3.4l2.6.6c.2.6.5 1.3.8 1.8l-1.4 2.3 2.4 2.4 2.3-1.4c.6.4 1.2.6 1.8.8l.6 2.6h3.4l.6-2.6c.6-.2 1.3-.5 1.8-.8l2.3 1.4 2.4-2.4-1.4-2.3c.4-.6.6-1.2.8-1.8z" fill="#506256" transform="translate(1.6 0)"/></svg>הגדרות</button>
+  </div></nav>
+
+  <div id="hint" hidden><div class="hint-in"><p id="hintText"></p><button data-act="skiptut">דלגו</button></div></div>
+  <div id="sheetWrap" hidden>
+    <div class="backdrop" data-act="close"></div>
+    <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="sheetTitle">
+      <div class="sheet-head"><h2 id="sheetTitle"></h2><button class="x-btn" data-act="close" aria-label="סגירה">×</button></div>
+      <div id="sheetBody"></div>
+    </div>
+  </div>
+  <div id="toasts" aria-live="polite"></div>
+  <button id="butterfly" hidden data-act="bfly" aria-label="פרפר זהב — הקישו לקבלת בונוס"></button>
+</div>
+
+<script>
+(function(){
+'use strict';
+const D=document;
+D.documentElement.lang='he'; D.documentElement.dir='rtl';
+const $=s=>D.querySelector(s);
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+const rnd=(a,b)=>a+Math.random()*(b-a);
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+
+/* ================= numbers ================= */
+const SUF=['','K','M','B','T'];
+for(let a=0;a<26;a++)for(let b=0;b<26;b++)SUF.push(String.fromCharCode(97+a,97+b));
+function fmt(n){
+  if(!isFinite(n)) return '∞';
+  if(n<0) return '-'+fmt(-n);
+  if(n<1000) return (n<10 && n%1>0.05) ? (Math.floor(n*10)/10).toFixed(1) : Math.floor(n).toString();
+  let e=Math.floor(Math.log10(n)/3);
+  if(e>=SUF.length) return n.toExponential(2);
+  let v=n/Math.pow(1000,e);
+  if(v>=999.995 && e+1<SUF.length){v/=1000;e++;}
+  const s=v<10?(Math.floor(v*100)/100).toFixed(2):v<100?(Math.floor(v*10)/10).toFixed(1):Math.floor(v).toString();
+  return s+SUF[e];
+}
+const money=n=>'₪'+fmt(n);
+const M=n=>`<span class="num">${money(n)}</span>`;
+function fmtTime(sec){
+  sec=Math.max(0,Math.ceil(sec));
+  const h=Math.floor(sec/3600),m=Math.floor(sec%3600/60),s=sec%60;
+  return h?`${h}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`:`${m}:${String(s).padStart(2,'0')}`;
+}
+function fmtDur(sec){
+  sec=Math.floor(sec);
+  if(sec<60) return `${sec} שניות`;
+  const h=Math.floor(sec/3600),m=Math.floor(sec%3600/60);
+  if(!h) return m===1?'דקה':`${m} דקות`;
+  const hs=h===1?'שעה':h===2?'שעתיים':`${h} שעות`;
+  return m?`${hs} ו-${m} דקות`:hs;
+}
+
+/* ================= data ================= */
+const FLOWERS=[
+ {name:'כלניות',one:'כלנית',shape:'round',n:6,c:'#e3263a',c2:'#ff7a7a',k:'#2b1720'},
+ {name:'חמניות',one:'חמנייה',shape:'pointed',n:14,c:'#ffc414',c2:'#ffe27a',k:'#6b3d17'},
+ {name:'צבעונים',one:'צבעוני',shape:'cup',c:'#ff4f74',c2:'#ffa3b6',k:'#c22d4c'},
+ {name:'לבנדר',one:'לבנדר',shape:'spike',c:'#8a6ad8',c2:'#b9a2f0',k:'#5b40a8'},
+ {name:'ורדים',one:'ורד',shape:'rose',c:'#d4173f',c2:'#ff6b88',k:'#8e0f2b'},
+ {name:'חרציות',one:'חרצית',shape:'thin',n:20,c:'#ff9124',c2:'#ffc172',k:'#b8560a'},
+ {name:'אירוסים',one:'אירוס',shape:'iris',c:'#5a55d6',c2:'#9b97f3',k:'#ffd23f'},
+ {name:'אדמוניות',one:'אדמונית',shape:'fluffy',c:'#f07fb0',c2:'#ffc4dc',k:'#ffe9f2'},
+ {name:'סחלבים',one:'סחלב',shape:'orchid',c:'#c25fd3',c2:'#efb8f6',k:'#7b1f8c'},
+ {name:'רקפות',one:'רקפת',shape:'cyclamen',c:'#e5489a',c2:'#ff8cc4',k:'#8a1650'},
+ {name:'לוטוסים',one:'לוטוס',shape:'pointed',n:10,c:'#f37fae',c2:'#ffd0e2',k:'#ffcf3f'},
+ {name:'שושנים צחורות',one:'שושן',shape:'lily',c:'#fffaf2',c2:'#f1d3b0',k:'#e39a12'},
+ {name:'פריחת דובדבן',one:'דובדבן',shape:'notched',c:'#ffbcd4',c2:'#fff0f6',k:'#d84a80'},
+ {name:'נוריות',one:'נורית',shape:'layered',c:'#ff5534',c2:'#ffa786',k:'#9c2a14'},
+ {name:'ורדים כחולים',one:'ורד כחול',shape:'rose',c:'#3d7fe0',c2:'#9ccbff',k:'#1d4c9c',glow:true},
+];
+const NB=FLOWERS.length;
+const B=FLOWERS.map((_,i)=>10*Math.pow(14,i));
+const UF=[0,0.08,0.25,0.5,0.8];
+const UNLOCK=FLOWERS.map((_,i)=>i===0?0:Math.round(B[i]*60*Math.pow(1.9,i)*(UF[i]??1)));
+
+const cnt=(L,arr)=>{let c=0;for(const t of arr)if(L>=t)c++;return c;};
+const BED_WORK_T=[10,25,50,100,200], BED_MS=[10,25,50,75,100,150,200,250,300,350,400];
+const BED_WALK=1.4, HARVEST=1.0, DEPOSIT=0.3, BED_CYCLE=2*BED_WALK+HARVEST+DEPOSIT;
+const CART_MS=[25,50,100,150,200,300,400], CART_SP=[10,25,50,100,150,200,300,400];
+const CART_STOP=0.3, CART_UNLOAD=0.4;
+const SHOP_SELL_T=[10,25,50,100,150,200,300], SHOP_MS=[25,50,100,150,200,300,400];
+const SHOP_WALK=1.8, SHOP_LOAD=0.35, SHOP_SELL=0.35, SHOP_CYCLE=2*SHOP_WALK+SHOP_LOAD+SHOP_SELL;
+
+const Econ={
+  bedWorkers:L=>1+cnt(L,BED_WORK_T),
+  bedLoad:(i,L)=>B[i]*L*Math.pow(2,cnt(L,BED_MS)),
+  bedRate:(i,L)=>Econ.bedWorkers(L)*Econ.bedLoad(i,L)/BED_CYCLE,
+  cartCap:L=>80*Math.pow(1.115,L-1)*Math.pow(1.5,cnt(L,CART_MS)),
+  cartSpeed:L=>2.2+0.4*cnt(L,CART_SP),
+  cartTrip:(L,n)=>2*n/Econ.cartSpeed(L)+n*CART_STOP+CART_UNLOAD,
+  cartRate:(L,n)=>Econ.cartCap(L)/Econ.cartTrip(L,Math.max(1,n)),
+  shopSellers:L=>1+cnt(L,SHOP_SELL_T),
+  shopCap:L=>60*Math.pow(1.11,L-1)*Math.pow(1.5,cnt(L,SHOP_MS)),
+  shopRate:L=>Econ.shopSellers(L)*Econ.shopCap(L)/SHOP_CYCLE,
+};
+const UNITS={
+  bed:{r:1.105,base:i=>B[i]*3,L:i=>S.beds[i].L,set:(i,v)=>{S.beds[i].L=v;}},
+  cart:{r:1.125,base:()=>50,L:()=>S.cart.L,set:(i,v)=>{S.cart.L=v;}},
+  shop:{r:1.125,base:()=>60,L:()=>S.shop.L,set:(i,v)=>{S.shop.L=v;}},
+};
+function upgCost(kind,i,n){const u=UNITS[kind],L=u.L(i),c0=u.base(i)*Math.pow(u.r,L-1);return c0*(Math.pow(u.r,n)-1)/(u.r-1);}
+function upgMax(kind,i){
+  const u=UNITS[kind],L=u.L(i),c0=u.base(i)*Math.pow(u.r,L-1);
+  if(S.cash<c0) return 0;
+  let n=Math.floor(Math.log(S.cash*(u.r-1)/c0+1)/Math.log(u.r));
+  while(n>1 && upgCost(kind,i,n)>S.cash) n--;
+  return Math.max(1,n);
+}
+function bulkN(kind,i){const b=S.settings.bulk;return b==='max'?Math.max(1,upgMax(kind,i)):b;}
+
+const RAR=[
+  {name:'רגיל',mag:2,dur:30,cd:150,col:'#5fae4a'},
+  {name:'נדיר',mag:3,dur:45,cd:150,col:'#3a8ee0'},
+  {name:'אגדי',mag:5,dur:60,cd:150,col:'#e9a114'},
+];
+const ABIL={
+  bed:[{k:'speed',name:'צעד מהיר',d:m=>`הגננים זזים פי ${m} מהר יותר`},{k:'yield',name:'קטיף ענק',d:m=>`כל קטיף שווה פי ${m}`}],
+  cart:[{k:'speed',name:'טורבו',d:m=>`העגלה נוסעת פי ${m} מהר יותר`},{k:'cap',name:'ארגז ענק',d:m=>`העגלה מעמיסה פי ${m}`}],
+  shop:[{k:'speed',name:'מכירת בזק',d:m=>`המוכרים זזים פי ${m} מהר יותר`},{k:'price',name:'מחיר פרימיום',d:m=>`כל מכירה שווה פי ${m}`}],
+};
+const NAMES=['רותי','אבי','מיכל','יוסי','נועה','דני','שירה','עומר','תמר','איתי','ליאת','גיל','הדס','אורי','מאיה','רון','יעל','בני','אלה','נדב','שני','עידו','ענבל','אסף','ציפי','משה','לאה','חיים'];
+const SKINS=['#f6d1b1','#eab48c','#c98e62','#a8693f','#7a4a2c'];
+const HAIRS=['#2b1d16','#5a3418','#a8642a','#e0b04a','#c44b2a','#8a8f99'];
+const SHIRTS=['#e5487f','#3a8ee0','#5fae4a','#f08a24','#8a6ad8','#2bb3a3'];
+function rollManager(kind){
+  const x=Math.random(); const r=x<0.1?2:x<0.4?1:0;
+  return {name:pick(NAMES),r,a:pick(ABIL[kind]).k,look:{s:pick(SKINS),h:pick(HAIRS),st:Math.floor(Math.random()*4),sh:pick(SHIRTS),g:Math.random()<0.3},act:0,cd:0};
+}
+function hireCost(kind,i){return kind==='bed'?B[i]*10:kind==='cart'?150:250;}
+function rerollCost(kind,i){return Math.max(hireCost(kind,i)*3,idleRate()*45);}
+const unitOf=(kind,i)=>kind==='bed'?S.beds[i]:S[kind];
+const unitName=(kind,i)=>kind==='bed'?`ערוגת ה${FLOWERS[i].name}`:kind==='cart'?'עגלת האיסוף':'חנות הפרחים';
+function abilMult(u,key){const m=u.mgr;return(m&&m.act>0&&m.a===key)?RAR[m.r].mag:1;}
+
+const SEED_BONUS=0.05;
+const permMult=()=>1+S.seeds*SEED_BONUS;
+const tempMult=()=>(S.boosts.fert>0?2:1)*(S.boosts.frenzy>0?3:1);
+const seedsTotal=()=>Math.floor(Math.cbrt(S.lifetime/1e9));
+const seedsClaimable=()=>Math.max(0,seedsTotal()-S.seeds);
+
+function rates(){
+  const n=S.beds.length;let prod=0,prodM=0;
+  S.beds.forEach((b,i)=>{const r=Econ.bedRate(i,b.L);prod+=r;if(b.mgr)prodM+=r;});
+  return {prod,prodM,cart:Econ.cartRate(S.cart.L,n),shop:Econ.shopRate(S.shop.L)};
+}
+function idleRate(){
+  const r=rates();
+  return Math.min(r.prodM,S.cart.mgr?r.cart:0,S.shop.mgr?r.shop:0)*permMult();
+}
+
+/* ================= missions ================= */
+const mgrCount=s=>s.beds.filter(b=>b.mgr).length+(s.cart.mgr?1:0)+(s.shop.mgr?1:0);
+const maxBedL=s=>Math.max(...s.beds.map(b=>b.L));
+const MISSIONS=[
+ {t:'שדרגו את ערוגת הכלניות לרמה 5',p:s=>[s.beds[0].L,5],r:3},
+ {t:'גייסו את המנהל הראשון',p:s=>[mgrCount(s),1],r:3},
+ {t:'פתחו את ערוגת החמניות',p:s=>[s.beds.length,2],r:5},
+ {t:'שדרגו את העגלה לרמה 10',p:s=>[s.cart.L,10],r:5},
+ {t:'שדרגו את החנות לרמה 10',p:s=>[s.shop.L,10],r:5},
+ {t:'העסיקו 3 מנהלים בבת אחת',p:s=>[mgrCount(s),3],r:5},
+ {t:'הרוויחו ₪100K בסך הכול',p:s=>[s.lifetime,1e5],r:5,money:1},
+ {t:'תפסו פרפר זהב',p:s=>[s.stats.butterflies,1],r:5},
+ {t:'הפעילו יכולת של מנהל',p:s=>[s.stats.abilities,1],r:5},
+ {t:'הביאו ערוגה כלשהי לרמה 25',p:s=>[maxBedL(s),25],r:8},
+ {t:'פתחו 4 ערוגות',p:s=>[s.beds.length,4],r:8},
+ {t:'הרוויחו ₪100M בסך הכול',p:s=>[s.lifetime,1e8],r:8,money:1},
+ {t:'שדרגו את העגלה לרמה 50',p:s=>[s.cart.L,50],r:10},
+ {t:'שדרגו את החנות לרמה 50',p:s=>[s.shop.L,50],r:10},
+ {t:'פתחו 6 ערוגות',p:s=>[s.beds.length,6],r:10},
+ {t:'תפסו 5 פרפרי זהב',p:s=>[s.stats.butterflies,5],r:10},
+ {t:'הביאו ערוגה כלשהי לרמה 50',p:s=>[maxBedL(s),50],r:10},
+ {t:'הרוויחו ₪1T בסך הכול',p:s=>[s.lifetime,1e12],r:12,money:1},
+ {t:'פתחו 8 ערוגות',p:s=>[s.beds.length,8],r:12},
+ {t:'חגגו פסטיבל פריחה',p:s=>[s.stats.festivals,1],r:25},
+ {t:'הביאו ערוגה כלשהי לרמה 100',p:s=>[maxBedL(s),100],r:15},
+ {t:'פתחו 10 ערוגות',p:s=>[s.beds.length,10],r:15},
+ {t:'הפעילו 25 יכולות של מנהלים',p:s=>[s.stats.abilities,25],r:15},
+ {t:'פתחו 12 ערוגות',p:s=>[s.beds.length,12],r:20},
+ {t:'חגגו 3 פסטיבלים',p:s=>[s.stats.festivals,3],r:30},
+ {t:'פתחו את כל 15 הערוגות',p:s=>[s.beds.length,15],r:40},
+];
+function missionDef(idx){
+  if(idx<MISSIONS.length) return MISSIONS[idx];
+  const goal=1e15*Math.pow(1000,idx-MISSIONS.length);
+  return {t:`הרוויחו ${money(goal)} בסך הכול`,p:s=>[s.lifetime,goal],r:20,money:1};
+}
+function activeMissions(){
+  const out=[];const cl=new Set(S.claimed);
+  for(let i=0;out.length<3&&i<MISSIONS.length+60;i++) if(!cl.has(i)) out.push(i);
+  return out;
+}
+const missionDone=i=>{const [a,b]=missionDef(i).p(S);return a>=b;};
+
+const DEW_ITEMS=[
+ {k:'fert',name:'דשן קסם',d:'כל ההכנסות פי 2 למשך 15 דקות. אפשר לצבור זמן.',cost:20},
+ {k:'rain',name:'גשם מטבעות',d:'מקבלים מיד הכנסה של שעה שלמה לפי הקצב הנוכחי.',cost:30},
+ {k:'coffee',name:'קפה למנהלים',d:'כל יכולות המנהלים מוכנות להפעלה מיד.',cost:8},
+ {k:'cap',name:'חממה מוגנת',d:'הגן ממשיך להרוויח שעתיים נוספות כשאתם לא במשחק (עד 12 שעות).',cost:40},
+];
+
+/* ================= state ================= */
+const SAVE_KEY='pericha-save-v1';
+function newState(){
+  return {v:1,cash:0,lifetime:0,run:0,seeds:0,dew:5,
+    beds:[{L:1,stock:0,mgr:null}],cart:{L:1,mgr:null},shop:{L:1,mgr:null},depot:0,
+    boosts:{fert:0,frenzy:0},claimed:[],
+    stats:{butterflies:0,abilities:0,festivals:0,taps:0,play:0,bestRate:0,started:Date.now()},
+    settings:{sound:true,music:false,bulk:1},offlineH:2,tut:0,welcomed:false,last:Date.now()};
+}
+let S=newState();
+function merge(base,src){
+  for(const k in src){
+    if(src[k]&&typeof src[k]==='object'&&!Array.isArray(src[k])&&base[k]&&typeof base[k]==='object'&&!Array.isArray(base[k])) merge(base[k],src[k]);
+    else base[k]=src[k];
+  }
+  return base;
+}
+function serialize(){
+  const c=JSON.parse(JSON.stringify(S));
+  if(RT){
+    RT.beds.forEach((r,i)=>{if(c.beds[i]) c.beds[i].stock+=r.workers.reduce((a,w)=>a+w.carry,0);});
+    c.depot+=RT.cart.load+RT.sellers.reduce((a,s)=>a+s.carry,0);
+  }
+  c.last=Date.now();
+  return c;
+}
+function save(){
+  S.last=Date.now();
+  try{localStorage.setItem(SAVE_KEY,JSON.stringify(serialize()));}catch(e){}
+}
+function loadFrom(obj){
+  const s=merge(newState(),obj||{});
+  s.beds=(s.beds||[]).slice(0,NB).map(b=>({L:Math.max(1,b.L|0),stock:+b.stock||0,mgr:b.mgr||null}));
+  if(!s.beds.length) s.beds=[{L:1,stock:0,mgr:null}];
+  return s;
+}
+
+/* ================= runtime ================= */
+let RT=null;
+function newWorker(k){return {state:'idle',p:0,t:0,carry:0,k,delay:k*0.2,el:null,cls:'',flip:null};}
+function newRT(){
+  return {beds:[],cart:{state:'idle',p:0,target:0,load:0,t:0,tap:false},sellers:[],
+    ema:0,emaAcc:0,emaT:0,uiT:0,saveT:0,floatAcc:0,floatT:0,coinT:0,lastWall:Date.now(),
+    bfly:{t:rnd(35,60),a:null},notified:new Set(),pending:null,W:400,sheet:null,lastSheetHTML:''};
+}
+
+/* ================= audio ================= */
+const Snd={ctx:null,out:null,mus:null,musT:null,step:0,deg:0,
+  init(){
+    if(this.ctx) return;
+    try{const C=window.AudioContext||window.webkitAudioContext;if(!C)return;
+      this.ctx=new C();this.out=this.ctx.createGain();this.out.gain.value=0.55;this.out.connect(this.ctx.destination);
+      this.mus=this.ctx.createGain();this.mus.gain.value=0.5;this.mus.connect(this.out);
+      if(S.settings.music) this.startMusic();
+    }catch(e){this.ctx=null;}
+  },
+  tone(f,dur,type,vol,when,slide,dest){
+    if(!this.ctx) return;
+    try{
+      const t=this.ctx.currentTime+(when||0);const o=this.ctx.createOscillator(),g=this.ctx.createGain();
+      o.type=type||'sine';o.frequency.setValueAtTime(f,t);if(slide)o.frequency.exponentialRampToValueAtTime(f*slide,t+dur);
+      g.gain.setValueAtTime(0.0001,t);g.gain.exponentialRampToValueAtTime(vol||0.1,t+0.012);g.gain.exponentialRampToValueAtTime(0.0001,t+dur);
+      o.connect(g);g.connect(dest||this.out);o.start(t);o.stop(t+dur+0.05);
+    }catch(e){}
+  },
+  sfx(fn){if(this.ctx&&S.settings.sound){if(this.ctx.state==='suspended')this.ctx.resume();fn();}},
+  coin(){const now=performance.now();if(now-RT.coinT<140)return;RT.coinT=now;this.sfx(()=>{this.tone(1175,0.07,'triangle',0.06);this.tone(1760,0.13,'triangle',0.05,0.05);});},
+  tap(){this.sfx(()=>this.tone(440,0.07,'sine',0.09,0,1.6));},
+  up(){this.sfx(()=>[523,659,784,1047].forEach((f,i)=>this.tone(f,0.13,'triangle',0.07,i*0.05)));},
+  unlock(){this.sfx(()=>[392,523,659,784,1047,1319].forEach((f,i)=>this.tone(f,0.25,'triangle',0.07,i*0.07)));},
+  err(){this.sfx(()=>this.tone(170,0.16,'square',0.035));},
+  sparkle(){this.sfx(()=>[1319,1568,2093,2637,3136].forEach((f,i)=>this.tone(f,0.12,'sine',0.05,i*0.045)));},
+  startMusic(){
+    if(!this.ctx||this.musT) return;
+    const scale=[261.6,293.7,329.6,392,440,523.3,587.3,659.3,784];
+    const chords=[[130.8,196],[110,164.8],[87.3,130.8],[98,146.8]];
+    this.step=0;this.deg=4;
+    this.musT=setInterval(()=>{
+      if(!S.settings.music||D.hidden) return;
+      if(this.ctx.state==='suspended') this.ctx.resume();
+      const st=this.step++;
+      if(st%8===0){const ch=chords[(st/8|0)%4];ch.forEach(f=>this.tone(f,2.6,'sine',0.035,0,0,this.mus));}
+      if(Math.random()<0.72){this.deg=clamp(this.deg+pick([-2,-1,-1,1,1,2]),0,scale.length-1);this.tone(scale[this.deg],0.9,'triangle',0.028,0,0,this.mus);}
+    },330);
+  },
+  stopMusic(){if(this.musT){clearInterval(this.musT);this.musT=null;}},
+};
+
+/* ================= SVG art ================= */
+function rot(n,fn,off){let o='';for(let i=0;i<n;i++)o+=fn(i*360/n+(off||0),i);return o;}
+function flowerHead(f){
+  const c=f.c,c2=f.c2,k=f.k;let g='';
+  switch(f.shape){
+    case 'round': g=rot(f.n,a=>`<circle cx="0" cy="-5.4" r="4.6" fill="${c}" transform="rotate(${a})"/>`)+rot(f.n,a=>`<circle cx="0" cy="-4.6" r="1.6" fill="${c2}" opacity=".55" transform="rotate(${a})"/>`)+`<circle r="3.6" fill="${k}"/><circle cx="-1" cy="-1" r="1.2" fill="#fff" opacity=".25"/>`;break;
+    case 'pointed': g=rot(f.n,a=>`<ellipse cx="0" cy="-6.6" rx="2.3" ry="5.2" fill="${c}" transform="rotate(${a})"/>`)+rot(f.n,a=>`<ellipse cx="0" cy="-5" rx="1.2" ry="3" fill="${c2}" transform="rotate(${a})"/>`,180/f.n)+`<circle r="${f.n>12?4.6:3.4}" fill="${k}"/>`+(f.n>12?rot(8,a=>`<circle cx="0" cy="-2.6" r=".7" fill="#000" opacity=".25" transform="rotate(${a})"/>`):'');break;
+    case 'thin': g=rot(f.n,a=>`<ellipse cx="0" cy="-5.8" rx="1.15" ry="4.9" fill="${c}" transform="rotate(${a})"/>`)+rot(f.n,a=>`<ellipse cx="0" cy="-3.8" rx=".9" ry="3" fill="${c2}" transform="rotate(${a})"/>`,9)+`<circle r="2.5" fill="${k}"/>`;break;
+    case 'cup': g=`<g transform="translate(0 5)"><path d="M-7 -1 C-8 -9 -6 -13 -4 -13 L-1.5 -8 L0 -14 L1.5 -8 L4 -13 C6 -13 8 -9 7 -1 C5 5 -5 5 -7 -1Z" fill="${c}"/><path d="M-3 -2 C-3 -8 -1 -11 0 -12 C1 -11 3 -8 3 -2 C2 2 -2 2 -3 -2Z" fill="${c2}" opacity=".75"/></g>`;break;
+    case 'spike': {let s='';for(let i=0;i<7;i++){const y=9-i*2.7,w=3.2-i*0.28;s+=`<ellipse cx="-1.7" cy="${y}" rx="${(w*0.6).toFixed(2)}" ry="1.6" fill="${i%2?c2:c}"/><ellipse cx="1.7" cy="${y-1.3}" rx="${(w*0.6).toFixed(2)}" ry="1.6" fill="${i%2?c:c2}"/>`;}g=s+`<ellipse cx="0" cy="-9.5" rx="1.2" ry="1.6" fill="${k}"/>`;break;}
+    case 'rose': g=`<circle r="8.6" fill="${c}"/><circle r="8.6" fill="none" stroke="${c2}" stroke-width="1.1" opacity=".7"/><path d="M-6.4 2 A6.4 6.4 0 0 1 5.4 -4" stroke="${k}" stroke-width="1.4" fill="none" stroke-linecap="round"/><path d="M-3.4 4.4 A4.6 4.6 0 0 0 5.2 1" stroke="${k}" stroke-width="1.3" fill="none" stroke-linecap="round"/><path d="M-2 -0.6 a2.4 2.4 0 1 1 3 2.2" stroke="${k}" stroke-width="1.2" fill="none" stroke-linecap="round"/>`;break;
+    case 'iris': g=rot(3,a=>`<ellipse cx="0" cy="-6.4" rx="3.7" ry="6.4" fill="${c}" transform="rotate(${a})"/>`,60)+rot(3,a=>`<ellipse cx="0" cy="-5.4" rx="2.5" ry="5.4" fill="${c2}" transform="rotate(${a})"/>`)+rot(3,a=>`<ellipse cx="0" cy="-5" rx=".9" ry="2.8" fill="${k}" transform="rotate(${a})"/>`,60)+`<circle r="1.8" fill="${k}"/>`;break;
+    case 'fluffy': g=rot(9,a=>`<circle cx="0" cy="-6" r="4.2" fill="${c}" transform="rotate(${a})"/>`)+rot(7,a=>`<circle cx="0" cy="-3.4" r="3.4" fill="${c2}" transform="rotate(${a})"/>`,20)+`<circle r="2.8" fill="${k}"/>`;break;
+    case 'orchid': g=`<ellipse cx="-6" cy="-1" rx="5" ry="4.2" fill="${c}"/><ellipse cx="6" cy="-1" rx="5" ry="4.2" fill="${c}"/><ellipse cx="0" cy="-7" rx="2.6" ry="5" fill="${c2}"/><ellipse cx="-4.5" cy="5" rx="2.2" ry="4.4" fill="${c2}" transform="rotate(35 -4.5 5)"/><ellipse cx="4.5" cy="5" rx="2.2" ry="4.4" fill="${c2}" transform="rotate(-35 4.5 5)"/><path d="M-2.8 0 Q0 7.5 2.8 0 Q0 -2 -2.8 0Z" fill="${k}"/><circle cy="-1" r="1.2" fill="#ffe36b"/>`;break;
+    case 'cyclamen': g=`<g transform="translate(0 4)">`+[-42,-16,10,36].map(a=>`<ellipse cx="0" cy="-7" rx="2.7" ry="6.6" fill="${c}" transform="rotate(${a})"/>`).join('')+[-28,24].map(a=>`<ellipse cx="0" cy="-6" rx="1.2" ry="4" fill="${c2}" transform="rotate(${a})"/>`).join('')+`<ellipse cx="0" cy="-0.6" rx="3" ry="2.2" fill="${k}"/></g>`;break;
+    case 'lily': g=rot(6,a=>`<path d="M0 0 C-3.2 -4 -2.6 -9 0 -12 C2.6 -9 3.2 -4 0 0Z" fill="${c}" stroke="${c2}" stroke-width=".7" transform="rotate(${a})"/>`)+rot(5,a=>`<g transform="rotate(${a})"><line x1="0" y1="0" x2="0" y2="-6" stroke="${k}" stroke-width=".7"/><circle cx="0" cy="-6" r=".95" fill="${k}"/></g>`,15)+`<circle r="1.6" fill="#9bcf53"/>`;break;
+    case 'notched': g=rot(5,a=>`<path d="M0 0 C-5.2 -3 -5.2 -9.4 -1.7 -10.2 L0 -8.2 L1.7 -10.2 C5.2 -9.4 5.2 -3 0 0Z" fill="${c}" stroke="${c2}" stroke-width=".6" transform="rotate(${a})"/>`)+`<circle r="2" fill="${k}"/>`+rot(6,a=>`<circle cx="0" cy="-3.2" r=".7" fill="${k}" transform="rotate(${a})"/>`);break;
+    case 'layered': g=rot(8,a=>`<circle cx="0" cy="-6" r="3.7" fill="${c}" transform="rotate(${a})"/>`)+`<circle r="6.3" fill="${c2}"/><circle r="4.6" fill="${c}"/><circle r="2.8" fill="${c2}"/><circle r="1.3" fill="${k}"/>`;break;
+  }
+  if(f.glow) g=`<circle r="12.5" fill="${c2}" opacity=".35"/>`+g;
+  return g;
+}
+const flowerIcon=(f,size)=>`<svg width="${size}" height="${size}" viewBox="-13 -13 26 26" aria-hidden="true">${flowerHead(f)}</svg>`;
+function patchSVG(f){
+  const pos=[[14,30,.9],[34,18,1.05],[56,24,1],[77,32,.88]];
+  let s=`<svg class="patch" viewBox="0 0 92 72" aria-hidden="true"><ellipse cx="46" cy="58" rx="44" ry="6" fill="#4a2b18"/>`;
+  pos.forEach(([x,y,sc])=>{
+    s+=`<path d="M${x} 60 Q${x+3} ${(y+60)/2} ${x} ${y}" stroke="#2f8a4e" stroke-width="2.2" fill="none"/>`+
+       `<ellipse cx="${x+4}" cy="${(y+60)/2+4}" rx="4.5" ry="1.9" fill="#3fa35c" transform="rotate(-30 ${x+4} ${(y+60)/2+4})"/>`+
+       `<ellipse cx="${x-4}" cy="${(y+60)/2+9}" rx="4" ry="1.7" fill="#3fa35c" transform="rotate(30 ${x-4} ${(y+60)/2+9})"/>`+
+       `<g transform="translate(${x} ${y}) scale(${sc})"><g class="hd">${flowerHead(f)}</g></g>`;
+  });
+  s+=`<rect x="2" y="58" width="88" height="13" rx="3" fill="#7a4a2a"/><rect x="2" y="58" width="88" height="3.5" rx="1.5" fill="#a46a3c"/><path d="M24 61v10M46 61v10M68 61v10" stroke="#5e3820" stroke-width="1.2"/></svg>`;
+  return s;
+}
+function basketSVG(f){
+  return `<svg class="basket" viewBox="0 0 46 42" aria-hidden="true"><g class="fl">${[[12,15],[23,11],[34,15],[18,8],[29,7]].map(([x,y])=>`<g transform="translate(${x} ${y}) scale(.48)">${flowerHead(f)}</g>`).join('')}</g>
+  <path d="M4 18h38l-4 22H8z" fill="#c98b47"/><path d="M4 18h38l-1 5H5z" fill="#a8692f"/>
+  <path d="M8 26h31M9 32h29M10 37h27" stroke="#9c6230" stroke-width="1.5"/><path d="M14 18v22M23 18v22M32 18v22" stroke="#b07438" stroke-width="1.3"/>
+  <path d="M10 18q13 -16 26 0" stroke="#8d5b35" stroke-width="2.4" fill="none"/></svg>`;
+}
+function gardenerSVG(f,shirt){
+  return `<svg viewBox="0 0 34 46" width="34" height="46">
+  <g class="lg l1"><rect x="12" y="31" width="4.2" height="11" rx="2" fill="#35507a"/><ellipse cx="14" cy="42.6" rx="3.2" ry="1.6" fill="#3b2a20"/></g>
+  <g class="lg l2"><rect x="17.6" y="31" width="4.2" height="11" rx="2" fill="#2c4268"/><ellipse cx="19.7" cy="42.6" rx="3.2" ry="1.6" fill="#3b2a20"/></g>
+  <g class="bd">
+   <rect x="10" y="18" width="14" height="15" rx="5" fill="${shirt}"/>
+   <path d="M11 24h12v6q0 4 -4 4h-4q-4 0 -4 -4z" fill="#3e7bb8"/>
+   <rect x="12.3" y="19.5" width="1.7" height="5.5" fill="#3e7bb8"/><rect x="20" y="19.5" width="1.7" height="5.5" fill="#3e7bb8"/>
+   <circle cx="17" cy="12" r="6.3" fill="#f2c39b"/>
+   <circle cx="20" cy="11.8" r=".95" fill="#2a1d18"/>
+   <path d="M18.8 14.8q1.4 1 2.8 0" stroke="#8a4a3a" stroke-width=".9" fill="none" stroke-linecap="round"/>
+   <ellipse cx="17" cy="7.4" rx="10.5" ry="2.4" fill="#e3b85a"/>
+   <path d="M11 7.6Q12 1.2 17 1.2Q22 1.2 23 7.6Z" fill="#f1d07a"/>
+   <rect x="11.3" y="5.3" width="11.4" height="1.8" fill="#d84f6f"/>
+   <g class="cr"><path d="M22 23h11l-1.6 8h-7.8z" fill="#c98b47"/>${[[24.5,21],[28,19.5],[31,21.5]].map(([x,y])=>`<g transform="translate(${x} ${y}) scale(.3)">${flowerHead(f)}</g>`).join('')}</g>
+   <rect class="arm" x="20.4" y="19.5" width="3.6" height="10" rx="1.8" fill="${shirt}"/>
+  </g></svg>`;
+}
+function floristSVG(apron){
+  const bq=[0,4,7].map((i,j)=>`<g transform="translate(${25+j*2.6} ${17+(j%2)*2}) scale(.3)">${flowerHead(FLOWERS[i])}</g>`).join('');
+  return `<svg viewBox="0 0 34 46" width="34" height="46">
+  <g class="lg l1"><rect x="12" y="31" width="4.2" height="11" rx="2" fill="#4a3a5a"/><ellipse cx="14" cy="42.6" rx="3.2" ry="1.6" fill="#2a2020"/></g>
+  <g class="lg l2"><rect x="17.6" y="31" width="4.2" height="11" rx="2" fill="#3d2f4c"/><ellipse cx="19.7" cy="42.6" rx="3.2" ry="1.6" fill="#2a2020"/></g>
+  <g class="bd">
+   <rect x="10" y="18" width="14" height="15" rx="5" fill="#fffaf2"/>
+   <path d="M11.5 21h11v9q0 4 -4 4h-3q-4 0 -4 -4z" fill="${apron}"/>
+   <path d="M11 9.5q6 -8 12 0v5h-12z" fill="#3b2418"/>
+   <circle cx="17" cy="12.4" r="6" fill="#eab48c"/>
+   <path d="M11 11q6 -9 12 0q-3 -3 -6 -3t-6 3z" fill="#3b2418"/><circle cx="12" cy="7.5" r="2.6" fill="#3b2418"/>
+   <circle cx="20" cy="12.3" r=".95" fill="#2a1d18"/>
+   <path d="M18.8 15.2q1.4 1 2.8 0" stroke="#8a4a3a" stroke-width=".9" fill="none" stroke-linecap="round"/>
+   <g class="cr"><path d="M24 31l4.5 -9h6l-3 9z" fill="#f4e6c8" stroke="#d9c49a" stroke-width=".6"/>${bq}</g>
+   <rect class="arm" x="20.4" y="19.5" width="3.6" height="10" rx="1.8" fill="#fffaf2"/>
+  </g></svg>`;
+}
+function cartSVG(){
+  const mix=[0,1,4,7,2];
+  return `<path d="M6 15L30 3L54 15" stroke="#d8c49a" stroke-width="1.6" fill="none"/><circle cx="30" cy="3" r="2.6" fill="#7a7f86"/>
+  <g class="load">${mix.map((i,j)=>`<g transform="translate(${11+j*9.5} ${14-(j%2)*3}) scale(.55)">${flowerHead(FLOWERS[i])}</g>`).join('')}</g>
+  <rect x="4" y="15" width="52" height="32" rx="3" fill="#a46a3c"/><rect x="4" y="15" width="52" height="5" fill="#c28452"/>
+  <path d="M4 27h52M4 37h52" stroke="#7a4a2a" stroke-width="1.4"/><path d="M8 15v32M52 15v32" stroke="#6b3f22" stroke-width="2.4"/>
+  <circle cx="11" cy="22" r="1.1" fill="#4a2b18"/><circle cx="49" cy="22" r="1.1" fill="#4a2b18"/><circle cx="11" cy="42" r="1.1" fill="#4a2b18"/><circle cx="49" cy="42" r="1.1" fill="#4a2b18"/>`;
+}
+function shopSVG(){
+  let stripes='';for(let i=0;i<8;i++) stripes+=`<path d="M${8+i*17} 40h17v12q-8.5 7 -17 0z" fill="${i%2?'#fff':'#e5487f'}"/>`;
+  const pots=[[34,0],[50,4],[66,7],[82,12]].map(([x,fi])=>`<rect x="${x-6}" y="78" width="12" height="9" rx="2" fill="#7a8fa6"/><g transform="translate(${x} 72) scale(.62)">${flowerHead(FLOWERS[fi])}</g><g transform="translate(${x+4} 75) scale(.45)">${flowerHead(FLOWERS[(fi+3)%NB])}</g>`).join('');
+  return `<rect x="12" y="30" width="128" height="98" fill="#f4e3c9"/><rect x="12" y="30" width="128" height="98" fill="none" stroke="#d8c2a0" stroke-width="2"/>
+  <rect x="4" y="22" width="144" height="12" rx="3" fill="#2f8a4e"/>
+  <rect x="34" y="2" width="84" height="24" rx="6" fill="#2f8a4e" stroke="#fff" stroke-width="2"/>
+  <text x="76" y="19.5" text-anchor="middle" font-family="Fredoka, Assistant, sans-serif" font-weight="600" font-size="14" fill="#fff">פריחה בע״מ</text>
+  ${stripes}
+  <rect x="22" y="62" width="74" height="30" rx="3" fill="#cfe9f4" stroke="#fff" stroke-width="3"/>${pots}
+  <rect x="104" y="64" width="28" height="64" rx="3" fill="#8d5b35"/><rect x="108" y="69" width="20" height="24" rx="2" fill="#cfe9f4"/><circle cx="110" cy="100" r="1.8" fill="#ffd25a"/>
+  <rect x="18" y="100" width="80" height="22" rx="3" fill="#b07a4a"/><path d="M18 106h80" stroke="#8d5b35" stroke-width="2"/>
+  ${[0,1,2,3,4,5].map(j=>`<g transform="translate(${26+j*13} 101) scale(.55)">${flowerHead(FLOWERS[(j*2+1)%NB])}</g>`).join('')}`;
+}
+function depotSVG(){
+  return `<path d="M2 30L50 4L98 30z" fill="#b5523b"/><path d="M2 30L50 4L98 30" fill="none" stroke="#8a3a28" stroke-width="3" stroke-linejoin="round"/>
+  <rect x="8" y="30" width="84" height="62" fill="#c79a6a"/><rect x="18" y="40" width="64" height="52" fill="#5e3a20"/>
+  <path d="M8 30v62M92 30v62" stroke="#8d5b35" stroke-width="3"/>
+  <rect x="24" y="68" width="22" height="24" fill="#a46a3c"/><rect x="50" y="72" width="22" height="20" fill="#a46a3c"/><rect x="36" y="52" width="22" height="18" fill="#b07a4a"/>
+  <path d="M24 80h22M50 82h22M36 61h22" stroke="#7a4a2a" stroke-width="1.4"/>
+  ${[[30,66,0],[40,66,4],[56,70,1],[66,70,9],[44,50,7],[52,50,2]].map(([x,y,i])=>`<g transform="translate(${x} ${y}) scale(.45)">${flowerHead(FLOWERS[i])}</g>`).join('')}
+  <rect x="28" y="12" width="44" height="14" rx="3" fill="#fffaf2"/><text x="50" y="23" text-anchor="middle" font-family="Fredoka, Assistant, sans-serif" font-weight="600" font-size="10" fill="#5e3a20">מחסן</text>`;
+}
+function headframeSVG(){
+  return `<path d="M10 88L22 10M66 88L54 10" stroke="#6b4325" stroke-width="6"/><path d="M14 60h48M18 34h40" stroke="#6b4325" stroke-width="4"/>
+  <rect x="16" y="4" width="44" height="8" rx="2" fill="#5e3a20"/>
+  <g id="pulley" transform="translate(38 20)"><circle r="11" fill="#7a7f86"/><circle r="8" fill="#9aa1a8"/><g id="spokes" stroke="#5c6066" stroke-width="2"><path d="M-8 0H8M0 -8V8M-5.6 -5.6L5.6 5.6M-5.6 5.6L5.6 -5.6"/></g><circle r="2.4" fill="#45484d"/></g>
+  <path d="M38 31V88" stroke="#d8c49a" stroke-width="2"/>`;
+}
+function hairSVG(L){
+  const h=L.h;
+  switch(L.st){
+    case 0: return {back:'',front:`<path d="M12.8 16Q13 8.6 20 8.6Q27 8.6 27.2 16Q24 11.6 20 12Q16 11.6 12.8 16Z" fill="${h}"/>`};
+    case 1: return {back:`<path d="M12 17Q11 27 14 29L26 29Q29 27 28 17Q27 8.6 20 8.6Q13 8.6 12 17Z" fill="${h}"/>`,front:`<path d="M12.8 15.5Q14.6 9.6 20 9.6Q25.4 9.6 27.2 15.5Q22 12 12.8 15.5Z" fill="${h}"/>`};
+    case 2: return {back:`<circle cx="20" cy="8.4" r="3.8" fill="${h}"/>`,front:`<path d="M12.8 16Q13 9.2 20 9.2Q27 9.2 27.2 16Q24 12.2 20 12.6Q16 12.2 12.8 16Z" fill="${h}"/>`};
+    default: return {back:'',front:[[13.5,13],[15.5,10],[18.5,8.8],[21.5,8.8],[24.5,10],[26.5,13]].map(([x,y])=>`<circle cx="${x}" cy="${y}" r="2.7" fill="${h}"/>`).join('')};
+  }
+}
+function portraitSVG(m,size){
+  const L=m.look,col=RAR[m.r].col,hr=hairSVG(L);
+  return `<svg width="${size}" height="${size}" viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="19.5" fill="${col}"/><circle cx="20" cy="20" r="16.5" fill="#fff7e8"/>
+  <path d="M9.84 33Q20 23 30.16 33A16.5 16.5 0 0 1 9.84 33Z" fill="${L.sh}"/>
+  ${hr.back}<circle cx="20" cy="17" r="7" fill="${L.s}"/>${hr.front}
+  <circle cx="17.4" cy="17.4" r=".95" fill="#22180f"/><circle cx="22.6" cy="17.4" r=".95" fill="#22180f"/>
+  <path d="M17.6 20.6Q20 22.6 22.4 20.6" stroke="#7a3b2e" stroke-width="1" fill="none" stroke-linecap="round"/>
+  ${L.g?`<g fill="none" stroke="#2a2a2a" stroke-width=".9"><circle cx="17.4" cy="17.4" r="2.3"/><circle cx="22.6" cy="17.4" r="2.3"/><path d="M19.7 17.4h.6"/></g>`:''}
+  ${m.r===2?`<path d="M14 6.5l2 2.6 4-4.2 4 4.2 2-2.6v4h-12z" fill="#ffd25a" stroke="#c98a0a" stroke-width=".6"/>`:''}</svg>`;
+}
+const BOLT=`<svg width="13" height="13" viewBox="0 0 12 12" aria-hidden="true"><path d="M7 .5L2 7h3.2L4.5 11.5 10 4.6H6.6z" fill="#4a3200"/></svg>`;
+const UP=`<svg width="11" height="11" viewBox="0 0 10 10" aria-hidden="true"><path d="M5 1L9 6H6.5v3h-3V6H1z" fill="currentColor"/></svg>`;
+const DROP=`<svg width="13" height="15" viewBox="0 0 16 18" aria-hidden="true"><path d="M8 1C5 6 2 8.6 2 12a6 6 0 0 0 12 0c0-3.4-3-6-6-11z" fill="#2a9bd8"/></svg>`;
+const SPK_ON=`<svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><path d="M3 7.5h3.5L11 4v12l-4.5-3.5H3z" fill="#506256"/><path d="M13.5 7a4 4 0 0 1 0 6M15.6 5a7 7 0 0 1 0 10" stroke="#506256" stroke-width="1.8" fill="none" stroke-linecap="round"/></svg>`;
+const SPK_OFF=`<svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><path d="M3 7.5h3.5L11 4v12l-4.5-3.5H3z" fill="#9aa39c"/><path d="M13.5 7.5l5 5M18.5 7.5l-5 5" stroke="#cf3d35" stroke-width="1.8" stroke-linecap="round"/></svg>`;
+const BFLY=`<svg width="46" height="40" viewBox="0 0 46 40" aria-hidden="true"><g class="wl"><path d="M22 18C14 2 2 2 3 12c1 7 8 9 19 8z" fill="#ffc83d" stroke="#c98a0a" stroke-width="1.2"/><path d="M22 21C12 22 6 28 9 34c3 5 10 1 13-10z" fill="#ffdb73" stroke="#c98a0a" stroke-width="1.2"/><circle cx="10" cy="11" r="2.4" fill="#fff6c4"/></g><g class="wr"><path d="M24 18C32 2 44 2 43 12c-1 7-8 9-19 8z" fill="#ffc83d" stroke="#c98a0a" stroke-width="1.2"/><path d="M24 21C34 22 40 28 37 34c-3 5-10 1-13-10z" fill="#ffdb73" stroke="#c98a0a" stroke-width="1.2"/><circle cx="36" cy="11" r="2.4" fill="#fff6c4"/></g><rect x="21.4" y="12" width="3.2" height="18" rx="1.6" fill="#5a3a12"/><path d="M22 12q-3 -6 -6 -7M24 12q3 -6 6 -7" stroke="#5a3a12" stroke-width="1.1" fill="none"/></svg>`;
+
+/* ================= DOM build ================= */
+const bedsEl=$('#beds'),streetEl=$('#street'),gardenEl=$('#garden');
+const BED_H=128,TRACK_W=76,STREET_H=290;
+const WORKER_Y=[0,-9,5,-4,7,-12];
+const SHIRT_C=['#e5487f','#f08a24','#8a6ad8','#2bb3a3','#e3263a','#3a8ee0'];
+const APRONS=['#e5487f','#2f8a4e','#8a6ad8','#f08a24','#3a8ee0','#e3263a','#2bb3a3','#c25fd3'];
+
+function depthColors(i){
+  const t=i/(NB-1);
+  const mix=(a,b)=>a.map((v,j)=>Math.round(v+(b[j]-v)*t));
+  const wall=mix([142,98,64],[78,50,36]),path=mix([190,146,104],[118,82,58]);
+  return {wall:`rgb(${wall})`,path:`rgb(${path})`};
+}
+function buildBedRow(i){
+  const f=FLOWERS[i],dc=depthColors(i);
+  const el=D.createElement('div');
+  el.className='bed';el.dataset.bed=i;
+  el.innerHTML=`<div class="bed-wall" style="background:${dc.wall}"></div><div class="bed-path" style="background:${dc.path}"></div>
+   ${patchSVG(f)}${basketSVG(f)}<div class="stock num">₪0</div><div class="workers"></div>
+   <div class="tap-hint" hidden style="bottom:22px;left:40%">הקישו לקטיף</div>
+   <div class="bed-top">
+     <div class="bed-label"><span class="bed-ico">${flowerIcon(f,26)}</span><div><div class="bed-name">${f.name}</div><div class="u-rate" data-k="rate"></div></div></div>
+     <div class="ctrls"><div class="mgr-wrap"><button class="mgr" data-act="mgr:bed:${i}" data-k="mgr"></button><button class="abil" data-act="abil:bed:${i}" data-k="abil" hidden aria-label="יכולת מנהל"></button></div>
+     <button class="lvl" data-act="upg:bed:${i}" data-k="lvl"></button></div>
+   </div>`;
+  const r={el,f,workers:[],patch:el.querySelector('.patch'),basket:el.querySelector('.basket'),stock:el.querySelector('.stock'),wrap:el.querySelector('.workers'),
+    hint:el.querySelector('.tap-hint'),rate:el.querySelector('[data-k=rate]'),mgr:el.querySelector('[data-k=mgr]'),abil:el.querySelector('[data-k=abil]'),lvl:el.querySelector('[data-k=lvl]'),cache:{}};
+  return r;
+}
+function mountWorker(i,w){
+  const r=RT.beds[i];
+  const el=D.createElement('div');el.className='sprite';
+  el.innerHTML=gardenerSVG(r.f,SHIRT_C[w.k%SHIRT_C.length]);
+  r.wrap.appendChild(el);w.el=el;
+}
+function mountSeller(s){
+  const el=D.createElement('div');el.className='sprite';
+  el.innerHTML=floristSVG(APRONS[s.k%APRONS.length]);
+  $('#sellers').appendChild(el);s.el=el;
+}
+function buildWorld(){
+  bedsEl.innerHTML='';$('#sellers').innerHTML='';
+  RT.beds=[];RT.sellers=[];
+  S.beds.forEach((b,i)=>{const r=buildBedRow(i);RT.beds.push(r);bedsEl.appendChild(r.el);});
+  RT.beds.forEach((r,i)=>{const need=Econ.bedWorkers(S.beds[i].L);for(let k=0;k<need;k++){const w=newWorker(k);r.workers.push(w);mountWorker(i,w);}});
+  for(let k=0;k<Econ.shopSellers(S.shop.L);k++){const s=newWorker(k);s.delay=k*0.4;RT.sellers.push(s);mountSeller(s);}
+  RT.cart={state:'idle',p:0,target:0,load:0,t:0,tap:false};
+  renderUnlock();layout();
+}
+function renderUnlock(){
+  const u=$('#unlock');const i=S.beds.length;
+  if(i>=NB){u.innerHTML=`<div class="unlock-card"><div class="ico">${flowerIcon(FLOWERS[NB-1],40)}</div><div><div class="unlock-title">כל 15 הערוגות פורחות</div><div class="unlock-sub">המשיכו לשדרג, ואז חגגו פסטיבל פריחה כדי לצמוח מהר יותר.</div></div></div>`;return;}
+  const f=FLOWERS[i];
+  u.innerHTML=`<div class="unlock-card"><div class="ico">${flowerIcon(f,40)}</div><div style="min-width:0"><div class="unlock-title">ערוגה ${i+1}: ${f.name}</div><div class="unlock-sub">כל ${f.one} שווה פי 14 מ${FLOWERS[i-1].one}</div><button class="btn" data-act="unlock" id="unlockBtn">פתחו ערוגה · ${M(UNLOCK[i])}</button></div></div>`;
+}
+function layout(){
+  const W=$('#world').clientWidth||400;RT.W=W;
+  const sh=$('#shopBld'),dp=$('#depotBld');
+  dp.style.left=(W-TRACK_W-100)+'px';
+  $('#depotStock').style.left=(W-TRACK_W-50)+'px';
+  RT.sx0=W-TRACK_W-78; RT.sx1=128;
+  $('#shopTap').style.left=Math.round((RT.sx0+RT.sx1)/2-40)+'px';$('#shopTap').style.bottom='48px';
+  RT.bx0=W-TRACK_W-54-26; RT.bx1=84;
+}
+
+/* ================= game logic ================= */
+function earn(v,silent){
+  if(!(v>0)) return;
+  const g=v*permMult()*tempMult();
+  S.cash+=g;S.lifetime+=g;S.run+=g;RT.emaAcc+=g;
+  if(!silent){RT.floatAcc+=g;Snd.coin();}
+}
+function addCash(g){S.cash+=g;S.lifetime+=g;S.run+=g;}
+
+function stepBeds(dt){
+  for(let i=0;i<S.beds.length;i++){
+    const b=S.beds[i],r=RT.beds[i];
+    const need=Econ.bedWorkers(b.L);
+    while(r.workers.length<need){const w=newWorker(r.workers.length);w.delay=0.1;r.workers.push(w);mountWorker(i,w);}
+    const sp=abilMult(b,'speed'),auto=!!b.mgr;
+    for(const w of r.workers){
+      switch(w.state){
+        case 'idle': if(auto){w.delay-=dt;if(w.delay<=0)w.state='out';} break;
+        case 'wait': w.delay-=dt*sp;if(w.delay<=0)w.state='out'; break;
+        case 'out': w.p+=dt*sp/BED_WALK;if(w.p>=1){w.p=1;w.state='cut';w.t=0;shake(r.patch);} break;
+        case 'cut': w.t+=dt*sp;if(w.t>=HARVEST){w.carry=Econ.bedLoad(i,b.L)*abilMult(b,'yield');w.state='back';} break;
+        case 'back': w.p-=dt*sp/BED_WALK;if(w.p<=0){w.p=0;w.state='drop';w.t=0;} break;
+        case 'drop': w.t+=dt*sp;if(w.t>=DEPOSIT){b.stock+=w.carry;w.carry=0;w.state='idle';w.delay=auto?rnd(0.02,0.2):0;} break;
+      }
+    }
+  }
+}
+function shake(el){el.classList.remove('shake');void el.getBoundingClientRect;el.classList.add('shake');setTimeout(()=>el.classList.remove('shake'),340);}
+function stepCart(dt){
+  const c=RT.cart,u=S.cart,n=S.beds.length;
+  const sm=abilMult(u,'speed'),spd=Econ.cartSpeed(u.L)*sm,cap=Econ.cartCap(u.L)*abilMult(u,'cap');
+  switch(c.state){
+    case 'idle': if(u.mgr||c.tap){c.tap=false;c.state='down';c.target=0;c.load=0;} break;
+    case 'down': c.p+=dt*spd;if(c.p>=c.target+1){c.p=c.target+1;c.state='load';c.t=0;} break;
+    case 'load':{
+      const b=S.beds[c.target];const stopT=(b&&b.stock>0)?CART_STOP:0.04;
+      c.t+=dt*sm;
+      if(c.t>=stopT){
+        if(b&&b.stock>0){const take=Math.min(b.stock,cap-c.load);b.stock-=take;c.load+=take;if(b.stock<1e-9*take)b.stock=0;}
+        if(c.load>=cap*0.9999||c.target>=n-1) c.state='up'; else {c.target++;c.state='down';}
+      }
+      break;}
+    case 'up': c.p-=dt*spd;if(c.p<=0){c.p=0;c.state='unload';c.t=0;} break;
+    case 'unload': c.t+=dt*sm;if(c.t>=CART_UNLOAD){S.depot+=c.load;c.load=0;c.state='idle';} break;
+  }
+}
+function stepShop(dt){
+  const u=S.shop,need=Econ.shopSellers(u.L);
+  while(RT.sellers.length<need){const s=newWorker(RT.sellers.length);s.delay=0.2;RT.sellers.push(s);mountSeller(s);}
+  const sp=abilMult(u,'speed'),cap=Econ.shopCap(u.L),auto=!!u.mgr;
+  for(const s of RT.sellers){
+    switch(s.state){
+      case 'idle':
+        if(auto&&S.depot>0){s.delay-=dt;if(s.delay<=0)startSeller(s,cap);}
+        break;
+      case 'wait': s.delay-=dt;if(s.delay<=0){if(S.depot>0)startSeller(s,cap);else s.state='idle';} break;
+      case 'load': s.t+=dt*sp;if(s.t>=SHOP_LOAD)s.state='out'; break;
+      case 'out': s.p+=dt*sp/SHOP_WALK;if(s.p>=1){s.p=1;s.state='sell';s.t=0;} break;
+      case 'sell': s.t+=dt*sp;if(s.t>=SHOP_SELL){earn(s.carry*abilMult(u,'price'));s.carry=0;s.state='back';} break;
+      case 'back': s.p-=dt*sp/SHOP_WALK;if(s.p<=0){s.p=0;s.state='idle';s.delay=auto?rnd(0.05,0.35):0;} break;
+    }
+  }
+}
+function startSeller(s,cap){s.carry=Math.min(S.depot,cap);S.depot-=s.carry;if(S.depot<1e-9*s.carry)S.depot=0;s.state='load';s.t=0;}
+
+function tapBed(i){
+  if(S.beds[i].mgr) return;
+  let n=0;RT.beds[i].workers.forEach((w,k)=>{if(w.state==='idle'){w.state='wait';w.delay=k*0.16;n++;}});
+  if(n){Snd.tap();S.stats.taps++;}
+}
+function tapCart(){
+  if(S.cart.mgr) return;
+  if(RT.cart.state==='idle'){RT.cart.tap=true;Snd.tap();S.stats.taps++;}
+}
+function tapShop(){
+  if(S.shop.mgr) return;
+  if(S.depot<=0){if(RT.sellers.every(s=>s.state==='idle'))toast('המחסן ריק. העלו פרחים עם העגלה קודם.');return;}
+  let n=0;RT.sellers.forEach((s,k)=>{if(s.state==='idle'){s.state='wait';s.delay=k*0.25;n++;}});
+  if(n){Snd.tap();S.stats.taps++;}
+}
+
+function stepTimers(dt){
+  for(const k in S.boosts) S.boosts[k]=Math.max(0,S.boosts[k]-dt);
+  const tick=u=>{if(u.mgr){u.mgr.act=Math.max(0,u.mgr.act-dt);u.mgr.cd=Math.max(0,u.mgr.cd-dt);}};
+  S.beds.forEach(tick);tick(S.cart);tick(S.shop);
+}
+function step(dt){
+  stepTimers(dt);stepBeds(dt);stepCart(dt);stepShop(dt);stepButterfly(dt);
+  S.stats.play+=dt;
+  RT.emaT+=dt;
+  if(RT.emaT>=1){const r=RT.emaAcc/RT.emaT;RT.ema=RT.ema?RT.ema+(r-RT.ema)*0.18:r;RT.emaAcc=0;RT.emaT=0;}
+  RT.floatT+=dt;
+  if(RT.floatT>=0.4){RT.floatT=0;if(RT.floatAcc>0){floatText('+'+money(RT.floatAcc),RT.sx1+20,STREET_H-110);RT.floatAcc=0;}}
+}
+
+/* ================= actions ================= */
+function buyUpgrade(kind,i){
+  const n=bulkN(kind,i),cost=upgCost(kind,i,n);
+  if(S.cash<cost){Snd.err();toast('אין מספיק כסף לשדרוג הזה.');return false;}
+  S.cash-=cost;const u=UNITS[kind];u.set(i,u.L(i)+n);Snd.up();
+  return true;
+}
+function hire(kind,i){
+  const u=unitOf(kind,i),c=hireCost(kind,i);
+  if(u.mgr) return;
+  if(S.cash<c){Snd.err();toast('אין מספיק כסף לגיוס.');return;}
+  S.cash-=c;u.mgr=rollManager(kind);Snd.unlock();
+  toast(`גייסתם את ${u.mgr.name}! דרגה: ${RAR[u.mgr.r].name}`,'gold');
+}
+function reroll(kind,i){
+  const u=unitOf(kind,i),c=rerollCost(kind,i);
+  if(S.cash<c){Snd.err();toast('אין מספיק כסף להחלפה.');return;}
+  S.cash-=c;u.mgr=rollManager(kind);Snd.unlock();
+  toast(`גייסתם את ${u.mgr.name} במקום. דרגה: ${RAR[u.mgr.r].name}`,'gold');
+}
+function activate(kind,i){
+  const u=unitOf(kind,i);
+  if(!u.mgr){openSheet({type:'mgr',kind,i});return;}
+  const m=u.mgr;
+  if(m.act>0||m.cd>0){openSheet({type:'mgr',kind,i});return;}
+  const R=RAR[m.r];m.act=R.dur;m.cd=R.dur+R.cd;S.stats.abilities++;Snd.sparkle();
+  const ab=ABIL[kind].find(a=>a.k===m.a);
+  toast(`${ab.name}! ${ab.d(R.mag)} למשך ${R.dur} שניות`,'gold');
+}
+function unlockBed(){
+  const i=S.beds.length;if(i>=NB) return;
+  const c=UNLOCK[i];
+  if(S.cash<c){Snd.err();toast('עוד קצת כסף ואפשר לפתוח את הערוגה.');return;}
+  S.cash-=c;S.beds.push({L:1,stock:0,mgr:null});
+  const r=buildBedRow(i);RT.beds.push(r);bedsEl.appendChild(r.el);
+  const w=newWorker(0);r.workers.push(w);mountWorker(i,w);
+  renderUnlock();Snd.unlock();petals(26);
+  toast(`ערוגת ה${FLOWERS[i].name} נפתחה!`,'gold');
+  setTimeout(()=>{try{r.el.scrollIntoView({behavior:'smooth',block:'center'});}catch(e){}},60);
+}
+function buyDew(k){
+  const it=DEW_ITEMS.find(x=>x.k===k);if(!it) return;
+  if(k==='cap'&&S.offlineH>=12){toast('החממה כבר בגודל המקסימלי.');return;}
+  if(k==='rain'&&Math.max(idleRate(),RT.ema)<=0){toast('צריך שהגן ירוויח משהו קודם.');return;}
+  if(S.dew<it.cost){Snd.err();toast('אין מספיק טיפות טל. השלימו משימות ותפסו פרפרי זהב.','blue');return;}
+  S.dew-=it.cost;Snd.sparkle();
+  if(k==='fert'){S.boosts.fert+=900;toast('דשן קסם פעיל: הכנסות פי 2!','gold');}
+  if(k==='rain'){const g=Math.max(idleRate()*tempMult(),RT.ema)*3600;addCash(g);toast(`ירד גשם מטבעות: +${money(g)}`,'gold');petals(30,true);}
+  if(k==='coffee'){[...S.beds,S.cart,S.shop].forEach(u=>{if(u.mgr)u.mgr.cd=Math.min(u.mgr.cd,u.mgr.act);});toast('כל המנהלים ערניים ומוכנים!','gold');}
+  if(k==='cap'){S.offlineH=Math.min(12,S.offlineH+2);toast(`הגן מרוויח עכשיו עד ${S.offlineH} שעות בהיעדרכם.`,'gold');}
+}
+function claimMission(idx){
+  if(!missionDone(idx)||S.claimed.includes(idx)) return;
+  const d=missionDef(idx);S.claimed.push(idx);S.dew+=d.r;Snd.sparkle();
+  toast(`קיבלתם ${d.r} טיפות טל`,'blue');
+}
+function festival(){
+  const n=seedsClaimable();if(n<1) return;
+  const keep={seeds:S.seeds+n,dew:S.dew+10,lifetime:S.lifetime,claimed:S.claimed,stats:S.stats,settings:S.settings,offlineH:S.offlineH,tut:99,welcomed:true,boosts:{fert:S.boosts.fert,frenzy:0}};
+  keep.stats.festivals++;
+  S=Object.assign(newState(),keep);S.cash=0;
+  buildWorld();closeSheet();petals(60);Snd.unlock();
+  toast(`הפסטיבל הצליח! קיבלתם ${fmt(n)} זרעי זהב, וההכנסה שלכם עכשיו פי ${permMult().toFixed(2)}`,'gold');
+  window.scrollTo({top:0,behavior:'smooth'});save();
+}
+function resetGame(){
+  try{localStorage.removeItem(SAVE_KEY);}catch(e){}
+  const keepSettings=S.settings;S=newState();S.settings=keepSettings;S.welcomed=true;
+  buildWorld();closeSheet();window.scrollTo({top:0});toast('התחלתם גן חדש. בהצלחה!');save();
+}
+
+/* ================= butterfly ================= */
+const bEl=$('#butterfly');bEl.innerHTML=BFLY;
+function stepButterfly(dt){
+  const b=RT.bfly;
+  if(b.a){
+    const a=b.a;a.t+=dt;
+    const k=a.t/a.dur;
+    if(k>=1){bEl.hidden=true;b.a=null;b.t=rnd(70,140);return;}
+    const vw=innerWidth,vh=innerHeight;
+    const x=a.dir>0?-60+(vw+120)*k:vw+60-(vw+120)*k;
+    const y=clamp(a.y0*vh+Math.sin(a.t*1.7)*50+Math.sin(a.t*4.3)*10,110,vh-170);
+    bEl.style.transform=`translate(${x-27}px,${y-27}px) scaleX(${a.dir>0?1:-1})`;
+  }else{
+    b.t-=dt;
+    if(b.t<=0&&!D.hidden&&S.stats.play>40){b.a={t:0,dur:11,dir:Math.random()<.5?1:-1,y0:rnd(0.25,0.6)};bEl.hidden=false;}
+  }
+}
+function catchButterfly(){
+  if(!RT.bfly.a) return;
+  RT.bfly.a=null;bEl.hidden=true;RT.bfly.t=rnd(70,140);S.stats.butterflies++;Snd.sparkle();
+  const x=Math.random(),rate=Math.max(idleRate()*tempMult(),RT.ema);
+  if(x<0.25){const n=3+Math.floor(Math.random()*3);S.dew+=n;toast(`פרפר הזהב הביא ${n} טיפות טל!`,'blue');}
+  else if(x<0.55&&rate>0){S.boosts.frenzy=Math.max(S.boosts.frenzy,30);toast('פריחת שיא! כל ההכנסות פי 3 למשך 30 שניות','gold');}
+  else{const g=Math.max(50,rate*90);addCash(g);toast(`פרפר הזהב הביא ${money(g)}!`,'gold');}
+  petals(14,true);
+}
+
+/* ================= fx ================= */
+function floatText(txt,x,y){
+  const el=D.createElement('div');el.className='float num';el.textContent=txt;
+  el.style.left=x+'px';el.style.top=y+'px';streetEl.appendChild(el);setTimeout(()=>el.remove(),1150);
+}
+function ripple(ev,host){
+  const r=host.getBoundingClientRect();const el=D.createElement('div');el.className='ripple';
+  el.style.left=(ev.clientX-r.left)+'px';el.style.top=(ev.clientY-r.top)+'px';host.appendChild(el);setTimeout(()=>el.remove(),460);
+}
+function petals(n,gold){
+  if(matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const cols=gold?['#ffc83d','#ffe27a','#f0a91c']:['#e5487f','#ffbcd4','#ffc414','#8a6ad8','#ff7a7a','#fff'];
+  for(let i=0;i<n;i++){
+    const el=D.createElement('div');el.className='petal-fx';
+    el.style.left=rnd(0,innerWidth)+'px';el.style.background=pick(cols);
+    el.style.setProperty('--dx',rnd(-80,80)+'px');el.style.setProperty('--rot',rnd(180,720)+'deg');
+    el.style.animationDuration=rnd(1.8,3.2)+'s';el.style.animationDelay=rnd(0,0.6)+'s';
+    D.body.appendChild(el);setTimeout(()=>el.remove(),4200);
+  }
+}
+function toast(msg,kind){
+  const box=$('#toasts');const el=D.createElement('div');el.className='toast'+(kind?' '+kind:'');el.textContent=msg;
+  box.appendChild(el);while(box.children.length>3)box.firstChild.remove();
+  setTimeout(()=>{el.style.transition='opacity .3s';el.style.opacity='0';setTimeout(()=>el.remove(),320);},2800);
+}
+
+/* ================= render (per frame) ================= */
+function setCls(o,walking,working,carrying,flip){
+  const key=(walking?1:0)+(working?2:0)+(carrying?4:0);
+  if(o.cls!==key){o.cls=key;o.el.classList.toggle('walking',walking);o.el.classList.toggle('working',working);o.el.classList.toggle('carrying',carrying);}
+  return flip;
+}
+function render(){
+  for(let i=0;i<S.beds.length;i++){
+    const r=RT.beds[i];
+    for(const w of r.workers){
+      const x1=RT.bx1+w.k*7;const x=RT.bx0+(x1-RT.bx0)*w.p;const y=BED_H-46-8+WORKER_Y[w.k%6];
+      const walking=w.state==='out'||w.state==='back',working=w.state==='cut',carrying=w.carry>0||w.state==='drop';
+      setCls(w,walking,working,carrying);
+      const flip=w.state==='back'||w.state==='drop'?1:-1;
+      w.el.style.transform=`translate(${x.toFixed(1)}px,${y}px) scaleX(${flip})`;
+      w.el.style.zIndex=10+y;
+    }
+  }
+  for(const s of RT.sellers){
+    const x=RT.sx0+(RT.sx1+(s.k%4)*6-RT.sx0)*s.p;const y=STREET_H-46-4+[0,-6,3,-3,5,-8,2,-5][s.k%8];
+    const walking=s.state==='out'||s.state==='back';setCls(s,walking,s.state==='sell'||s.state==='load',s.carry>0);
+    const flip=s.state==='back'?1:-1;
+    s.el.style.transform=`translate(${x.toFixed(1)}px,${y}px) scaleX(${flip})`;
+  }
+  const c=RT.cart,p=c.p;
+  const y=p<=1?6+p*(62-6):62+(p-1)*BED_H;
+  const cartEl=$('#cart');cartEl.style.transform=`translateY(${y.toFixed(1)}px)`;
+  cartEl.classList.toggle('full',c.load>0);
+  $('#rope').style.height=(y+4)+'px';
+  const lab=$('#cartLabel');
+  if(c.load>0){lab.hidden=false;lab.textContent=money(c.load);lab.style.transform=`translateY(${(y+52).toFixed(1)}px)`;}else lab.hidden=true;
+  const sp=D.getElementById('spokes');if(sp)sp.setAttribute('transform',`rotate(${(p*140)%360})`);
+}
+
+/* ================= UI (every 200ms) ================= */
+function lvlHTML(kind,i){
+  const n=bulkN(kind,i),c=upgCost(kind,i,n),L=UNITS[kind].L(i);
+  return {html:`<span class="l1x">${UP}רמה ${L}${n>1?` <span class="num">(+${n})</span>`:''}</span><span class="l2x num">${money(c)}</span>`,ok:S.cash>=c};
+}
+function setHTML(el,cacheObj,key,html){if(cacheObj[key]!==html){cacheObj[key]=html;el.innerHTML=html;}}
+function updMgr(btn,abBtn,kind,i,cache){
+  const u=unitOf(kind,i);
+  if(!u.mgr){
+    const c=hireCost(kind,i);
+    setHTML(btn,cache,'m',`<span>+</span><span>מנהל</span>`);
+    btn.className='mgr empty'+(S.cash>=c?' ok':'');btn.setAttribute('aria-label','גיוס מנהל');
+    abBtn.hidden=true;return;
+  }
+  const m=u.mgr;
+  setHTML(btn,cache,'m',portraitSVG(m,44));btn.className='mgr';btn.setAttribute('aria-label',`מנהל: ${m.name}`);
+  abBtn.hidden=false;
+  const R=RAR[m.r];
+  if(m.act>0){abBtn.className='abil active';abBtn.style.setProperty('--pct',(m.act/R.dur*100).toFixed(1)+'%');}
+  else if(m.cd>0){abBtn.className='abil';abBtn.style.setProperty('--pct',(100-m.cd/R.cd*100).toFixed(1)+'%');}
+  else{abBtn.className='abil ready';}
+  setHTML(abBtn,cache,'a',BOLT);
+}
+function updUI(){
+  $('#cash').textContent=money(S.cash);
+  const shown=Math.max(idleRate()*tempMult(),RT.ema);
+  $('#rate').textContent=money(shown);
+  S.stats.bestRate=Math.max(S.stats.bestRate||0,shown);
+  $('#dew').textContent=fmt(S.dew);
+  const bo=[];
+  if(S.boosts.fert>0) bo.push(`<span class="boost">דשן קסם ×2 · <span class="num">${fmtTime(S.boosts.fert)}</span></span>`);
+  if(S.boosts.frenzy>0) bo.push(`<span class="boost frenzy">פריחת שיא ×3 · <span class="num">${fmtTime(S.boosts.frenzy)}</span></span>`);
+  if(S.seeds>0) bo.push(`<span class="boost" style="background:#eef7e6;color:#2b6a1d;border-color:#c5e3b3">זרעי זהב ×${permMult().toFixed(2)}</span>`);
+  const bh=bo.join('');if(RT.boostHTML!==bh){RT.boostHTML=bh;$('#boosts').innerHTML=bh;}
+
+  const R=rates();const pm=permMult();
+  const cartSlow=R.cart<R.prod*0.98, shopSlow=R.shop<Math.min(R.prod,R.cart)*0.98;
+  RT.beds.forEach((r,i)=>{
+    const b=S.beds[i];
+    r.stock.textContent=money(b.stock);r.basket.classList.toggle('has',b.stock>0);
+    setHTML(r.rate,r.cache,'r',`<span class="num">${money(Econ.bedRate(i,b.L)*pm)}</span> לשנ׳`);
+    const lv=lvlHTML('bed',i);setHTML(r.lvl,r.cache,'l',lv.html);r.lvl.classList.toggle('ok',lv.ok);
+    updMgr(r.mgr,r.abil,'bed',i,r.cache);
+    r.hint.hidden=!(!b.mgr&&r.workers.every(w=>w.state==='idle')&&(S.tut>=99||i>0||S.tut===0));
+  });
+  const cs=$('#cartSign'),ss=$('#shopSign');
+  RT.cartCache=RT.cartCache||{};RT.shopCache=RT.shopCache||{};
+  const cr=cs.querySelector('[data-k=rate]'),sr=ss.querySelector('[data-k=rate]');
+  setHTML(cr,RT.cartCache,'r',`<span class="num">${money(R.cart*pm)}</span> לשנ׳${cartSlow?'<span class="tag">איטי</span>':''}`);cr.classList.toggle('slow',cartSlow);
+  setHTML(sr,RT.shopCache,'r',`<span class="num">${money(R.shop*pm)}</span> לשנ׳${shopSlow?'<span class="tag">איטי</span>':''}`);sr.classList.toggle('slow',shopSlow);
+  let lv=lvlHTML('cart');const cl=cs.querySelector('[data-k=lvl]');setHTML(cl,RT.cartCache,'l',lv.html);cl.classList.toggle('ok',lv.ok);
+  lv=lvlHTML('shop');const sl=ss.querySelector('[data-k=lvl]');setHTML(sl,RT.shopCache,'l',lv.html);sl.classList.toggle('ok',lv.ok);
+  updMgr(cs.querySelector('[data-k=mgr]'),cs.querySelector('[data-k=abil]'),'cart',0,RT.cartCache);
+  updMgr(ss.querySelector('[data-k=mgr]'),ss.querySelector('[data-k=abil]'),'shop',0,RT.shopCache);
+  $('#depotStock').textContent=money(S.depot);
+  const anyStock=S.beds.some(b=>b.stock>0);
+  $('#cartTap').hidden=!(!S.cart.mgr&&RT.cart.state==='idle'&&anyStock);
+  $('#cartTap').style.top='70px';
+  $('#shopTap').hidden=!(!S.shop.mgr&&S.depot>0&&RT.sellers.every(s=>s.state==='idle'));
+  const ub=$('#unlockBtn');if(ub){const ok=S.cash>=UNLOCK[S.beds.length];ub.classList.toggle('off',!ok);}
+
+  // missions
+  const act=activeMissions();let ready=0;
+  act.forEach(i=>{if(missionDone(i)){ready++;if(!RT.notified.has(i)){RT.notified.add(i);if(RT.started){toast('משימה הושלמה! פתחו את המשימות כדי לקבל טל.','blue');Snd.sparkle();}}}});
+  const bm=$('#bMissions');bm.hidden=!ready;bm.textContent=ready;
+  $('#bFest').hidden=seedsClaimable()<Math.max(1,Math.ceil(S.seeds*0.25+1));
+  updTutorial();
+  refreshSheet();
+}
+
+/* ================= tutorial ================= */
+const TUT=[
+  {t:'הקישו על ערוגת הכלניות כדי שהגנן יקטוף פרחים.',sel:()=>RT.beds[0]&&RT.beds[0].el,done:()=>RT.beds[0].workers.some(w=>w.state!=='idle')||S.beds[0].stock>0||S.stats.taps>0},
+  {t:'יש פרחים בסל! הקישו על פיר העגלה (מימין) כדי להעלות אותם למחסן.',sel:()=>$('#track'),when:()=>S.beds[0].stock>0,done:()=>RT.cart.state!=='idle'||S.depot>0},
+  {t:'הפרחים במחסן. הקישו על הרחוב כדי שהמוכרת תיקח זר לחנות ותמכור.',sel:()=>$('#street'),when:()=>S.depot>0,done:()=>RT.sellers.some(s=>s.state!=='idle')||S.cash>0},
+  {t:'הרווחתם כסף! לחצו על כפתור הרמה של הערוגה ושדרגו אותה.',sel:()=>RT.beds[0].lvl,when:()=>S.cash>=upgCost('bed',0,1),done:()=>S.beds[0].L>=2},
+  {t:'נמאס להקיש? גייסו מנהל והוא יפעיל את העבודה לבד, גם כשאתם לא במשחק.',sel:()=>{const c=[['bed',0,RT.beds[0].mgr],['cart',0,$('#cartSign [data-k=mgr]')],['shop',0,$('#shopSign [data-k=mgr]')]].filter(([k,i])=>!unitOf(k,i).mgr).sort((a,b)=>hireCost(a[0],a[1])-hireCost(b[0],b[1]))[0];return c&&c[2];},when:()=>S.cash>=100,done:()=>mgrCount(S)>0},
+];
+let tutEl=null;
+function updTutorial(){
+  const hint=$('#hint');
+  if(S.tut>=TUT.length||S.tut>=99||!S.welcomed){hint.hidden=true;if(tutEl){tutEl.classList.remove('focus-ring');tutEl=null;}if(S.tut<99&&S.tut>=TUT.length)S.tut=99;return;}
+  const st=TUT[S.tut];
+  if(st.done()){S.tut++;if(tutEl){tutEl.classList.remove('focus-ring');tutEl=null;}return;}
+  if(st.when&&!st.when()){hint.hidden=true;if(tutEl){tutEl.classList.remove('focus-ring');tutEl=null;}return;}
+  hint.hidden=false;const tx=$('#hintText');if(tx.textContent!==st.t)tx.textContent=st.t;
+  const el=st.sel();
+  if(el!==tutEl){if(tutEl)tutEl.classList.remove('focus-ring');tutEl=el;if(el&&el.classList.contains('lvl')||el&&el.classList.contains('mgr'))el.classList.add('focus-ring');}
+}
+
+/* ================= sheets ================= */
+const sheetWrap=$('#sheetWrap'),sheetBody=$('#sheetBody'),sheetTitle=$('#sheetTitle');
+function openSheet(spec){RT.sheet=spec;RT.lastSheetHTML='';sheetWrap.hidden=false;refreshSheet(true);sheetBody.parentElement.scrollTop=0;}
+function closeSheet(){
+  if(RT.sheet&&RT.sheet.type==='offline'&&RT.pending) collectOffline(false);
+  if(RT.sheet&&RT.sheet.type==='welcome'){S.welcomed=true;}
+  RT.sheet=null;sheetWrap.hidden=true;sheetBody.innerHTML='';
+}
+function refreshSheet(force){
+  const sp=RT.sheet;if(!sp) return;
+  const out=SHEETS[sp.type](sp);
+  if(sheetTitle.textContent!==out.title) sheetTitle.textContent=out.title;
+  if(force||out.html!==RT.lastSheetHTML){RT.lastSheetHTML=out.html;sheetBody.innerHTML=out.html;}
+  if(out.live) for(const k in out.live){const el=sheetBody.querySelector(`[data-live="${k}"]`);if(el&&el.textContent!==out.live[k])el.textContent=out.live[k];}
+}
+function statBox(label,cur,next){
+  const same=cur===next;
+  return `<div class="stat"><span>${label}</span><b class="num">${cur}</b><i class="${same?'same':''}">${same?'ללא שינוי':`← <span class="num">${next}</span>`}</i></div>`;
+}
+function bulkSeg(){return `<div class="seg" role="group" aria-label="כמות שדרוג">${[1,10,50,'max'].map(b=>`<button data-act="bulk:${b}" class="${S.settings.bulk===b?'on':''}">${b==='max'?'מקס׳':'×'+b}</button>`).join('')}</div>`;}
+function nextMs(L,list){for(const t of list) if(L<t) return t;return null;}
+const SHEETS={
+  upg(sp){
+    const {kind,i}=sp,n=bulkN(kind,i),L=UNITS[kind].L(i),L2=L+n,cost=upgCost(kind,i,n),ok=S.cash>=cost,pm=permMult();
+    let head,stats,ms='';
+    if(kind==='bed'){
+      const f=FLOWERS[i];
+      head=`<div class="up-head"><div class="up-ico">${flowerIcon(f,46)}</div><div><div class="up-title">ערוגת ה${f.name}</div><div class="up-sub">רמה ${L} ← ${L2}</div></div></div>`;
+      stats=statBox('גננים',Econ.bedWorkers(L),Econ.bedWorkers(L2))+statBox('קטיף לגנן',money(Econ.bedLoad(i,L)*pm),money(Econ.bedLoad(i,L2)*pm))+statBox('תפוקה לשנייה',money(Econ.bedRate(i,L)*pm),money(Econ.bedRate(i,L2)*pm));
+      const nm=nextMs(L,[...new Set([...BED_MS,...BED_WORK_T])].sort((a,b)=>a-b));
+      if(nm){const parts=[];if(BED_MS.includes(nm))parts.push('כל קטיף פי 2');if(BED_WORK_T.includes(nm))parts.push('גנן נוסף');const prev=[0,...BED_MS,...BED_WORK_T].filter(t=>t<=L).sort((a,b)=>b-a)[0]||0;
+        ms=`<div class="ms">ברמה ${nm}: ${parts.join(' + ')}<div class="bar"><div style="width:${((L-prev)/(nm-prev)*100).toFixed(0)}%"></div></div></div>`;}
+    }else if(kind==='cart'){
+      const nb=S.beds.length;
+      head=`<div class="up-head"><div class="up-ico"><svg width="44" height="40" viewBox="0 0 60 50">${cartSVG()}</svg></div><div><div class="up-title">עגלת האיסוף</div><div class="up-sub">רמה ${L} ← ${L2}</div></div></div>`;
+      stats=statBox('קיבולת',money(Econ.cartCap(L)),money(Econ.cartCap(L2)))+statBox('מהירות',Econ.cartSpeed(L).toFixed(1),Econ.cartSpeed(L2).toFixed(1))+statBox('הובלה לשנייה',money(Econ.cartRate(L,nb)*pm),money(Econ.cartRate(L2,nb)*pm));
+      const nm=nextMs(L,[...new Set([...CART_MS,...CART_SP])].sort((a,b)=>a-b));
+      if(nm){const parts=[];if(CART_MS.includes(nm))parts.push('קיבולת פי 1.5');if(CART_SP.includes(nm))parts.push('נסיעה מהירה יותר');ms=`<div class="ms">ברמה ${nm}: ${parts.join(' + ')}</div>`;}
+    }else{
+      head=`<div class="up-head"><div class="up-ico"><svg width="44" height="40" viewBox="0 0 152 128">${shopSVG()}</svg></div><div><div class="up-title">חנות הפרחים</div><div class="up-sub">רמה ${L} ← ${L2}</div></div></div>`;
+      stats=statBox('מוכרים',Econ.shopSellers(L),Econ.shopSellers(L2))+statBox('זרים למוכר',money(Econ.shopCap(L)),money(Econ.shopCap(L2)))+statBox('מכירה לשנייה',money(Econ.shopRate(L)*pm),money(Econ.shopRate(L2)*pm));
+      const nm=nextMs(L,[...new Set([...SHOP_MS,...SHOP_SELL_T])].sort((a,b)=>a-b));
+      if(nm){const parts=[];if(SHOP_SELL_T.includes(nm))parts.push('מוכר/ת נוסף/ת');if(SHOP_MS.includes(nm))parts.push('קיבולת פי 1.5');ms=`<div class="ms">ברמה ${nm}: ${parts.join(' + ')}</div>`;}
+    }
+    return {title:'שדרוג',html:`<div class="stack">${head}<div class="stats">${stats}</div>${ms}${bulkSeg()}
+      <button class="btn big wide ${ok?'':'off'}" data-act="buy">שדרגו ${n>1?'×'+n+' ':''}· ${M(cost)}</button></div>`};
+  },
+  mgr(sp){
+    const {kind,i}=sp,u=unitOf(kind,i),nm=unitName(kind,i);
+    if(!u.mgr){
+      const c=hireCost(kind,i),ok=S.cash>=c;
+      return {title:'גיוס מנהל',html:`<div class="stack"><p class="lead">מנהל ב${nm} מפעיל את העבודה בלי שתצטרכו להקיש, וממשיך להרוויח גם כשהמשחק סגור. לכל מנהל יש גם יכולת מיוחדת שאפשר להפעיל.</p>
+        <div class="chain"><div><b style="color:${RAR[0].col}">רגיל</b><br>פי 2</div><div><b style="color:${RAR[1].col}">נדיר</b><br>פי 3</div><div><b style="color:${RAR[2].col}">אגדי</b><br>פי 5</div></div>
+        <button class="btn big wide gold ${ok?'':'off'}" data-act="hire">גייסו מנהל · ${M(c)}</button></div>`};
+    }
+    const m=u.mgr,R=RAR[m.r],ab=ABIL[kind].find(a=>a.k===m.a),rc=rerollCost(kind,i);
+    const state=m.act>0?'active':m.cd>0?'cd':'ready';
+    const live={st:state==='active'?`פעיל עוד ${fmtTime(m.act)}`:state==='cd'?`מוכן בעוד ${fmtTime(m.cd)}`:'מוכן להפעלה'};
+    return {title:'המנהל',live,html:`<div class="stack">
+      <div class="mgr-hero">${portraitSVG(m,78)}<div><div class="up-title">${m.name}</div><div class="up-sub">${nm}</div><span class="rar" style="background:${R.col}">${R.name}</span></div></div>
+      <div class="card"><div class="grow"><h3>${ab.name}</h3><p>${ab.d(R.mag)} למשך ${R.dur} שניות. זמן טעינה: ${Math.round(R.cd/60*10)/10} דקות.</p><p style="font-weight:800;color:var(--ink)" data-live="st"></p></div>
+      <button class="btn gold ${state==='ready'?'':'off'}" data-act="abil:${kind}${kind==='bed'?':'+i:''}">${BOLT} הפעילו</button></div>
+      <button class="btn ghost wide" data-act="reroll">החליפו במנהל אקראי אחר · ${M(rc)}</button></div>`};
+  },
+  missions(){
+    const act=activeMissions();
+    const rows=act.map(i=>{const d=missionDef(i);const [a,b]=d.p(S);const done=a>=b;const pct=clamp(a/b,0,1)*100;
+      const prog=d.money?`${money(Math.min(a,b))} / ${money(b)}`:`${fmt(Math.min(a,b))} / ${fmt(b)}`;
+      return `<div class="card ${done?'done':''}"><div class="grow"><h3>${d.t}</h3><div class="bar green"><div style="width:${pct.toFixed(0)}%"></div></div><p><span class="num">${prog}</span> · <span class="reward">${DROP}+${d.r}</span></p></div>
+      ${done?`<button class="btn blue" data-act="claim:${i}">קבלו</button>`:''}</div>`;}).join('');
+    return {title:'משימות',html:`<div class="stack"><p class="lead">השלימו משימות כדי לאסוף טיפות טל, המטבע המיוחד של הגן.</p>${rows}<p class="lead" style="font-size:13px">הושלמו עד עכשיו: ${S.claimed.length}</p></div>`};
+  },
+  dew(){
+    const items=DEW_ITEMS.map(it=>{const ok=S.dew>=it.cost&&!(it.k==='cap'&&S.offlineH>=12);
+      return `<div class="card"><div class="grow"><h3>${it.name}</h3><p>${it.d}${it.k==='cap'?` כרגע: ${S.offlineH} שעות.`:''}</p></div><button class="btn blue ${ok?'':'off'}" data-act="dewbuy:${it.k}">${DROP} ${it.cost}</button></div>`;}).join('');
+    return {title:'חנות הטל',html:`<div class="stack"><div class="mgr-hero"><div class="up-ico">${DROP.replace('width="13" height="15"','width="30" height="34"')}</div><div><div class="big-num num">${fmt(S.dew)}</div><div class="up-sub">טיפות טל. משיגים ממשימות, מפרפרי זהב ומפסטיבלים.</div></div></div>${items}</div>`};
+  },
+  festival(){
+    const n=seedsClaimable(),cur=permMult(),next=1+(S.seeds+n)*SEED_BONUS;
+    const need=Math.pow(S.seeds+1,3)*1e9;
+    return {title:'פסטיבל הפריחה',html:`<div class="stack">
+      <p class="lead">בסוף העונה עורכים פסטיבל: מוכרים את הגן ומתחילים מחדש עם זרעי זהב. כל זרע מעלה את כל ההכנסות ב-5% לתמיד.</p>
+      <div class="stats" style="grid-template-columns:repeat(2,1fr)">
+        <div class="stat"><span>זרעי זהב שיש לכם</span><b class="num">${fmt(S.seeds)}</b><i class="same">הכנסה ×${cur.toFixed(2)}</i></div>
+        <div class="stat"><span>תקבלו בפסטיבל</span><b class="num">+${fmt(n)}</b><i>הכנסה ×${next.toFixed(2)}</i></div>
+      </div>
+      ${n<1?`<div class="ms">הזרע הבא מגיע כשהרווח הכולל יגיע ל-${M(need)}. כרגע: ${M(S.lifetime)}.</div>`:''}
+      <div class="card"><div class="grow"><h3>מה מתאפס</h3><p>כסף, ערוגות, רמות, עגלה, חנות ומנהלים.</p><h3 style="margin-top:8px">מה נשאר</h3><p>זרעי זהב, טיפות טל (ועוד 10 במתנה), משימות, דשן פעיל וגודל החממה.</p></div></div>
+      ${sp_confirm('fest',n>=1,`חגגו פסטיבל · +${fmt(n)} זרעים`,'כן, אפסו את הגן וחגגו','gold')}</div>`};
+  },
+  settings(){
+    const st=S.stats;
+    return {title:'הגדרות',html:`<div class="stack">
+      <button class="toggle" data-act="toggle:sound">צלילים<span class="sw ${S.settings.sound?'on':''}"></span></button>
+      <button class="toggle" data-act="toggle:music">מוזיקת רקע<span class="sw ${S.settings.music?'on':''}"></span></button>
+      <div class="card" style="display:block"><h3 style="margin-bottom:8px">איך משחקים</h3><p>גננים קוטפים פרחים לסל שבקצה הערוגה. עגלת האיסוף עולה ויורדת בפיר ומביאה את הפרחים למחסן. המוכרים לוקחים זרים מהמחסן לחנות ומוכרים. אם אחד מהשלושה איטי, התגית "איטי" תראה לכם מה לשדרג.</p></div>
+      <div class="card" style="display:block"><h3 style="margin-bottom:8px">סטטיסטיקה</h3><dl class="kv">
+        <dt>רווח כולל</dt><dd>${M(S.lifetime)}</dd><dt>רווח בעונה הזו</dt><dd>${M(S.run)}</dd><dt>שיא הכנסה לשנייה</dt><dd>${M(st.bestRate||0)}</dd>
+        <dt>זמן משחק</dt><dd>${fmtDur(st.play)}</dd><dt>פסטיבלים</dt><dd class="num">${st.festivals}</dd><dt>פרפרי זהב</dt><dd class="num">${st.butterflies}</dd><dt>הקשות</dt><dd class="num">${fmt(st.taps)}</dd></dl></div>
+      <p class="lead" style="font-size:13px">ההתקדמות נשמרת אוטומטית בדפדפן הזה.</p>
+      ${sp_confirm('reset',true,'התחילו גן חדש מאפס','כן, מחקו את כל ההתקדמות','red')}</div>`};
+  },
+  offline(){
+    const p=RT.pending;if(!p) return {title:'',html:''};
+    return {title:'ברוכים השבים!',html:`<div class="stack" style="text-align:center;align-items:center">
+      <p class="lead">בזמן שלא הייתם (${fmtDur(p.away)}) המנהלים המשיכו לעבוד.${p.capped?` החממה שומרת עד ${S.offlineH} שעות.`:''}</p>
+      <div class="big-num num">${money(p.gain)}</div>
+      <button class="btn big wide" data-act="collect">אספו</button>
+      <button class="btn wide blue ${S.dew>=10?'':'off'}" data-act="collect2">הכפילו ל-${M(p.gain*2)} · ${DROP} 10</button></div>`};
+  },
+  welcome(){
+    const ch=(svg,t)=>`<div>${svg}${t}</div>`;
+    return {title:'ברוכים הבאים לפריחה בע״מ',html:`<div class="stack">
+      <p class="lead">קיבלתם ערוגת כלניות קטנה, עגלה וחנות פרחים ברחוב. הפכו אותם לאימפריית פרחים.</p>
+      <div class="chain">${ch(flowerIcon(FLOWERS[0],34),'גננים קוטפים')}<span class="arr">←</span>${ch(`<svg width="38" height="32" viewBox="0 0 60 50">${cartSVG()}</svg>`,'העגלה מעלה')}<span class="arr">←</span>${ch(`<svg width="38" height="32" viewBox="0 0 152 128">${shopSVG()}</svg>`,'המוכרים מוכרים')}</div>
+      <p class="lead">בהתחלה מקישים כדי להפעיל כל שלב. אחר כך מגייסים מנהלים, מוסיפים ערוגות של פרחים יקרים יותר, ובסוף העונה חוגגים פסטיבל.</p>
+      <button class="btn big wide pink" data-act="close">בואו נתחיל</button></div>`};
+  },
+};
+function sp_confirm(key,enabled,label,confirmLabel,color){
+  const armed=RT.sheet&&RT.sheet.arm===key;
+  if(!enabled) return `<button class="btn big wide off" disabled>${label}</button>`;
+  if(!armed) return `<button class="btn big wide ${color==='red'?'ghost':color}" data-act="arm:${key}">${label}</button>`;
+  return `<div class="stack"><p class="lead" style="text-align:center;font-weight:800;color:var(--ink)">בטוחים? אי אפשר לבטל את זה.</p><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px"><button class="btn ghost" data-act="disarm">ביטול</button><button class="btn ${color}" data-act="do:${key}">${confirmLabel}</button></div></div>`;
+}
+
+/* ================= offline ================= */
+function handleAway(sec,showModal){
+  if(!(sec>1)) return;
+  const capS=S.offlineH*3600,use=Math.min(sec,capS);
+  const rate=idleRate();
+  stepTimers(sec);
+  const gain=rate*use;
+  if(gain<=0) return;
+  if(showModal&&sec>=60){
+    if(RT.pending){RT.pending.gain+=gain;RT.pending.away+=sec;}
+    else RT.pending={gain,away:sec,capped:sec>capS};
+    openSheet({type:'offline'});
+  }else addCash(gain);
+}
+function collectOffline(double){
+  const p=RT.pending;if(!p) return;
+  let g=p.gain;
+  if(double){if(S.dew<10){Snd.err();toast('אין מספיק טיפות טל.','blue');return;}S.dew-=10;g*=2;}
+  addCash(g);RT.pending=null;Snd.coin();petals(18,true);toast(`אספתם ${money(g)}`,'gold');
+}
+
+/* ================= input ================= */
+D.addEventListener('pointerdown',()=>Snd.init(),{once:false,passive:true});
+D.addEventListener('click',ev=>{
+  const t=ev.target.closest('[data-act]');
+  if(t){ev.stopPropagation();handleAct(t.dataset.act,t);return;}
+  const bed=ev.target.closest('.bed');
+  if(bed){ripple(ev,bed);tapBed(+bed.dataset.bed);return;}
+  if(ev.target.closest('#track')){ripple(ev,$('#track'));tapCart();return;}
+  if(ev.target.closest('#street')&&!ev.target.closest('.sign')){ripple(ev,streetEl);tapShop();return;}
+});
+function handleAct(a,el){
+  const [v,x,y]=a.split(':');
+  const ki=()=>({kind:x,i:x==='bed'?+y:0});
+  switch(v){
+    case 'open': openSheet({type:x}); break;
+    case 'close': closeSheet(); break;
+    case 'upg': {const k=ki();openSheet({type:'upg',...k});break;}
+    case 'mgr': {const k=ki();openSheet({type:'mgr',...k});break;}
+    case 'abil': {const k=ki();activate(k.kind,k.i);break;}
+    case 'buy': {const sp=RT.sheet;if(sp&&sp.type==='upg')buyUpgrade(sp.kind,sp.i);break;}
+    case 'bulk': S.settings.bulk=x==='max'?'max':+x;break;
+    case 'hire': {const sp=RT.sheet;if(sp)hire(sp.kind,sp.i);break;}
+    case 'reroll': {const sp=RT.sheet;if(sp)reroll(sp.kind,sp.i);break;}
+    case 'unlock': unlockBed();break;
+    case 'claim': claimMission(+x);break;
+    case 'dewbuy': buyDew(x);break;
+    case 'arm': if(RT.sheet)RT.sheet.arm=x;break;
+    case 'disarm': if(RT.sheet)RT.sheet.arm=null;break;
+    case 'do': if(x==='fest')festival();else if(x==='reset')resetGame();break;
+    case 'toggle':
+      S.settings[x]=!S.settings[x];
+      if(x==='music'){Snd.init();if(S.settings.music)Snd.startMusic();else Snd.stopMusic();}
+      updMute();break;
+    case 'mute': S.settings.sound=!S.settings.sound;if(!S.settings.sound){S.settings.music=false;Snd.stopMusic();}updMute();toast(S.settings.sound?'הצלילים פועלים':'הצלילים כבויים');break;
+    case 'collect': collectOffline(false);closeSheet();break;
+    case 'collect2': {const had=S.dew>=10;collectOffline(true);if(had)closeSheet();break;}
+    case 'skiptut': S.tut=99;break;
+    case 'bfly': catchButterfly();break;
+  }
+  updUI();
+}
+function updMute(){$('#muteBtn').innerHTML=S.settings.sound?SPK_ON:SPK_OFF;}
+D.addEventListener('keydown',e=>{if(e.key==='Escape'&&RT.sheet)closeSheet();});
+
+/* ================= loop ================= */
+function frame(now){
+  const wall=Date.now();
+  let gap=(wall-RT.lastWall)/1000;RT.lastWall=wall;
+  if(gap>2){handleAway(gap,true);gap=0;}
+  let dt=Math.min(Math.max(gap,0),0.1);
+  while(dt>0){const d=Math.min(dt,0.05);step(d);dt-=d;}
+  render();
+  RT.uiT+=gap;RT.saveT+=gap;
+  if(RT.uiT>=0.2){RT.uiT=0;updUI();}
+  if(RT.saveT>=8){RT.saveT=0;save();}
+  requestAnimationFrame(frame);
+}
+D.addEventListener('visibilitychange',()=>{if(D.hidden)save();});
+addEventListener('pagehide',save);
+addEventListener('resize',()=>layout());
+
+/* ================= boot ================= */
+function start(data){
+  let loaded=null;
+  if(data&&data.save) loaded=data.save;
+  else{try{const raw=localStorage.getItem(SAVE_KEY);if(raw)loaded=JSON.parse(raw);}catch(e){}}
+  S=loaded?loadFrom(loaded):newState();
+  RT=newRT();
+  $('#shopBld').innerHTML=shopSVG();$('#depotBld').innerHTML=depotSVG();$('#headframe').innerHTML=headframeSVG();$('#cart').innerHTML=cartSVG();
+  updMute();buildWorld();
+  const away=(Date.now()-(S.last||Date.now()))/1000;
+  if(loaded&&away>30&&!(data&&data.save)) handleAway(away,true);
+  updUI();RT.started=true;
+  if(!S.welcomed) openSheet({type:'welcome'});
+  try{window.claude&&window.claude.hot&&window.claude.hot.snapshot&&window.claude.hot.snapshot(()=>({save:serialize()}));}catch(e){}
+  RT.lastWall=Date.now();
+  requestAnimationFrame(frame);
+  window.Pericha={get S(){return S;},get RT(){return RT;},step,Econ,save,idleRate};
+}
+const hot=window.claude&&window.claude.hot;
+if(hot&&hot.ready) hot.ready(start); else start((hot&&hot.data)||{});
+})();
+</script>
+</body>
+</html>
